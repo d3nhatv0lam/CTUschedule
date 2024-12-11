@@ -1,0 +1,23 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <Border Height="600" Width="1000" Padding="0">
+		<Grid ColumnDefinitions="0.7* *" >
+			<Grid Grid.Column="0" Background="Red">
+			</Grid>
+
+			<Border Grid.Column="1" Background="SlateBlue" CornerRadius="40 0 0 40">
+				<Grid  RowDefinitions="0.15* * 0.15*">
+					<Grid Grid.Row="1"  ColumnDefinitions="0.16* * 0.14*">
+						<Border Grid.Column="1" Background="White" CornerRadius="30"></Border>
+
+					</Grid>
+				</Grid>
+			</Border>
+			
+		</Grid>
+    </Border>
+  </Design.PreviewWith>
+
+  <!-- Add Styles Here -->
+</Styles>
