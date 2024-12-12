@@ -6,18 +6,24 @@ namespace CTUschedule.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
+        public static MainWindowViewModel Instance;
+
         [ObservableProperty]
-        public List<ViewModelBase> _pageViewModels = new List<ViewModelBase>();
+        private string _title = "CTUschedule";
         [ObservableProperty]
-        public ViewModelBase _currentViewModel;
+        private List<ViewModelBase> _pageViewModels = new List<ViewModelBase>();
+        [ObservableProperty]
+        private ViewModelBase _currentViewModel;
        
 
 
         public MainWindowViewModel()
         {
+            Instance = this;
             PageViewModels.Add(new SignInViewModel());
 
             CurrentViewModel = PageViewModels.First();
         }
+
     }
 }

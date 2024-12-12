@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
 			 xmlns:vm="using:CTUschedule.ViewModels"
+			  x:DataType="vm:SignInViewModel"
+			 xmlns:p1="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              x:Class="CTUschedule.Views.SignInView">
 
 	<Design.DataContext>
@@ -12,7 +14,93 @@
 		<vm:SignInViewModel/>
 	</Design.DataContext>
 
-	<Grid>
+	<Grid Background="{StaticResource PrimaryColor}" ColumnDefinitions="0.8* *">
+		<StackPanel Grid.Column="0" Orientation="Vertical" >
+				<Image Source="avares://CTUschedule/Assets/Images/CTULogo.png"
+					   Margin="0 50 0 0"
+					   Height="250" 
+					   Width="250"
+					   Stretch="Uniform"/>
+				<TextBlock Text="Cần Thơ University"
+						   VerticalAlignment="Center" 
+						   HorizontalAlignment="Center"
+						   Margin="0 20 0 0"
+						  FontFamily="/Assets/Fonts/Montserrat/Montserrat-ExtraBold.otf #Montserrat"
+						   FontSize="28"
+						   Foreground="White"
+						   />
+				<TextBlock Text="Project's student"
+						   Foreground="White"
+						   FontFamily="/Assets/Fonts/Montserrat/Montserrat-Bold.otf #Montserrat"
+						   FontSize="25"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Center"
+						   Margin="0 20 0 0"
+						   />
+		</StackPanel>
+
+		<Border Grid.Column="1" CornerRadius="45 0 0 45"   Background="White">
+			<Grid RowDefinitions="0.1* * 0.1*">
+				<!--<Grid Grid.Row="0" Background="Aquamarine">
+					
+				</Grid>-->
+
+				<Grid Grid.Row="1" ColumnDefinitions="0.2* * 0.2*">
+
+					<StackPanel Grid.Column="1" Orientation="Vertical">
+						<TextBlock Text="Đăng Nhập"
+								   FontSize="30"
+									FontFamily="Times New Roman"
+								   FontWeight="Bold"
+								   Margin="0 50 0 0"
+								   HorizontalAlignment="Center"/>
+
+						<TextBox UseFloatingWatermark="True"
+								 Watermark="Type something..." 
+								 p1:TextFieldAssist.Label="MSSV" 
+								 Text="{Binding MSSV}"
+								 Margin="0 10 0 0"
+								 MaxLength="30"
+								/>
+
+						<TextBox UseFloatingWatermark="True"
+								 Classes="revealPasswordButton" 
+								 p1:TextFieldAssist.Label="Password"
+								 Margin="0 20 0 0"
+								 Text="{Binding Password}"
+								 MaxLength="30"
+								 PasswordChar="*"/>
+
+						<TextBox UseFloatingWatermark="True"
+								 Classes="clearButton"
+								 p1:TextFieldAssist.Label="Capcha"  
+								 Margin="0 20 0 0"
+								 MaxLength="5"
+								 />
+						<Button Content="Login" 
+								Margin="0 50 0 0"
+								Background="#2396D0"
+								CornerRadius="16" />	
+						
+						<TextBlock Text="#Note: Capcha xuất hiện dưới dạng một hình ảnh khi trang này được mở lên"
+									FontFamily="/Assets/Fonts/Montserrat/Montserrat-Italic.otf #Montserrat"
+									FontWeight="Bold"
+								   
+									FontSize="15"
+									TextWrapping="Wrap"
+									Margin="0 50 0 0"/>
+					</StackPanel>
+
+				</Grid>
+				
+
+				<!--<Grid Grid.Row="2" Background="Aquamarine" >
+					
+				</Grid>-->
+			</Grid>
+			
+			
+		</Border>
 		
 	</Grid>
 </UserControl>
