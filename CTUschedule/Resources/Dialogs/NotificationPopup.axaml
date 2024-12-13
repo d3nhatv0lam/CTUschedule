@@ -1,0 +1,80 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        mc:Ignorable="d" 
+        x:Class="CTUschedule.NotificationPopup"
+		Width="350" Height="60"
+		CanResize="False"
+		 ExtendClientAreaTitleBarHeightHint="0"
+		ExtendClientAreaToDecorationsHint="True"
+		Background="Transparent"
+		Topmost="True"
+        Title="NotificationPopup">
+
+
+	<Window.Styles>
+		<Style Selector="Border._border">
+			<Style.Animations>
+				<Animation Duration="0:0:0.6">
+					<KeyFrame Cue="0%">
+						<Setter Property="Margin" Value="500 0 0 0"/>
+					</KeyFrame>
+					<KeyFrame Cue="100%">
+						<Setter Property="Margin" Value="0 0 0 0"/>
+					</KeyFrame>
+				</Animation>
+
+				<Animation Delay="0:0:5" Duration="0:0:0.5">
+					<KeyFrame Cue="0%">
+						<Setter Property="Opacity" Value="1"/>
+					</KeyFrame>
+					<KeyFrame Cue="100%">
+						<Setter Property="Opacity" Value="0"/>
+					</KeyFrame>
+				</Animation>
+				
+			</Style.Animations>
+		</Style>
+
+		<Style Selector="Border.Line">
+			<Style.Animations>
+				<Animation  Duration="0:0:5">
+					<KeyFrame Cue="0%">
+						<Setter Property="Width" Value="0"/>
+					</KeyFrame>
+					<KeyFrame Cue="100%">
+						<Setter Property="Width" Value="345"/>
+					</KeyFrame>
+				</Animation>
+			</Style.Animations>
+		</Style>
+	</Window.Styles>
+
+
+
+
+	<Border Classes="_border" x:Name="IBorder" Background="#F6EBE6"   CornerRadius="8">
+		<Grid ColumnDefinitions="10 auto 10 *">
+			<TextBlock Name="icon" Height="0" Width="0" ></TextBlock>
+		
+			<materialIcons:MaterialIcon Grid.Column="1" 
+										Kind="{Binding Path=Text,ElementName=icon}"
+										Width="40" 
+										Height="40" 
+										Foreground="{Binding Path=Foreground, ElementName=icon}"/>
+
+			<StackPanel Grid.Column="3" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left">
+				<TextBlock Name="title"
+						   FontSize="22"/>
+				<TextBlock x:Name="description"
+						   TextWrapping="WrapWithOverflow"
+						   FontSize="16"/>
+			</StackPanel>
+			<Border Classes="Line" Name="line" Padding="10 0 0 10" Margin="2 0 0 0" CornerRadius="5" Background="Red" Height="3" Width="345" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+		
+		</Grid>
+	</Border>
+
+</Window>

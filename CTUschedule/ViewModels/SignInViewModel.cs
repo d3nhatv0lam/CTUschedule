@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
@@ -7,14 +8,21 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using CTUschedule.Resources.Dialogs;
 
 namespace CTUschedule.ViewModels
 {
     public partial class SignInViewModel : ViewModelBase
     {
-        
+        private HTQL_Signin _signin;
         private string _mSSV = "";
         private string _password = "";
+        private string _capcha = "";
+        [ObservableProperty]
+        private Bitmap _capchaImage;
 
         public string MSSV
         {
@@ -36,17 +44,40 @@ namespace CTUschedule.ViewModels
                 OnPropertyChanged(nameof(Password));
             }
         }
+        
+        public string Capcha
+        {
+            get => _capcha;
+            set
+            {
+                if (value == _capcha) return;
+                _capcha = value;
+                OnPropertyChanged(nameof(Capcha));
+            }
+        }
 
 
         public SignInViewModel()
         {
+            _signin = new HTQL_Signin();
+            LoadCapcha();
+        }
 
+        private void LoadCapcha()
+        {
+            CapchaImage = new Bitmap(_signin.CapchaPath);
         }
 
         [RelayCommand]
         public void Login()
         {
-
+           bool Islogin =  _signin.SignIn(MSSV, Password, Capcha).Result;
+            if (!Islogin)
+            {
+                INotificationPopup noti = new NotificationPopupController(NotificationPopupController.Type.Error, "Đăng nhập thất bại", "Kiểm tra lại thông tin đăng nhập");
+                noti.ShowNotification();
+                LoadCapcha();
+            }
         }
     }
 }
