@@ -19,7 +19,7 @@ namespace Utilities
     
     public class CTU_HTQLWebDriver
     {
-        public static CTU_HTQLWebDriver Intance = new CTU_HTQLWebDriver();
+        public static CTU_HTQLWebDriver Instance;
 
         public string MainPage = "https://dkmh.ctu.edu.vn/htql/sinhvien/hindex.php";
         public string CourseCatalogPage = "https://dkmhfe.ctu.edu.vn/dangkyhocphan/sinhvien/danhmuchocphan";
@@ -32,6 +32,7 @@ namespace Utilities
 
         public CTU_HTQLWebDriver()
         {
+            Instance = this;
             AssignWebDriver();
         }
 
@@ -39,7 +40,7 @@ namespace Utilities
         private void AssignWebDriver()
         {
             options = new ChromeOptions();
-            //options.AddArgument("--headless");
+            options.AddArgument("--headless");
             var chromeDriverService = ChromeDriverService.CreateDefaultService();
             chromeDriverService.HideCommandPromptWindow = true;
             driver = new ChromeDriver(chromeDriverService, options);
@@ -54,7 +55,7 @@ namespace Utilities
 
     public class HTQL_Signin
     {
-        private CTU_HTQLWebDriver HTQLWebDriver;
+        private CTU_HTQLWebDriver HTQLWebDriver = CTU_HTQLWebDriver.Instance;
 
         public string CapchaPath = System.IO.Path.GetTempPath() + "capcha.png";
 
@@ -70,17 +71,16 @@ namespace Utilities
 
         public HTQL_Signin()
         {
-            this.HTQLWebDriver = CTU_HTQLWebDriver.Intance;
-            NavigateToSignin();
+            
         }
 
         public void NavigateToSignin()
         {
-            driver.Navigate().GoToUrl(HTQLWebDriver.SignInPage);
-            GetAndShowCapchaImage();
+                driver.Navigate().GoToUrl(HTQLWebDriver.SignInPage);
+                GetAndShowCapchaImage();
         }
 
-        public async Task<bool> SignIn(string UserName, string Password, string Capcha)
+        public bool SignIn(string UserName, string Password, string Capcha)
         {
             try
             {
@@ -98,9 +98,8 @@ namespace Utilities
                 // check login fail
                 try
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(300);
                     driver.SwitchTo().Alert().Accept();
-                    GetAndShowCapchaImage();
                     return false;
                 }
                 catch (NoAlertPresentException e)
@@ -113,7 +112,6 @@ namespace Utilities
             {
                 Debug.WriteLine("Có lỗi xảy ra: " + ex.Message);
             }
-            GetAndShowCapchaImage();
             return false;
         }
 
@@ -127,7 +125,7 @@ namespace Utilities
         {
             try
             {
-                Thread.Sleep(500);
+                Thread.Sleep(300);
                 var capchaImg = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("verify_code")));
                 //var capchaImg = driver.FindElement(By.Id("verify_code"));
                 Screenshot screenShot = ((ITakesScreenshot)capchaImg).GetScreenshot();
@@ -155,7 +153,7 @@ namespace Utilities
 
         public HTQL_CourseCatalog()
         {
-            this.HTQLWebDriver = CTU_HTQLWebDriver.Intance;
+            this.HTQLWebDriver = CTU_HTQLWebDriver.Instance;
         }
 
         public async void CourseCatalog()

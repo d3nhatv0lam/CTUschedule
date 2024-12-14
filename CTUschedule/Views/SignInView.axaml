@@ -89,7 +89,8 @@
 									/>
 						</StackPanel>
 						
-						<Button Content="Login" 
+						<Button Content="Login"
+								IsEnabled="{Binding !IsLogining}"
 								Margin="0 50 0 0"
 								Background="#2396D0"
 								CornerRadius="16" 

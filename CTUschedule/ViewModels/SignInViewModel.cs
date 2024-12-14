@@ -12,6 +12,8 @@ using Utilities;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CTUschedule.Resources.Dialogs;
+using Avalonia.Media.TextFormatting;
+using CTUschedule.Utilities;
 
 namespace CTUschedule.ViewModels
 {
@@ -23,6 +25,8 @@ namespace CTUschedule.ViewModels
         private string _capcha = "";
         [ObservableProperty]
         private Bitmap _capchaImage;
+        [ObservableProperty]
+        private bool _isLogining = false;
 
         public string MSSV
         {
@@ -60,24 +64,46 @@ namespace CTUschedule.ViewModels
         public SignInViewModel()
         {
             _signin = new HTQL_Signin();
+            NavigateToSignin();
+        }
+
+        private void NavigateToSignin()
+        {
+            _signin.NavigateToSignin();
             LoadCapcha();
         }
 
         private void LoadCapcha()
         {
-            CapchaImage = new Bitmap(_signin.CapchaPath);
+            try
+            {
+                CapchaImage = new Bitmap(_signin.CapchaPath);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
         }
 
         [RelayCommand]
-        public void Login()
+        public async void Login()
         {
-           bool Islogin =  _signin.SignIn(MSSV, Password, Capcha).Result;
+            if (CheckerInternetHelper._isHasInternet == false) return;
+            IsLogining = true;
+            bool Islogin = await Task.Run(() =>  _signin.SignIn(MSSV, Password, Capcha));
+ 
             if (!Islogin)
             {
                 INotificationPopup noti = new NotificationPopupController(NotificationPopupController.Type.Error, "Đăng nhập thất bại", "Kiểm tra lại thông tin đăng nhập");
                 noti.ShowNotification();
-                LoadCapcha();
+                Task.Run(() => NavigateToSignin());
             }
+            else
+            {
+
+            }
+            IsLogining = false;
         }
     }
 }

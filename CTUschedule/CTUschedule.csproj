@@ -12,6 +12,7 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
+    <Folder Include="Resources\Networks\" />
   </ItemGroup>
 
 
@@ -39,7 +40,22 @@
 
 
   <ItemGroup>
+    <UpToDateCheckInput Remove="Views\IntroduceView.axaml" />
+  </ItemGroup>
 
+
+
+
+  <ItemGroup>
+    <COMReference Include="NETWORKLIST">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>dcb00d01-570f-4a9b-8d69-199fdba5723b</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
 
 

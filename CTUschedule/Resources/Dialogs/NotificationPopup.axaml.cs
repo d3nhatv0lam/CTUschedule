@@ -17,20 +17,21 @@ namespace CTUschedule;
 
 public partial class NotificationPopup : Window
 {
-    // milisec
-    private int WaitTime = 5200;
+    // milisec 5200
+    private int WaitTime = 5100;
+
     public NotificationPopup()
     {
         InitializeComponent();
-        SetPopupPosition();
-        SetStatusNotification("AlertOctagonOutline", "#971c38", "#FF0000", "Lỗi", "Có gì đó không hợp lệ");
+        //SetPopupPosition();
+        //SetStatusNotification("AlertOctagonOutline", "#971c38", "#FF0000", "Lỗi", "Có gì đó không hợp lệ");
         //AlertOctagonOutline
     }
 
-    public NotificationPopup(string symbolKind, string symbolColorHex, string LineColorHex, string Title, string Message)
+    public NotificationPopup(int Posindex, string symbolKind, string symbolColorHex, string LineColorHex, string Title, string Message)
     {
         InitializeComponent();
-        SetPopupPosition();
+        SetPopupPosition(Posindex);
 
         SetStatusNotification( symbolKind, symbolColorHex, LineColorHex, Title, Message);
     }
@@ -56,16 +57,14 @@ public partial class NotificationPopup : Window
         description.Text = Message;
     }
 
-    private void SetPopupPosition()
+    private void SetPopupPosition(int Posindex)
     {
-
         var primaryScreen = this.Screens.Primary;
 
         // Lấy độ rộng và chiều cao của màn hình
         int DesktopWidth = primaryScreen.WorkingArea.Width;
         int DesktopHeight = primaryScreen.WorkingArea.Height;
 
-        this.Position = new PixelPoint((DesktopWidth - (int)this.Width - 20), (DesktopHeight - (int)this.Height - 20));
-
+        this.Position = new PixelPoint((DesktopWidth - (int)this.Width - 20), (DesktopHeight - (int)this.Height*(Posindex+1) - Posindex*10 - 20));
     }
 }

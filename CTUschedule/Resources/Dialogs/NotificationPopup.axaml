@@ -55,7 +55,7 @@
 
 
 
-	<Border Classes="_border" x:Name="IBorder" Background="#F6EBE6"   CornerRadius="8">
+	<Border Classes="_border" x:Name="IBorder" Background="#F8FAFC"   CornerRadius="8">
 		<Grid ColumnDefinitions="10 auto 10 *">
 			<TextBlock Name="icon" Height="0" Width="0" ></TextBlock>
 		
