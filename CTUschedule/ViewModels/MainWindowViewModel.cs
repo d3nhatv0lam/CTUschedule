@@ -27,10 +27,28 @@ namespace CTUschedule.ViewModels
             CheckerInternetAssign();
 
             PageViewModels.Add(new SignInViewModel());
+            PageViewModels.Add(new MainHomeViewModel());
 
             CurrentViewModel = PageViewModels.First();
         }
 
+        public void ChangeViewFromIndex(int index)
+        {
+            if (index < 0 || index >= PageViewModels.Count) return;
+            CurrentViewModel = PageViewModels[index];
+        }
+
+        public void GoToSignInView()
+        {
+            CurrentViewModel = PageViewModels[0];
+        }
+
+        public void GoToMainHomeView()
+        {
+            CurrentViewModel = PageViewModels[1];
+        }
+
+        // init and UpdateUI for first check
         private void CheckerInternetAssign()
         {
             internetHelper = new CheckerInternetHelper();
@@ -48,6 +66,8 @@ namespace CTUschedule.ViewModels
                     INotificationPopup NoInternetpopup = new NotificationPopupController(NotificationPopupController.Type.Warning, "Không có internet", "Một vài tính năng sẽ không hoạt động!");
                     NoInternetpopup.ShowNotification();
                 });
+                Title = "CTUschedule - NoNetwork";
+
             }
             // has internet
             else
@@ -57,6 +77,7 @@ namespace CTUschedule.ViewModels
                     INotificationPopup HasInternetpopup = new NotificationPopupController(NotificationPopupController.Type.Succes, "Internet có sẵn", "Trãi nghiệm thui~");
                     HasInternetpopup.ShowNotification();
                 });
+                Title = "CTUschedule";
             }
         }
     }

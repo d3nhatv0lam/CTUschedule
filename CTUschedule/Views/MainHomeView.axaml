@@ -1,0 +1,93 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" 
+			  d:DesignWidth="1000" d:DesignHeight="600"
+			  xmlns:vm="using:CTUschedule.ViewModels"
+			  x:DataType="vm:MainHomeViewModel"
+		
+			 xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="CTUschedule.Views.MainHomeView">
+
+	<UserControl.Styles>
+		<Style Selector="Grid.ExpanderTab">
+			<Setter Property="Width" Value="0"/>
+
+			<Setter Property="Transitions">
+				<Transitions>
+					<DoubleTransition Property="Width" Duration="0:0:0.3" Easing="QuarticEaseInOut"/>
+				</Transitions>
+			</Setter>
+		</Style>
+
+		<Style Selector="Grid.Open">
+			<Setter Property="Width" Value="200"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Grid ColumnDefinitions="auto *">
+
+
+		<Grid Classes="ExpanderTab"
+			  Classes.Open="{Binding ElementName=ExpandButton,Path=IsChecked}"
+				Grid.Column="0">
+
+
+			<controls:Card Classes="ChildDemo">
+
+				<Grid RowDefinitions="Auto, *">
+
+						<Grid Grid.Row="0">
+							<StackPanel Orientation="Vertical">
+								<Image Source="avares://CTUschedule/Assets/Images/CTULogo100x100.png" Stretch="None"/>
+								<TextBlock Classes="Headline6" Margin="8" Text="Cần Thơ University" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+							</StackPanel>
+						</Grid>
+					
+					<TreeView Grid.Row="1"
+							  ItemsSource="{Binding Nodes}"
+							  SelectedItem="{Binding SelectedNode , Mode=TwoWay}">
+
+						<TreeView.ItemTemplate>
+							<TreeDataTemplate ItemsSource="{Binding SubNodes}">
+
+								<Grid ColumnDefinitions="Auto, 8, *">
+									<avalonia:MaterialIcon Kind="{Binding ImageKind}" />
+									<TextBlock Text="{Binding Title}" Grid.Column="2" />
+								</Grid>
+							</TreeDataTemplate>
+						</TreeView.ItemTemplate>
+
+
+					</TreeView>
+				</Grid>
+			</controls:Card>
+
+
+		</Grid>
+
+		<Grid Grid.Column="1" RowDefinitions="45 *">
+			<Grid Grid.Row="0" ColumnDefinitions="Auto,24,*" Background="{StaticResource PrimaryColor}">
+				<ToggleButton Classes="ExpanderButton" Name="ExpandButton"
+						Grid.Column="0"
+						Theme="{StaticResource MaterialFlatToggleButton}"
+						Content="{avalonia:MaterialIconExt Menu}"
+						Foreground="White"
+								/>
+				
+				<TextBlock Grid.Column="2" Foreground="White" Classes="Headline6" VerticalAlignment="Center" Text="CTU Student Design" />
+			</Grid>
+
+
+			<Grid Grid.Row="1">
+				<TransitioningContentControl Content="{Binding CurrentViewModel}">
+				</TransitioningContentControl>
+			</Grid>
+
+		</Grid>
+	</Grid>
+		
+</UserControl>

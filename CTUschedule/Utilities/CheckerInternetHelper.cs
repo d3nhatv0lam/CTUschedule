@@ -69,8 +69,6 @@ namespace CTUschedule.Utilities
 
 
 
-
-
         public CheckerInternetHelper()
         {
             networkListManager = new NetworkListManager();
@@ -78,6 +76,7 @@ namespace CTUschedule.Utilities
             Guid guid = typeof(INetworkListManagerEvents).GUID;
             container.FindConnectionPoint(ref guid, out connectionPoint);
             connectionPoint.Advise(this, out cookie);
+            //First check
             IsHasInternet = IsConnectedToInternet();
         }
 
@@ -105,26 +104,6 @@ namespace CTUschedule.Utilities
             }
         }
 
-
-        // check internet when current time when call func
-        // không dùng được code này
-        //The[DllImport("Wininet.dll")]
-
-        //if(Internet Is available)Returns True
-
-        //if(Internet is not Available and Network Cable is Plugged in ) Returns True
-
-        //if(Network Cable is Not Plugged in )returns false
-
-        //So in case of[DllImport("Wininet.dll")] and NetworkInterface There is no way of knowing if internet connection is available
-
-        //[System.Runtime.InteropServices.DllImport("wininet.dll")]
-        //private extern static bool InternetGetConnectedState(out int Description, int ReservedValue);
-        //public static bool CheckNet()
-        //{
-        //    int desc;
-        //    return InternetGetConnectedState(out desc, 0);
-        //}
 
         public static bool IsConnectedToInternet()
         {

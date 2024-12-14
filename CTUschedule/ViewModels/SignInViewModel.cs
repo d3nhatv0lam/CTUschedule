@@ -101,7 +101,7 @@ namespace CTUschedule.ViewModels
             }
             else
             {
-
+                MainWindowViewModel.Instance.GoToMainHomeView();
             }
             IsLogining = false;
         }
