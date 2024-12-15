@@ -159,13 +159,14 @@ namespace Utilities
 
         public NetworkAdapter network { get; set; }
 
-       
+        private Actions actions;
 
 
 
         public HTQL_CourseCatalog()
         {
             this.HTQLWebDriver = CTU_HTQLWebDriver.Instance;
+            actions = new Actions(driver);
             InitDevtool();
         }
 
@@ -206,7 +207,8 @@ namespace Utilities
         {
             //truy cập Trang đăng ký học phần
             driver.Navigate().GoToUrl(HTQLWebDriver.MainPage);
-            var dkmh = driver.FindElement(By.XPath("//*[@id=\"page-body\"]/div[1]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[1]/td[2]/div/span/img"));
+            var dkmh = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//*[@id=\"page-body\"]/div[1]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[1]/td[2]/div/span/img")));
+            //var dkmh = driver.FindElement(By.XPath("//*[@id=\"page-body\"]/div[1]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[1]/td[2]/div/span/img"));
             dkmh.Click();
             // chờ 3s để load trang
             Thread.Sleep(3000);
@@ -216,7 +218,6 @@ namespace Utilities
 
         public void ClearAllText()
         {
-            Actions actions = new Actions(driver);
             actions.KeyDown(Keys.Control).SendKeys("a").KeyUp(Keys.Control).Build().Perform();
             actions.SendKeys(Keys.Delete).Build().Perform();
         }
@@ -240,13 +241,14 @@ namespace Utilities
             try
             {
                 var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("rc_select_2")));
+                SearchBox.Click();
+                ClearAllText();
+
                 var SearchButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//*[@id=\"root\"]/div/div/main/div/div[3]/div[1]/div/div[3]/span")));
-
-                SearchBox.Clear();
-
                 //Enter MaHocPhan
                 SearchBox.SendKeys(searchText);
                 SearchButton.Click();
+                Thread.Sleep(1000);
             }
             catch (Exception ex)
             {

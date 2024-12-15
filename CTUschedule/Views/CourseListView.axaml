@@ -12,45 +12,111 @@
              x:Class="CTUschedule.Views.CourseListView">
 
 	<Border Padding="10">
-		<Grid RowDefinitions="auto *">
-
+		<Grid RowDefinitions="auto *" Focusable="True">
 
 			<StackPanel Grid.Row="0" Orientation="Horizontal">
-
-				<TextBox
+				
+					
+					<TextBox x:Name="SearchBox"
 						UseFloatingWatermark="True"
 						Classes="outline clearButton"
 						Theme="{StaticResource OutlineTextBox}"
 						p1:TextFieldAssist.Label="Mã học phần"
 						Text="{Binding CourseName}"
 						Width="250">
-				</TextBox>
+					</TextBox>
 
-				<ScrollViewer Height="200" Width="250" VerticalScrollBarVisibility="Auto">
-						<TreeView  Width=""
-							 ItemsSource="{Binding Quickselectinfor}"
-							>
+					<Popup PlacementTarget="{Binding ElementName=SearchBox}"
+						   PlacementMode="Bottom"
+						   IsOpen="{Binding ElementName=SearchBox,Path=IsFocused}">
+						
+						<controls:Card Width="250" MaxHeight="200" VerticalAlignment="Top" Padding="0">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Theme="{StaticResource MaterialModernScrollViewer}">
+								<TreeView
+										ItemsSource="{Binding Quickselectinfor}"
+										SelectedItem="{Binding QuickSelecteditem}"
+										>
+									<TreeView.ItemTemplate>
+										<TreeDataTemplate>
+											<Grid ToolTip.Tip="{Binding label}" Margin="2 0 0 0" HorizontalAlignment="Left">
+												<StackPanel Orientation="Horizontal">
+													<TextBlock Text="{Binding value}"/>
+													<TextBlock Text=" - "/>
+													<TextBlock Text="{Binding label}"/>
+												</StackPanel>
+											</Grid>
+										</TreeDataTemplate>
+									</TreeView.ItemTemplate>
+								</TreeView>
+							</ScrollViewer>
+						</controls:Card>
+					</Popup>
 
-						<TreeView.ItemTemplate>
-							<TreeDataTemplate>
-								<Grid>
-									<TextBlock Text="{Binding value} - {Binding label}"/>
-								</Grid>
-							</TreeDataTemplate>
-						</TreeView.ItemTemplate>
 
 
-						</TreeView>
-				</ScrollViewer>
+				
 
-				<controls:FloatingButton Classes="Accent Mini" Height="40" Width="40" VerticalAlignment="Top">
+				<controls:FloatingButton Command="{Binding SearchCourseData}" Classes="Accent Mini" Height="40" Width="40" Margin="10 0 0 0" VerticalAlignment="Center">
 					<avalonia:MaterialIcon Kind="Search" Height="30" Width="30"/>
 				</controls:FloatingButton>
+
+				<StackPanel Orientation="Vertical"
+							VerticalAlignment="Center" 
+							HorizontalAlignment="Center"
+							Margin="20 0 0 0">
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="Tên Học Phần: "/>
+						<TextBlock Text="{Binding TenHocPhan}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="Mã học phần: "/>
+						<TextBlock Text="{Binding MaHocPhan}"/>
+					</StackPanel>
+
+				</StackPanel>
+
 
 			</StackPanel>
 
 			<Grid Grid.Row="1">
-				<DataGrid ></DataGrid>
+				<Border Padding="10">
+
+					<DataGrid ItemsSource="{Binding CourseList}"
+							  ColumnHeaderHeight="50"
+							  SelectionMode="Extended"
+							  
+							  
+							  IsReadOnly="True"
+							  CanUserReorderColumns="False"
+							  CanUserResizeColumns="False"
+							  CanUserSortColumns="False"
+							  GridLinesVisibility="All"
+							 
+							  >
+						<DataGrid.Styles>
+							<Style Selector="TextBlock">
+								<Setter Property="TextWrapping" Value="WrapWithOverflow" />
+								<Setter Property="VerticalAlignment" Value="Center"/>
+								<Setter Property="HorizontalAlignment" Value="Center"/>
+							</Style>
+						</DataGrid.Styles>
+						
+						<DataGrid.Columns>
+							<DataGridTextColumn Header="Thao tác"/>
+							<DataGridTextColumn Header="Nhóm" Binding="{Binding dkmh_nhom_hoc_phan_ma}"/>
+							<DataGridTextColumn Header="Thứ" Width="60" Binding="{Binding dkmh_thu_trong_tuan_ma}"/>
+							<DataGridTextColumn Header="Tín chỉ" Width="55" Binding="{Binding dkmh_tu_dien_hoc_phan_so_tin_chi}"/>
+							<DataGridTextColumn Header="Sĩ số" Width="50" Binding="{Binding dkmh_tu_dien_lop_hoc_phan_si_so}" />
+							<DataGridTextColumn Header="Sĩ số còn lại" Width="76" Binding="{Binding si_so_con_lai}"/>
+							<DataGridTextColumn Header="Tiết học"  Binding="{Binding tiet_hoc}"/>
+							<DataGridTextColumn Header="Phòng" Binding="{Binding dkmh_tu_dien_phong_hoc_ten}"/>
+							<DataGridTextColumn Header="Cán bộ giảng dạy" Binding="{Binding dkmh_tu_dien_giang_vien_ten_vn}"/>
+						</DataGrid.Columns>
+					
+					</DataGrid>
+
+				</Border>
 			</Grid>
 
 
