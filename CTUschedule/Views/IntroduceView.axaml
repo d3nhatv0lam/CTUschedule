@@ -12,8 +12,84 @@
 			 x:Class="CTUschedule.Views.IntroduceView">
 	
 	
+	
 		<Grid>
-			<TextBlock Text="Introduce" FontSize="50"/>
+			<Border Padding="10">
+				<StackPanel Orientation="Vertical">
+					<StackPanel.Styles>
+
+						<Style Selector="StackPanel">
+							<Setter Property="Margin" Value="0 5 0 0"/>
+						</Style>
+						
+						<Style Selector="TextBlock.Body2">
+							<Setter Property="Margin" Value="0 5 0 5"/>
+							<Setter Property="FontSize" Value="16"/>
+							<Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+						</Style>
+					</StackPanel.Styles>
+					
+					<TextBlock Classes="Headline5"
+								Text="Chào mừng các bạn đến với dự án của mình!"
+							   FontWeight="Bold"
+						  />
+
+					<StackPanel  Orientation="Vertical">
+						<TextBlock Classes="Headline6"
+							   Text="Danh sách các tính năng:"/>
+						<TextBlock Classes="Body2"
+								   Text="• Cho phép các bạn tìm các thời khóa biểu học phần. Chọn các nhóm học phần bạn muốn học."/>
+						<TextBlock Classes="Body2"
+								   Text="• Sử dụng các nhóm học phần bạn chọn cho việc xếp thời khóa biểu nhanh gọn, thuận tiện."/>
+						<TextBlock Classes="Body2"
+									Text="• Xuất thời khóa biểu dưới dạng ảnh PNG, dễ dàng chia sẻ."/>
+					</StackPanel>
+
+					<StackPanel  Orientation="Vertical">
+						<TextBlock Classes="Headline6"
+							   Text="Các tính năng 'Có thể sẻ phát triển': ( hên xui á các bạn :P )"/>
+						
+						<TextBlock Classes="Body2"
+									Text="• Xuất thời khóa biểu dưới dạng file Exel."/>
+						<TextBlock Classes="Body2"
+									Text="• Tự động đăng ký học phần theo thời khóa biểu bạn đã soạn."/>
+					</StackPanel>
+
+					<StackPanel Orientation="Vertical">
+						
+						<TextBlock Classes="Headline5"
+								Text="Một số điều khẳng định:"
+							   FontWeight="Bold"
+								/>
+						<TextBlock Classes="Body2" Foreground="Red"
+									Text="• Dự án không đánh cắp bất kỳ thông tin nào, mình không nhận bất kỳ thông tin cá nhân nào của người sử dụng.(Full source tại github)"/>
+						<TextBlock Classes="Body2"
+									Text="• Dự án sử dụng Selenium Chrome tạo một trình duyệt và sử dụng tài khoản sinh viên dùng cho truy cập hệ thống quản lý, truy cập thông tin học phần. Nếu không có tài khoản sinh viên thì dự án không thể lấy các nhóm học phần dùng cho sắp xếp thời khóa biểu."/>
+						<TextBlock Classes="Body2"
+										Text="• Các bạn có thể kết nối với mình ở các liên kết."/>
+
+					</StackPanel>
+					<!--// Contact Button //--> 
+					<StackPanel Orientation="Horizontal">
+
+						<controls:FloatingButton Command="{Binding OpenGithubPage}" Classes="Light" Foreground="Black" Background="White" Margin="5 0 0 5">
+							<avalonia:MaterialIcon Kind="Github" Height="50" Width="50"/>
+						</controls:FloatingButton>
+
+						<controls:FloatingButton Command="{Binding OpenFacebookPage}"  Classes="Light" Foreground="Blue"  Background="White" Margin="5 0 0 5">
+							<avalonia:MaterialIcon Kind="Facebook" Height="50" Width="50"/>
+						</controls:FloatingButton>
+
+						<controls:FloatingButton Command="{Binding OpenYoutubePage}"   Classes="Light" Foreground="Red" Background="White" Margin="5 0 0 5">
+							<avalonia:MaterialIcon Kind="Youtube" Height="50" Width="50"/>
+						</controls:FloatingButton>
+				</StackPanel>
+
+
+
+				</StackPanel>
+			</Border>
+
 		</Grid>
 		
 </UserControl>

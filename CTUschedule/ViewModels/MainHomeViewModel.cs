@@ -14,7 +14,6 @@ namespace CTUschedule.ViewModels
     public partial class MainHomeViewModel : ViewModelBase
     {
         public ObservableCollection<Node> Nodes { get; }
-        //public ObservableCollection<Node> SelectedNodes { get; }
 
         private List<ViewModelBase> PageViewModels;
         [ObservableProperty]
@@ -27,7 +26,7 @@ namespace CTUschedule.ViewModels
             get => _selectedNode;
             set
             {
-                //if (_selectedNodes == value) return;
+                if (_selectedNode == value) return;
                 _selectedNode = value;
                 ChangeView(SelectedNode);
             }

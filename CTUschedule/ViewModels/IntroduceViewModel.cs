@@ -1,54 +1,47 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CTUschedule.Models;
 
 namespace CTUschedule.ViewModels
 {
     public partial class IntroduceViewModel : ViewModelBase
     {
-        public ObservableCollection<Node> Nodes { get; }
-        //public ObservableCollection<Node> SelectedNodes { get; }
 
-        private List<ViewModelBase> PageViewModels;
-        [ObservableProperty]
-        private ViewModelBase _currentViewModel;
-
-
-        public Node _selectedNodes;
-        public Node SelectedNodes
+        private Dictionary<string, string> ContactLink = new Dictionary<string, string>()
         {
-            get => _selectedNodes;
-            set
-            {
-                if (_selectedNodes == value) return;
-                _selectedNodes = value;
-                //ChangeView(SelectedNodes);
-            }
-        }
+            { "Github", "https://github.com/d3nhatv0lam" },
+            { "Facebook", "https://www.facebook.com/profile.php?id=100088452777261"},
+            { "Youtube", "https://www.youtube.com/@ucduong9984" },
+        };
 
         public IntroduceViewModel()
         {
-            PageViewModels = new List<ViewModelBase>()
-            {
-
-            };
-            //SelectedNodes = new ObservableCollection<Node>();
-            Nodes = new ObservableCollection<Node>()
-            {
-                new Node(0,"NotebookEditOutline","Giới thiệu"),
-                new Node(1,"BookPlusOutline","Danh Mục HP"),
-                new Node(2,"Calendar","Thời khóa biểu")
-            };
+           
         }
 
-        //public void ChangeView(Node node)
-        //{
-        //    MainWindowViewModel.Instance.ChangeViewFromIndex(node.Id);
-        //}
+        [RelayCommand]
+        public void OpenGithubPage() => System.Diagnostics.Process.Start( new System.Diagnostics.ProcessStartInfo { 
+            FileName = ContactLink["Github"],
+            UseShellExecute = true,
+        });
+        [RelayCommand]
+        public void OpenFacebookPage() => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = ContactLink["Facebook"],
+            UseShellExecute = true,
+        });
+        [RelayCommand]
+        public void OpenYoutubePage() => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = ContactLink["Youtube"],
+            UseShellExecute = true,
+        });
+
+
     }
 }
