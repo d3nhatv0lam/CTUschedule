@@ -18,6 +18,8 @@ namespace CTUschedule.ViewModels
         private List<ViewModelBase> PageViewModels;
         [ObservableProperty]
         private ViewModelBase _currentViewModel;
+        [ObservableProperty]
+        private bool _isChangingView = false;
 
 
         public Node _selectedNode;
@@ -51,12 +53,22 @@ namespace CTUschedule.ViewModels
             SelectedNode = Nodes.First();
         }
 
-        private void ChangeView(Node node)
+        private async void ChangeView(Node node)
         {
+            IsChangingView = true;
             int index = node.Id;
-            if (index < 0 || index >= PageViewModels.Count) return;
+            if (index < 0 || index >= PageViewModels.Count)
+            {
+                IsChangingView = false;
+                return;
+            }
             CurrentViewModel = PageViewModels[index];
 
+            if (CurrentViewModel is CourseListViewModel viewModel)
+            {
+                await Task.Run(() => viewModel.Init());
+            }
+            IsChangingView = false;
         }
     }
 }

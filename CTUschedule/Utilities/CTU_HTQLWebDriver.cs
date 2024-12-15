@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using OpenQA.Selenium.DevTools.V85.Network;
 using System.Threading;
 using System.IO;
+using OpenQA.Selenium.Interactions;
 
 namespace Utilities
 {
@@ -40,7 +41,7 @@ namespace Utilities
         private void AssignWebDriver()
         {
             options = new ChromeOptions();
-            options.AddArgument("--headless");
+            //options.AddArgument("--headless");
             var chromeDriverService = ChromeDriverService.CreateDefaultService();
             chromeDriverService.HideCommandPromptWindow = true;
             driver = new ChromeDriver(chromeDriverService, options);
@@ -142,7 +143,8 @@ namespace Utilities
 
     public class HTQL_CourseCatalog
     {
-      
+        public static HTQL_CourseCatalog Instance;
+
         private CTU_HTQLWebDriver HTQLWebDriver;
 
         public IWebDriver driver
@@ -150,55 +152,106 @@ namespace Utilities
             get => HTQLWebDriver.driver;
         }
 
+        private WebDriverWait wait
+        {
+            get => HTQLWebDriver.wait;
+        }
+
+        public NetworkAdapter network { get; set; }
+
+       
+
+
 
         public HTQL_CourseCatalog()
         {
             this.HTQLWebDriver = CTU_HTQLWebDriver.Instance;
+            InitDevtool();
         }
 
-        public async void CourseCatalog()
+        private async void InitDevtool()
         {
             var devTools = driver as IDevTools;
             var session = devTools.GetDevToolsSession();
-            var network = new NetworkAdapter(session);
+            network = new NetworkAdapter(session);
             var enableNetworkTask = network.Enable(new EnableCommandSettings());
             await enableNetworkTask;
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+            //network.ResponseReceived += async (sender, e) =>
+            //{
+            //    // Kiểm tra nếu nội dung phản hồi là JSON
+            //    if (e.Response.MimeType == "application/json")
+            //    {
+            //        try
+            //        {
+            //            var responseBody = await network.GetResponseBody(new GetResponseBodyCommandSettings { RequestId = e.RequestId });
+            //            //Console.WriteLine($"Response URL: {e.Response.Url}");
+            //            //Console.WriteLine($"Response Status: {e.Response.Status}");
+            //            //Console.WriteLine($"Response Headers: {string.Join(", ", e.Response.Headers)}");
+            //            //Console.WriteLine($"Response Body: {responseBody.Body}");
+            //            //File.WriteAllText($@"E:\hello.json", responseBody.Body);
+            //            ResponseData = responseBody.Body;
+
+            //            //Debug.WriteLine(ResponseData);
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            //Debug.WriteLine(ex.Message);
+            //        }
+            //    }
+            //};
+        }
+
+        public void NavigateToCourseCatalog()
+        {
+            //truy cập Trang đăng ký học phần
+            driver.Navigate().GoToUrl(HTQLWebDriver.MainPage);
+            var dkmh = driver.FindElement(By.XPath("//*[@id=\"page-body\"]/div[1]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[1]/td[2]/div/span/img"));
+            dkmh.Click();
+            // chờ 3s để load trang
+            Thread.Sleep(3000);
+            // nảy tới trang catalog
+            driver.Navigate().GoToUrl(HTQLWebDriver.CourseCatalogPage);
+        }
+
+        public void ClearAllText()
+        {
+            Actions actions = new Actions(driver);
+            actions.KeyDown(Keys.Control).SendKeys("a").KeyUp(Keys.Control).Build().Perform();
+            actions.SendKeys(Keys.Delete).Build().Perform();
+        }
+
+        public void QuickSearch(string searchText)
+        {
             try
             {
-                network.ResponseReceived += async (sender, e) => 
-                { 
-                    // Kiểm tra nếu nội dung phản hồi là JSON
-                    if (e.Response.MimeType == "application/json") 
-                    { 
-                        var responseBody = await network.GetResponseBody(new GetResponseBodyCommandSettings { RequestId = e.RequestId }); 
-                        Console.WriteLine($"Response URL: {e.Response.Url}");
-                        Console.WriteLine($"Response Status: {e.Response.Status}"); 
-                        Console.WriteLine($"Response Headers: {string.Join(", ", e.Response.Headers)}"); 
-                        Console.WriteLine($"Response Body: {responseBody.Body}");
-                        File.WriteAllText(@"E:\hello.json", responseBody.Body);
-                    }
-                };
-                //truy cập Trang đăng ký học phần
-                driver.Navigate().GoToUrl(HTQLWebDriver.MainPage);
-                var dkmh = driver.FindElement(By.XPath("//*[@id=\"page-body\"]/div[1]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[1]/td[2]/div/span/img"));
-                dkmh.Click();
-                // chờ 3s để load trang
-                Thread.Sleep(3000);
-                // nảy tới trang TKB
-                driver.Navigate().GoToUrl(HTQLWebDriver.CourseCatalogPage);
-                
+                var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("rc_select_2")));
+                ClearAllText();
+                SearchBox.SendKeys(searchText);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
 
+        public async void Search(string searchText)
+        {
+            try
+            {
                 var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("rc_select_2")));
                 var SearchButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//*[@id=\"root\"]/div/div/main/div/div[3]/div[1]/div/div[3]/span")));
 
+                SearchBox.Clear();
+
                 //Enter MaHocPhan
-                SearchBox.SendKeys("TC020");
+                SearchBox.SendKeys(searchText);
                 SearchButton.Click();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Có lỗi xảy ra: " + ex.Message);
+                //Debug.WriteLine("Có lỗi xảy ra: " + ex.Message);
+                driver.Navigate().Refresh();
             }
 
         }

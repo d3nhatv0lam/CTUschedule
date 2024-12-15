@@ -12,6 +12,13 @@ namespace CTUschedule.Models
         public int code { get; set; }
         public string msg { get; set; }
 
+        [JsonProperty("data")]
+        public CourseData data { get; set; }
+    }
+
+    public class CourseData
+    {
+        [JsonProperty("data")]
         public List<CourseInformation> data { get; set; }
     }
 

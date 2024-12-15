@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
 			  d:DesignWidth="1000" d:DesignHeight="600"
 			  xmlns:vm="using:CTUschedule.ViewModels"
 			  x:DataType="vm:MainHomeViewModel"
@@ -25,19 +25,44 @@
 		<Style Selector="Grid.Open">
 			<Setter Property="Width" Value="200"/>
 		</Style>
+
+		<Style Selector="controls|Card">
+			<Setter Property="Transitions">
+				<Transitions>
+					<DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="QuarticEaseInOut"/>
+				</Transitions>
+			</Setter>
+		</Style>
+
+		<Style Selector="Grid.ChangeViewScreen">
+			<Setter Property="IsVisible" Value="False"/>
+			<Setter Property="Opacity" Value="0"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="QuarticEaseInOut"/>
+				</Transitions>
+			</Setter>
+		</Style>
+
+		<Style Selector="Grid.Loading">
+			<Setter Property="IsVisible" Value="True"/>
+			<Setter Property="Opacity" Value="0.3"/>
+		</Style>
+
 	</UserControl.Styles>
 
-	<Grid ColumnDefinitions="auto *">
 
 
-		<Grid Classes="ExpanderTab"
-			  Classes.Open="{Binding ElementName=ExpandButton,Path=IsChecked}"
-				Grid.Column="0">
-
-
-			<controls:Card Classes="ChildDemo">
-
-				<Grid RowDefinitions="Auto, *">
+	<Grid>
+		<Grid ColumnDefinitions="auto *">
+	
+			<!--// expander tab //-->
+			<Grid Classes="ExpanderTab"
+				  Classes.Open="{Binding ElementName=ExpandButton,Path=IsChecked}"
+					Grid.Column="0">
+				
+				<controls:Card Classes="ChildDemo">
+					<Grid RowDefinitions="Auto, *">
 
 						<Grid Grid.Row="0">
 							<StackPanel Orientation="Vertical">
@@ -46,48 +71,59 @@
 
 							</StackPanel>
 						</Grid>
-					
-					<TreeView Grid.Row="1"
-							  ItemsSource="{Binding Nodes}"
-							  SelectedItem="{Binding SelectedNode , Mode=TwoWay}">
 
-						<TreeView.ItemTemplate>
-							<TreeDataTemplate ItemsSource="{Binding SubNodes}">
+						<TreeView Grid.Row="1"
+								  ItemsSource="{Binding Nodes}"
+								  SelectedItem="{Binding SelectedNode , Mode=TwoWay}">
 
-								<Grid ColumnDefinitions="Auto, 8, *">
-									<avalonia:MaterialIcon Kind="{Binding ImageKind}" />
-									<TextBlock Text="{Binding Title}" Grid.Column="2" />
-								</Grid>
-							</TreeDataTemplate>
-						</TreeView.ItemTemplate>
+							<TreeView.ItemTemplate>
+								<TreeDataTemplate ItemsSource="{Binding SubNodes}">
+
+									<Grid ColumnDefinitions="Auto, 8, *">
+										<avalonia:MaterialIcon Kind="{Binding ImageKind}" />
+										<TextBlock Text="{Binding Title}" Grid.Column="2" />
+									</Grid>
+								</TreeDataTemplate>
+							</TreeView.ItemTemplate>
 
 
-					</TreeView>
+						</TreeView>
+					</Grid>
+				</controls:Card>
+			</Grid>
+			
+			<!--// main status line //-->
+			<Grid Grid.Column="1" RowDefinitions="45 *">
+				<Grid Grid.Row="0" ColumnDefinitions="Auto,24,*" Background="{StaticResource PrimaryColor}">
+					<ToggleButton Classes="ExpanderButton" Name="ExpandButton"
+							Grid.Column="0"
+							Theme="{StaticResource MaterialFlatToggleButton}"
+							Content="{avalonia:MaterialIconExt Menu}"
+							Foreground="White"
+								/>
+
+					<TextBlock Grid.Column="2" Foreground="White" Classes="Headline6" VerticalAlignment="Center" Text="CTU Student Design" />
 				</Grid>
+
+
+				<Grid Grid.Row="1">
+					<TransitioningContentControl Content="{Binding CurrentViewModel}">
+					</TransitioningContentControl>
+				</Grid>
+
+			</Grid>
+		</Grid>
+
+		<!--// Changeview animation //-->
+		<Grid Classes="ChangeViewScreen" Classes.Loading="{Binding IsChangingView}" Background="Black"/>
+		<controls:Card Opacity="{Binding IsChangingView}" Height="100" Width="100" CornerRadius="50" Padding="4" Margin="4"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center">
+				<ProgressBar Height="80" Width="80" Classes="circular" IsIndeterminate="True" />
 			</controls:Card>
 
-
-		</Grid>
-
-		<Grid Grid.Column="1" RowDefinitions="45 *">
-			<Grid Grid.Row="0" ColumnDefinitions="Auto,24,*" Background="{StaticResource PrimaryColor}">
-				<ToggleButton Classes="ExpanderButton" Name="ExpandButton"
-						Grid.Column="0"
-						Theme="{StaticResource MaterialFlatToggleButton}"
-						Content="{avalonia:MaterialIconExt Menu}"
-						Foreground="White"
-								/>
-				
-				<TextBlock Grid.Column="2" Foreground="White" Classes="Headline6" VerticalAlignment="Center" Text="CTU Student Design" />
-			</Grid>
-
-
-			<Grid Grid.Row="1">
-				<TransitioningContentControl Content="{Binding CurrentViewModel}">
-				</TransitioningContentControl>
-			</Grid>
-
-		</Grid>
 	</Grid>
-		
+
+
+
 </UserControl>
