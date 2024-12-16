@@ -81,15 +81,21 @@
 					Margin="0 0 15 0"
 					HorizontalAlignment="Right" 
 					Content="Lưu nhóm HP" 
-					ToolTip.Tip="Button with classes &quot;Accent&quot;" />
+					ToolTip.Tip="Click -> thêm các nhóm học phần cần vào dach sách sắp xếp TKB" />
 
-
+			<CheckBox Content="ẩn học phần hết slot"
+					  Classes="accent" 
+					  IsChecked="{Binding IsHideOutOfSlot}"
+					  p1:SelectionControlAssist.Size="22" 
+					  HorizontalAlignment="Right"
+					  VerticalAlignment="Bottom"
+					  Margin="0 0 140 0"/>
+			
 			<Grid Grid.Row="1">
 				<Border Padding="10">
 
 					<DataGrid 
-								
-							  ItemsSource="{Binding CourseList}"
+							  ItemsSource="{Binding FilterCourseList}"
 							  ColumnHeaderHeight="50"
 							  SelectionMode="Extended"
 							 

@@ -40,6 +40,7 @@ namespace CTUschedule.ViewModels
             {
                 new IntroduceViewModel(),
                 new CourseListViewModel(),
+                new ScheduleViewModel(),
             };
 
             CurrentViewModel = PageViewModels.First();

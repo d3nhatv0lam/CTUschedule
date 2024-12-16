@@ -15,6 +15,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Collections;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Threading;
+using CTUschedule.Resources.Dialogs;
 
 namespace CTUschedule.ViewModels
 {
@@ -24,7 +26,6 @@ namespace CTUschedule.ViewModels
         private HTQL_CourseCatalog courseCatalog;
 
         private string _courseName;
-
         public string CourseName
         {
             get => _courseName;
@@ -47,6 +48,20 @@ namespace CTUschedule.ViewModels
         private string _tenHocPhan = "";
         [ObservableProperty]
         private string _maHocPhan = "";
+
+        private bool _isHideOutOfSlot = false;
+
+        public bool IsHideOutOfSlot
+        {
+            get => _isHideOutOfSlot;
+            set
+            {
+                if (_isHideOutOfSlot == value) return;
+                _isHideOutOfSlot = value;
+                OnPropertyChanged(nameof(IsHideOutOfSlot));
+                ReloadFilterDatagid();
+            }
+        }
 
         // Môn đã được chọn nhanh
         [ObservableProperty]
@@ -73,12 +88,36 @@ namespace CTUschedule.ViewModels
             {
                 if (_courseList == value) return;
                 _courseList= value;
-                OnPropertyChanged(nameof(CourseList));
+                ReloadFilterDatagid();
             }
         }
 
+        [ObservableProperty]
+        private ObservableCollection<CourseInformation> _filterCourseList = new ObservableCollection<CourseInformation>();
 
-        private List<CourseInformation> SelectedCourseList = new List<CourseInformation>();
+        public ObservableCollection<CourseNode> SelectedCourseList = new ObservableCollection<CourseNode>();
+
+        private event EventHandler _courseListUpdate;
+
+        public event EventHandler CourseListUpdate
+        {
+            add
+            {
+                _courseListUpdate += value;
+            }
+            remove
+            {
+                _courseListUpdate -= value;
+            }
+        }
+
+        public void OnCourseListUpdate()
+        {
+            if (_courseListUpdate != null)
+            {
+                _courseListUpdate(this, new EventArgs());
+            }
+        }
 
         public CourseListViewModel() 
         {
@@ -128,6 +167,15 @@ namespace CTUschedule.ViewModels
             }
         }
 
+        private void ReloadFilterDatagid()
+        {
+            if (IsHideOutOfSlot == true)
+            {
+                FilterCourseList = new ObservableCollection<CourseInformation>(CourseList.Where(course => course.si_so_con_lai != 0));
+            }
+            else FilterCourseList = CourseList;
+        }
+
         [RelayCommand]
         public void SearchCourseData()
         {
@@ -146,25 +194,55 @@ namespace CTUschedule.ViewModels
         [RelayCommand]
         public void SaveCourseData()
         {
-            // get All học phần đã chọn
-            for (int i = 0; i < CourseList.Count; i++)
+            
+            ObservableCollection<CourseNode> subNode = new ObservableCollection<CourseNode>();
+            //// get All học phần đã chọn vào 1 subnode
+            for (int i = 0; i < FilterCourseList.Count; i++)
             {
-                if (!CourseList[i].IsSelected) continue;
-                
-                for (int j = 0; j < CourseList.Count; j++)
+                if (!FilterCourseList[i].IsSelected) continue;
+
+                for (int j = 0; j < FilterCourseList.Count; j++)
                 {
-                    if (CourseList[i].dkmh_nhom_hoc_phan_ma == CourseList[j].dkmh_nhom_hoc_phan_ma)
-                        SelectedCourseList.Add(CourseList[j]);
+                    if (FilterCourseList[i].dkmh_nhom_hoc_phan_ma == FilterCourseList[j].dkmh_nhom_hoc_phan_ma)
+                    {
+                        subNode.Add(new CourseNode(FilterCourseList[j]));
+                        FilterCourseList[j].IsSelected = false;
+                    }
                     else continue;
                 }
             }
-            //SelectedCourseList = CourseList.Where(Course => Course.IsSelected == true).ToList();
-            Debug.WriteLine(SelectedCourseList.Count);
+            if (subNode.Count == 0) return;
+
+            // tim các dữ liệu đã lưu xem đã từng lưu chưa?
+            bool IsChanged = false;
+            for (int i = 0; i < SelectedCourseList.Count; i++)
+            {
+                // đã có thì update cái mới đè lên
+                if (SelectedCourseList[i].MaHocPhan == subNode.First().Course.dkmh_tu_dien_hoc_phan_ma)
+                {
+
+                    SelectedCourseList[i] = new CourseNode(MaHocPhan, TenHocPhan, subNode);
+                    IsChanged = true; break;
+                }
+            }
+            // chưa lưu thì lưu
+            if (!IsChanged) SelectedCourseList.Add(new CourseNode(MaHocPhan, TenHocPhan, subNode));
+
+            // gọi trang lịch tkb update
+            OnCourseListUpdate();
+
+            INotificationPopup SuccessPopup = new NotificationPopupController(NotificationPopupController.Type.Succes, "Thêm Nhóm thành Công!", "Bạn đã có thể thêm vào thời khóa biểu");
+            SuccessPopup.ShowNotification();
         }
 
         public void Init()
         {
-            CourseName = String.Empty;
+            CourseName = MaHocPhan = TenHocPhan = String.Empty;
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                CourseList.Clear();
+                FilterCourseList.Clear();
+            });
             courseCatalog.NavigateToCourseCatalog();
         }
     }
