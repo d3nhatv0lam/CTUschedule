@@ -36,7 +36,7 @@ namespace CTUschedule.ViewModels
                 OnPropertyChanged(nameof(CourseName));
                 if (String.IsNullOrEmpty(_courseName))
                 {
-                    Quickselectinfor.Clear();
+                    QuickselectList.Clear();
                     return;
                 }
                 courseCatalog.QuickSearch(CourseName);
@@ -48,8 +48,9 @@ namespace CTUschedule.ViewModels
         [ObservableProperty]
         private string _maHocPhan = "";
 
+        // Môn đã được chọn nhanh
         [ObservableProperty]
-        private ObservableCollection<QuickselectInformation> _quickselectinfor = new ObservableCollection<QuickselectInformation>();
+        private ObservableCollection<QuickselectInformation> _quickselectList = new ObservableCollection<QuickselectInformation>();
 
         private QuickselectInformation _quickSelecteditem;
         public QuickselectInformation QuickSelecteditem
@@ -61,7 +62,7 @@ namespace CTUschedule.ViewModels
                 CourseName = value.value;
             }
         }
-        // Môn đã được chọn nhanh
+        
 
         private ObservableCollection<CourseInformation> _courseList = new ObservableCollection<CourseInformation>();
 
@@ -76,6 +77,8 @@ namespace CTUschedule.ViewModels
             }
         }
 
+
+        private List<CourseInformation> SelectedCourseList = new List<CourseInformation>();
 
         public CourseListViewModel() 
         {
@@ -107,7 +110,7 @@ namespace CTUschedule.ViewModels
                     try
                     {
                         var quickslect =  JsonConvert.DeserializeObject<QuickSelectData>(responseBody.Body);
-                        Quickselectinfor = new ObservableCollection<QuickselectInformation>(quickslect.data.dkmh_tu_dien_hoc_phan_ma_auto_complete);
+                        QuickselectList = new ObservableCollection<QuickselectInformation>(quickslect.data.dkmh_tu_dien_hoc_phan_ma_auto_complete);
                     }   
                     catch
                     {
@@ -138,6 +141,25 @@ namespace CTUschedule.ViewModels
                 TenHocPhan = CourseList.First().dkmh_tu_dien_hoc_phan_ten_vn;
                 MaHocPhan = CourseName;
             }
+        }
+
+        [RelayCommand]
+        public void SaveCourseData()
+        {
+            // get All học phần đã chọn
+            for (int i = 0; i < CourseList.Count; i++)
+            {
+                if (!CourseList[i].IsSelected) continue;
+                
+                for (int j = 0; j < CourseList.Count; j++)
+                {
+                    if (CourseList[i].dkmh_nhom_hoc_phan_ma == CourseList[j].dkmh_nhom_hoc_phan_ma)
+                        SelectedCourseList.Add(CourseList[j]);
+                    else continue;
+                }
+            }
+            //SelectedCourseList = CourseList.Where(Course => Course.IsSelected == true).ToList();
+            Debug.WriteLine(SelectedCourseList.Count);
         }
 
         public void Init()

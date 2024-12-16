@@ -16,7 +16,6 @@
 
 			<StackPanel Grid.Row="0" Orientation="Horizontal">
 				
-					
 					<TextBox x:Name="SearchBox"
 						UseFloatingWatermark="True"
 						Classes="outline clearButton"
@@ -25,7 +24,8 @@
 						Text="{Binding CourseName}"
 						Width="250">
 					</TextBox>
-
+						
+				<!--// quick search //-->
 					<Popup PlacementTarget="{Binding ElementName=SearchBox}"
 						   PlacementMode="Bottom"
 						   IsOpen="{Binding ElementName=SearchBox,Path=IsFocused}">
@@ -33,7 +33,7 @@
 						<controls:Card Width="250" MaxHeight="200" VerticalAlignment="Top" Padding="0">
 							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Theme="{StaticResource MaterialModernScrollViewer}">
 								<TreeView
-										ItemsSource="{Binding Quickselectinfor}"
+										ItemsSource="{Binding QuickselectList}"
 										SelectedItem="{Binding QuickSelecteditem}"
 										>
 									<TreeView.ItemTemplate>
@@ -52,14 +52,12 @@
 						</controls:Card>
 					</Popup>
 
-
-
-				
-
 				<controls:FloatingButton Command="{Binding SearchCourseData}" Classes="Accent Mini" Height="40" Width="40" Margin="10 0 0 0" VerticalAlignment="Center">
 					<avalonia:MaterialIcon Kind="Search" Height="30" Width="30"/>
 				</controls:FloatingButton>
-
+			
+				
+				<!--// thông tin học phần //-->
 				<StackPanel Orientation="Vertical"
 							VerticalAlignment="Center" 
 							HorizontalAlignment="Center"
@@ -73,25 +71,33 @@
 						<TextBlock Text="Mã học phần: "/>
 						<TextBlock Text="{Binding MaHocPhan}"/>
 					</StackPanel>
-
 				</StackPanel>
 
-
 			</StackPanel>
+			
+			<Button Grid.Row="0" 
+					Classes="accent" 
+					Command="{Binding SaveCourseData}"
+					Margin="0 0 15 0"
+					HorizontalAlignment="Right" 
+					Content="Lưu nhóm HP" 
+					ToolTip.Tip="Button with classes &quot;Accent&quot;" />
+
 
 			<Grid Grid.Row="1">
 				<Border Padding="10">
 
-					<DataGrid ItemsSource="{Binding CourseList}"
+					<DataGrid 
+								
+							  ItemsSource="{Binding CourseList}"
 							  ColumnHeaderHeight="50"
 							  SelectionMode="Extended"
-							  
-							  
+							 
 							  IsReadOnly="True"
 							  CanUserReorderColumns="False"
 							  CanUserResizeColumns="False"
 							  CanUserSortColumns="False"
-							  GridLinesVisibility="All"
+							   
 							 
 							  >
 						<DataGrid.Styles>
@@ -100,18 +106,30 @@
 								<Setter Property="VerticalAlignment" Value="Center"/>
 								<Setter Property="HorizontalAlignment" Value="Center"/>
 							</Style>
+	
+							<Style Selector="DataGrid#MyDataGrid DataGridRow">
+								
+							</Style>
 						</DataGrid.Styles>
 						
 						<DataGrid.Columns>
-							<DataGridTextColumn Header="Thao tác"/>
-							<DataGridTextColumn Header="Nhóm" Binding="{Binding dkmh_nhom_hoc_phan_ma}"/>
-							<DataGridTextColumn Header="Thứ" Width="60" Binding="{Binding dkmh_thu_trong_tuan_ma}"/>
-							<DataGridTextColumn Header="Tín chỉ" Width="55" Binding="{Binding dkmh_tu_dien_hoc_phan_so_tin_chi}"/>
-							<DataGridTextColumn Header="Sĩ số" Width="50" Binding="{Binding dkmh_tu_dien_lop_hoc_phan_si_so}" />
-							<DataGridTextColumn Header="Sĩ số còn lại" Width="76" Binding="{Binding si_so_con_lai}"/>
+							
+							<DataGridTemplateColumn Header="Chọn">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<CheckBox Classes="accent" IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							
+							<DataGridTextColumn Header="Nhóm" MinWidth="75" Binding="{Binding dkmh_nhom_hoc_phan_ma}"/>
+							<DataGridTextColumn Header="Thứ" MinWidth="60" Binding="{Binding dkmh_thu_trong_tuan_ma}"/>
+							<DataGridTextColumn Header="Tín chỉ" MinWidth="55" Binding="{Binding dkmh_tu_dien_hoc_phan_so_tin_chi}"/>
+							<DataGridTextColumn Header="Sĩ số" MinWidth="50" Width="0.3*" Binding="{Binding dkmh_tu_dien_lop_hoc_phan_si_so}" />
+							<DataGridTextColumn Header="Sĩ số còn lại" MinWidth="76" Width="0.5*" Binding="{Binding si_so_con_lai}"/>
 							<DataGridTextColumn Header="Tiết học"  Binding="{Binding tiet_hoc}"/>
 							<DataGridTextColumn Header="Phòng" Binding="{Binding dkmh_tu_dien_phong_hoc_ten}"/>
-							<DataGridTextColumn Header="Cán bộ giảng dạy" Binding="{Binding dkmh_tu_dien_giang_vien_ten_vn}"/>
+							<DataGridTextColumn Header="Cán bộ giảng dạy" MinWidth="145" Width="*" Binding="{Binding dkmh_tu_dien_giang_vien_ten_vn}"/>
 						</DataGrid.Columns>
 					
 					</DataGrid>

@@ -24,6 +24,9 @@ namespace CTUschedule.Models
 
     public class CourseInformation
     {
+        [JsonIgnore]
+        [JsonProperty(Required = Required.Default)]
+        public bool IsSelected { get; set; } = false;
         public int key { get; set; }
         public string dkmh_tu_dien_hoc_phan_ma {  get; set; }
         public string dkmh_nhom_hoc_phan_ma { get; set; }
