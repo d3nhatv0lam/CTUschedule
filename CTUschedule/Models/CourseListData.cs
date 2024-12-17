@@ -37,7 +37,7 @@ namespace CTUschedule.Models
         public string dkmh_tu_dien_giang_vien_ten_vn { get; set; }
         public string dkmh_tu_dien_giang_vien_email { get; set; }
         public int dkmh_tu_dien_lop_hoc_phan_si_so {  get; set; }
-        public int si_so_con_lai { get; set; }
+        public int? si_so_con_lai { get; set; }
         public string tiet_hoc { get; set; }
 
         [JsonProperty("tuanhoc-1")]

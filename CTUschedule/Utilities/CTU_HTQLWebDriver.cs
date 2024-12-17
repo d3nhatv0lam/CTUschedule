@@ -243,10 +243,12 @@ namespace Utilities
                 var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("rc_select_2")));
                 SearchBox.Click();
                 ClearAllText();
-
-                var SearchButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//*[@id=\"root\"]/div/div/main/div/div[3]/div[1]/div/div[3]/span")));
-                //Enter MaHocPhan
+                //Enter MaHocPhan     
                 SearchBox.SendKeys(searchText);
+
+
+                var SearchButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"root\"]/div/div/main/div[3]/div[1]/div[1]/div/div[3]/span")));
+      
                 SearchButton.Click();
                 Thread.Sleep(1000);
             }

@@ -70,7 +70,7 @@ namespace CTUschedule.ViewModels
 
             if (CurrentViewModel is CourseListViewModel viewModel)
             {
-                //await Task.Run(() => viewModel.Init());
+                await Task.Run(() => viewModel.Init());
             }
             IsChangingView = false;
         }

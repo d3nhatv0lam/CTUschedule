@@ -17,7 +17,10 @@ namespace CTUschedule.Models
 
         public ObservableCollection<CourseNode>? SubNodes { get; } = new ObservableCollection<CourseNode>();
 
-        public CourseInformation? Course { get; set; } = new CourseInformation();
+        public CourseInformation? Course { get; set; } = new CourseInformation()
+        {
+            si_so_con_lai = null,
+        };
 
         public CourseNode(string maHocPhan, string tenHocPhan)
         {

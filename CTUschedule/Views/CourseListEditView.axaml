@@ -8,54 +8,134 @@
 			 xmlns:model="using:CTUschedule.Models"
              x:DataType="vm:CourseListEditViewModel"
 			 
+			 xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
 			 xmlns:p1="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
 			 xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
 			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              
              x:Class="CTUschedule.Views.CourseListEditView">
 			 
-	<Grid>
-		<TreeView ItemsSource="{Binding CourseNodes}" >
-			<TreeView.Styles>
-				<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
-					<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-				</Style>
-			</TreeView.Styles>
+	<dialogHost:DialogHost IsOpen="{Binding IsOpenDialog}" CloseOnClickAway="True" 
+						  >
+        <dialogHost:DialogHost.DialogContent>
+            <!-- put your dialog content here-->
+			
+				<controls:Card  MinWidth="240" Width="350" Height="100" VerticalAlignment="Top">
+					<Grid RowDefinitions="*, Auto">
+						<StackPanel Grid.Row="0" Margin="0,4">
+							<TextBlock Classes="Headline6" Text="Xác nhận xóa các học phần đã chọn" />
+						
+						</StackPanel>
+						<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
 
-			<TreeView.ItemTemplate>
-				<TreeDataTemplate ItemsSource="{Binding SubNodes}">
+							<Button Theme="{StaticResource MaterialFlatButton}"
+									IsDefault="True"
+									Classes="accent" 
+									Content="Xác nhận" 
+									Command="{Binding CloseDialog}"
+									CommandParameter="true"
+									/>
+							<Button Theme="{StaticResource MaterialFlatButton}"
+									Classes="accent" 
+									IsCancel="True"
+									Content="Hủy"
+									Command="{Binding CloseDialog}"
+									CommandParameter="false"
+									Foreground="Red"/>
+						</StackPanel>
+					</Grid>
+				</controls:Card>
+			
+		
+        </dialogHost:DialogHost.DialogContent>
+       
+		<Border Padding="10">
+		
+		<Grid RowDefinitions="auto *">
+			
+			<Grid Grid.Row="0">
+				<Grid.Styles>
+					<Style Selector="controls|FloatingButton">
+						<Setter Property="HorizontalAlignment" Value="Right"/>
+						<Style Selector="^ > StackPanel > TextBlock">
+								<Setter Property="IsVisible" Value="False"/>
+							</Style>
+						<Setter Property="Transitions">
+							<Transitions>
+								<DoubleTransition Property="Width" Duration="0:0:0.3" Easing="QuarticEaseInOut"/>
+							</Transitions>
+						</Setter>
 					
+						<Style Selector="^:pointerover">
+							<Setter Property="Width" Value="180"/>
+							<Style Selector="^ > StackPanel > TextBlock">
+								<Setter Property="IsVisible" Value="True"/>
+							</Style>
+						</Style>
+					</Style>
+				</Grid.Styles>
+
+				<controls:FloatingButton Classes="Accent"
+										 Command="{Binding OpenDialogCommand}">
+					<StackPanel Orientation="Horizontal">
+						<avalonia:MaterialIcon Kind="CloseThick" Height="25" Width="25"/>
+						<TextBlock Text="Xóa nhóm học phần" VerticalAlignment="Center">
+						</TextBlock>
+					</StackPanel>
+				</controls:FloatingButton>
+			</Grid>
+			
+		
+		  <ScrollViewer Grid.Row="1" 
+						HorizontalScrollBarVisibility="Disabled" 
+						VerticalScrollBarVisibility="Auto" 
+						Theme="{StaticResource MaterialModernScrollViewer}">
+		  
+				<TreeView ItemsSource="{Binding CourseNodes}" >
+				<TreeView.Styles>
+					<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
+						<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+					</Style>
+				</TreeView.Styles>
+
+				<TreeView.ItemTemplate>
+					<TreeDataTemplate ItemsSource="{Binding SubNodes}">
 					
-						<Grid ColumnDefinitions="Auto, 50, 8,Auto,8, *" >
-							<Grid.Styles>
-								<Style Selector="TextBlock">
-									<Setter Property="VerticalAlignment" Value="Center"/>
-								</Style>		
-							</Grid.Styles>
+							<Grid ColumnDefinitions="Auto, 50, 8,Auto,8, *" >
+								<Grid.Styles>
+									<Style Selector="TextBlock">
+										<Setter Property="VerticalAlignment" Value="Center"/>
+									</Style>		
+								</Grid.Styles>
 							
-							<CheckBox
-								Grid.Column="0" 
-								Classes="accent" 
-								IsChecked="{Binding Course.IsSelected , UpdateSourceTrigger=PropertyChanged}"
-								Command="{Binding ((vm:CourseListEditViewModel)DataContext).Selected_UnSelectItemCommand , RelativeSource={RelativeSource AncestorType=views:CourseListEditView}}"
-								CommandParameter="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"/>
+								<CheckBox
+									Grid.Column="0" 
+									Classes="accent" 
+									IsChecked="{Binding Course.IsSelected , UpdateSourceTrigger=PropertyChanged}"
+									Command="{Binding ((vm:CourseListEditViewModel)DataContext).Selected_UnSelectItemCommand , RelativeSource={RelativeSource AncestorType=views:CourseListEditView}}"
+									CommandParameter="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"/>
 							
-							<TextBlock Text="{Binding MaHocPhan}" Grid.Column="3"/>
-							<TextBlock Text="{Binding TenHocPhan}" Grid.Column="5" />
+								<TextBlock Text="{Binding MaHocPhan}" Grid.Column="1"/>
+								<TextBlock Text="{Binding TenHocPhan}" Grid.Column="5" />
 						
-							<TextBlock Text="{Binding Course.dkmh_nhom_hoc_phan_ma}" Grid.Column="1" ToolTip.Tip="Nhóm học phần"/>
-							<TextBlock Text="{Binding Course.si_so_con_lai}" Grid.Column="3" ToolTip.Tip="sĩ số còn lại"/>
+								<TextBlock Text="{Binding Course.dkmh_nhom_hoc_phan_ma}" Grid.Column="1" ToolTip.Tip="Nhóm học phần"/>
+								<TextBlock Text="{Binding Course.si_so_con_lai}" Grid.Column="3" ToolTip.Tip="sĩ số còn lại"/>
 						
-							<TextBlock Text="{Binding Course.dkmh_tu_dien_giang_vien_ten_vn}" Grid.Column="5"/>
-						</Grid>
+								<TextBlock Text="{Binding Course.dkmh_tu_dien_giang_vien_ten_vn}" Grid.Column="5"/>
+							</Grid>
 				
-				</TreeDataTemplate>
+					</TreeDataTemplate>
+				</TreeView.ItemTemplate>
+			</TreeView>
+		  </ScrollViewer>
 			
-			
-			</TreeView.ItemTemplate>
-			
-			
-		</TreeView>
-	</Grid>
+		</Grid>
+		
+	</Border>
+		
+    </dialogHost:DialogHost>
+		
+	
+	
 		
 </UserControl>
