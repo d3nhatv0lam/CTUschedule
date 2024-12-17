@@ -26,7 +26,7 @@ namespace CTUschedule.ViewModels
             Instance = this;
             CheckerInternetAssign();
 
-            PageViewModels.Add(new SignInViewModel());
+            //PageViewModels.Add(new SignInViewModel());
             PageViewModels.Add(new MainHomeViewModel());
 
             CurrentViewModel = PageViewModels.First();

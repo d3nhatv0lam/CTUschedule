@@ -13,9 +13,11 @@ namespace CTUschedule.Models
         public string MaHocPhan { get; }
         public string TenHocPhan { get; }
 
-        public ObservableCollection<CourseNode>? SubNodes { get; }
+        public bool IsExpanded { get; set; } = false;
 
-        public CourseInformation? Course { get; }
+        public ObservableCollection<CourseNode>? SubNodes { get; } = new ObservableCollection<CourseNode>();
+
+        public CourseInformation? Course { get; set; } = new CourseInformation();
 
         public CourseNode(string maHocPhan, string tenHocPhan)
         {

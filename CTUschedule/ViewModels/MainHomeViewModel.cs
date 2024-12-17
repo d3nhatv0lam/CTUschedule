@@ -15,7 +15,8 @@ namespace CTUschedule.ViewModels
     {
         public ObservableCollection<Node> Nodes { get; }
 
-        private List<ViewModelBase> PageViewModels;
+        [ObservableProperty]
+        private List<ViewModelBase> _pageViewModels;
         [ObservableProperty]
         private ViewModelBase _currentViewModel;
         [ObservableProperty]
@@ -40,6 +41,7 @@ namespace CTUschedule.ViewModels
             {
                 new IntroduceViewModel(),
                 new CourseListViewModel(),
+                new CourseListEditViewModel(),
                 new ScheduleViewModel(),
             };
 
@@ -48,7 +50,8 @@ namespace CTUschedule.ViewModels
             {
                 new Node(0,"NotebookEditOutline","Giới thiệu"),
                 new Node(1,"BookPlusOutline","Danh mục HP"),
-                new Node(2,"Calendar","Thời khóa biểu")
+                new Node(2,"NotebookEditOutline","Chỉnh sửa nhóm HP"),
+                new Node(3,"Calendar","Thời khóa biểu"),
             };
             //SelectedNode = new ObservableCollection<Node>() { Nodes.First() };
             SelectedNode = Nodes.First();
@@ -67,7 +70,7 @@ namespace CTUschedule.ViewModels
 
             if (CurrentViewModel is CourseListViewModel viewModel)
             {
-                await Task.Run(() => viewModel.Init());
+                //await Task.Run(() => viewModel.Init());
             }
             IsChangingView = false;
         }

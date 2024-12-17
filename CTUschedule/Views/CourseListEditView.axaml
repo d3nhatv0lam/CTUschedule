@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:CTUschedule.ViewModels"
+			 xmlns:views="using:CTUschedule.Views"
+			 xmlns:model="using:CTUschedule.Models"
+             x:DataType="vm:CourseListEditViewModel"
+			 
+			 xmlns:p1="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+			 xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             
+             x:Class="CTUschedule.Views.CourseListEditView">
+			 
+	<Grid>
+		<TreeView ItemsSource="{Binding CourseNodes}" >
+			<TreeView.Styles>
+				<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
+					<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+				</Style>
+			</TreeView.Styles>
+
+			<TreeView.ItemTemplate>
+				<TreeDataTemplate ItemsSource="{Binding SubNodes}">
+					
+					
+						<Grid ColumnDefinitions="Auto, 50, 8,Auto,8, *" >
+							<Grid.Styles>
+								<Style Selector="TextBlock">
+									<Setter Property="VerticalAlignment" Value="Center"/>
+								</Style>		
+							</Grid.Styles>
+							
+							<CheckBox
+								Grid.Column="0" 
+								Classes="accent" 
+								IsChecked="{Binding Course.IsSelected , UpdateSourceTrigger=PropertyChanged}"
+								Command="{Binding ((vm:CourseListEditViewModel)DataContext).Selected_UnSelectItemCommand , RelativeSource={RelativeSource AncestorType=views:CourseListEditView}}"
+								CommandParameter="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"/>
+							
+							<TextBlock Text="{Binding MaHocPhan}" Grid.Column="3"/>
+							<TextBlock Text="{Binding TenHocPhan}" Grid.Column="5" />
+						
+							<TextBlock Text="{Binding Course.dkmh_nhom_hoc_phan_ma}" Grid.Column="1" ToolTip.Tip="Nhóm học phần"/>
+							<TextBlock Text="{Binding Course.si_so_con_lai}" Grid.Column="3" ToolTip.Tip="sĩ số còn lại"/>
+						
+							<TextBlock Text="{Binding Course.dkmh_tu_dien_giang_vien_ten_vn}" Grid.Column="5"/>
+						</Grid>
+				
+				</TreeDataTemplate>
+			
+			
+			</TreeView.ItemTemplate>
+			
+			
+		</TreeView>
+	</Grid>
+		
+</UserControl>
