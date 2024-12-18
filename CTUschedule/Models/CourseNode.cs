@@ -12,8 +12,11 @@ namespace CTUschedule.Models
 
         public string MaHocPhan { get; }
         public string TenHocPhan { get; }
-
         public bool IsExpanded { get; set; } = false;
+
+        public bool IsRedStatus { get; set; } = false;
+        public bool IsYellowStatus { get; set; } = false;
+        public bool IsGreenStatus { get; set; } = false;
 
         public ObservableCollection<CourseNode>? SubNodes { get; } = new ObservableCollection<CourseNode>();
 
@@ -30,7 +33,6 @@ namespace CTUschedule.Models
 
         public CourseNode(string maHocPhan, string tenHocPhan, ObservableCollection<CourseNode> subNodes)
         {
-
             MaHocPhan = maHocPhan;
             TenHocPhan = tenHocPhan;
             SubNodes = subNodes;
@@ -39,6 +41,24 @@ namespace CTUschedule.Models
         public CourseNode(CourseInformation? course)
         {
             Course = course;
+            SetSlotStatus();
+        }
+
+        private void setStatus(bool Red, bool Yellow, bool Green)
+        {
+            IsRedStatus = Red;
+            IsYellowStatus = Yellow;
+            IsGreenStatus = Green;
+        }
+
+        private void SetSlotStatus()
+        {
+            if (Course.si_so_con_lai <= 0.1 * Course.dkmh_tu_dien_lop_hoc_phan_si_so)
+                setStatus(true, false, false);
+            else
+            if (Course.si_so_con_lai > 0.1 * Course.dkmh_tu_dien_lop_hoc_phan_si_so && Course.si_so_con_lai < 0.4 * Course.dkmh_tu_dien_lop_hoc_phan_si_so)
+                setStatus(false, true, false);
+            else setStatus(false, false, true);
         }
     }
 }

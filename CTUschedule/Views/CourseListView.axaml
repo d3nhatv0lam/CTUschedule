@@ -11,6 +11,8 @@
 			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="CTUschedule.Views.CourseListView">
 
+
+
 	<Border Padding="10">
 		<Grid RowDefinitions="auto *" Focusable="True">
 
