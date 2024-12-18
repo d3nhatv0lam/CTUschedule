@@ -10,22 +10,24 @@ namespace CTUschedule.Models
     public class CourseNode
     {
 
-        public string MaHocPhan { get; }
-        public string TenHocPhan { get; }
+        public string MaHocPhan { get; set; }
+        public string TenHocPhan { get; set; }
         public bool IsExpanded { get; set; } = false;
 
         public bool IsRedStatus { get; set; } = false;
         public bool IsYellowStatus { get; set; } = false;
         public bool IsGreenStatus { get; set; } = false;
 
-        public ObservableCollection<CourseNode>? SubNodes { get; } = new ObservableCollection<CourseNode>();
+        public ObservableCollection<CourseNode>? SubNodes { get; set; } = new ObservableCollection<CourseNode>();
 
         public CourseInformation? Course { get; set; } = new CourseInformation()
         {
             si_so_con_lai = null,
         };
 
-        public CourseNode(string maHocPhan, string tenHocPhan)
+        public CourseNode() { }
+        
+         public CourseNode(string maHocPhan, string tenHocPhan)
         {
             MaHocPhan = maHocPhan;
             TenHocPhan = tenHocPhan;
@@ -53,11 +55,17 @@ namespace CTUschedule.Models
 
         private void SetSlotStatus()
         {
+            if (Course == null || Course.si_so_con_lai == null) return;
+            if (Course.si_so_con_lai == 0) setStatus(false, false, false);
+            else
+            // (0%,10%]
             if (Course.si_so_con_lai <= 0.1 * Course.dkmh_tu_dien_lop_hoc_phan_si_so)
                 setStatus(true, false, false);
             else
+            // (10%,40%)
             if (Course.si_so_con_lai > 0.1 * Course.dkmh_tu_dien_lop_hoc_phan_si_so && Course.si_so_con_lai < 0.4 * Course.dkmh_tu_dien_lop_hoc_phan_si_so)
                 setStatus(false, true, false);
+            // [40%,100%]
             else setStatus(false, false, true);
         }
     }

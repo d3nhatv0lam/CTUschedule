@@ -191,6 +191,12 @@ namespace CTUschedule.ViewModels
             }
         }
 
+        public void SearchCourseData(string courseName,List<string> nhomHocphan)
+        {
+            courseCatalog.Search(courseName);
+            CourseList = new ObservableCollection<CourseInformation>(CourseList.Where((course)=> nhomHocphan.Contains(course.dkmh_nhom_hoc_phan_ma)));
+        }
+
         [RelayCommand]
         public void SaveCourseData()
         {
@@ -206,6 +212,7 @@ namespace CTUschedule.ViewModels
                     if (FilterCourseList[i].dkmh_nhom_hoc_phan_ma == FilterCourseList[j].dkmh_nhom_hoc_phan_ma)
                     {
                         subNode.Add(new CourseNode(FilterCourseList[j]));
+                        // sau khi add xong rồi thì xóa đi
                         FilterCourseList[j].IsSelected = false;
                     }
                     else continue;
@@ -228,6 +235,7 @@ namespace CTUschedule.ViewModels
             // chưa lưu thì lưu
             if (!IsChanged) SelectedCourseList.Add(new CourseNode(MaHocPhan, TenHocPhan, subNode));
 
+            FilterCourseList = new ObservableCollection<CourseInformation>(FilterCourseList);
             // gọi trang lịch tkb update
             OnCourseListUpdate();
 
@@ -243,6 +251,7 @@ namespace CTUschedule.ViewModels
                 CourseList.Clear();
                 FilterCourseList.Clear();
             });
+            SelectedCourseList.Clear();
             courseCatalog.NavigateToCourseCatalog();
         }
     }

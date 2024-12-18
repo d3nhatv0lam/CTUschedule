@@ -13,6 +13,7 @@ namespace CTUschedule.ViewModels
 {
     public partial class MainHomeViewModel : ViewModelBase
     {
+        public static MainHomeViewModel Instance { get; set; }  
         public ObservableCollection<Node> Nodes { get; }
 
         [ObservableProperty]
@@ -37,6 +38,7 @@ namespace CTUschedule.ViewModels
 
         public MainHomeViewModel()
         {
+            Instance = this;
             PageViewModels = new List<ViewModelBase>()
             {
                 new IntroduceViewModel(),
@@ -70,7 +72,7 @@ namespace CTUschedule.ViewModels
 
             if (CurrentViewModel is CourseListViewModel viewModel)
             {
-                await Task.Run(() => viewModel.Init());
+                //await Task.Run(() => viewModel.Init());
             }
             IsChangingView = false;
         }
