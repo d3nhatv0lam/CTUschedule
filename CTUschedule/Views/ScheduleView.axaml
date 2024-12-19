@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:vm="using:CTUschedule.ViewModels"
+			 xmlns:model="using:CTUschedule.Models"
+			 xmlns:views="using:CTUschedule.Views"
              x:DataType="vm:ScheduleViewModel"
 			 
 			 xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
@@ -19,21 +21,60 @@
 		</dialogHost:DialogHost.DialogContent>
 		<!-- put the content over which the dialog is shown here (e.g. your main window grid)-->
 			<Grid>
-				<TreeView ItemsSource="{Binding CourseNodes}">
+				<ScrollViewer
+					   HorizontalScrollBarVisibility="Disabled"
+					   VerticalScrollBarVisibility="Auto"
+					   Theme="{StaticResource MaterialModernScrollViewer}">
 
-					<TreeView.ItemTemplate>
-						<TreeDataTemplate ItemsSource="{Binding SubNodes}">
-							<Grid ColumnDefinitions="Auto, 8, *,">
-								<TextBlock Text="{Binding MaHocPhan}" Grid.Column="0"/>
-								<TextBlock Text="{Binding TenHocPhan}" Grid.Column="2" />
+					<TreeView ItemsSource="{Binding CourseNodes}" >
+						<TreeView.Styles>
+							<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
+								<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+							</Style>
+						</TreeView.Styles>
 
-								<TextBlock Text="{Binding Course.dkmh_nhom_hoc_phan_ma}" Grid.Column="0" ToolTip.Tip="Nhóm học phần"/>
-								<TextBlock Text="{Binding Course.si_so_con_lai}" Grid.Column="2" ToolTip.Tip="sĩ số còn lại"/>
-							</Grid>
-						</TreeDataTemplate>
-					</TreeView.ItemTemplate>
+						<TreeView.ItemTemplate>
+							<TreeDataTemplate ItemsSource="{Binding SubNodes}">
+								<!--// check box - nhóm hp - sĩ số còn lại - sĩ số lớp - tiết học - phòng hoc - giảng viên //-->
+								<Grid ColumnDefinitions="Auto,8, Auto , 30 ,Auto, 0.8* 0.8* 0.8* 0.8* * * 2*">
+									<Grid.Styles>
+										<Style Selector="TextBlock">
+											<Setter Property="VerticalAlignment" Value="Center"/>
+											<Setter Property="FontFamily" Value="/Assets/Fonts/Montserrat/Montserrat-Medium.otf #Montserrat"/>
+											<Setter Property="FontWeight" Value="Bold"/>
 
-				</TreeView>
+										</Style>
+										<Style Selector="TextBlock.RedStatus">
+											<Setter Property="Foreground" Value="Red"/>
+										</Style>
+										<Style Selector="TextBlock.YellowStatus">
+											<Setter Property="Foreground" Value="#FFA500"/>
+										</Style>
+										<Style Selector="TextBlock.GreenStatus">
+											<Setter Property="Foreground" Value="Green"/>
+										</Style>
+									</Grid.Styles>
+
+
+									<CheckBox
+										Grid.Column="0"
+										Classes="accent"
+										IsChecked="{Binding Course.IsSelected , UpdateSourceTrigger=PropertyChanged}"
+									
+										/>
+
+									<TextBlock Grid.Column="2" Text="{Binding MaHocPhan}" ToolTip.Tip="Mã Học Phần"/>
+									<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="Tên học phần"/>
+
+									<TextBlock Grid.Column="5" Text="{Binding Course.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
+									<TextBlock  Grid.Column="6" Text="{Binding Course.si_so_con_lai}" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+									<TextBlock  Grid.Column="7" Text="{Binding Course.dkmh_tu_dien_lop_hoc_phan_si_so}" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+								</Grid>
+
+							</TreeDataTemplate>
+						</TreeView.ItemTemplate>
+					</TreeView>
+				</ScrollViewer>
 			</Grid>
 	</dialogHost:DialogHost>
 

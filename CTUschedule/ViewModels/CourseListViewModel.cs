@@ -31,7 +31,7 @@ namespace CTUschedule.ViewModels
             get => _courseName;
             set
             {
-                if (_courseName == value) return;
+                //if (_courseName == value) return;
 
                 _courseName = value;
                 OnPropertyChanged(nameof(CourseName));

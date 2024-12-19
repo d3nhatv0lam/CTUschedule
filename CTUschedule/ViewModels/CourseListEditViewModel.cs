@@ -24,13 +24,45 @@ namespace CTUschedule.ViewModels
         private MainHomeViewModel _mainHomeViewModel { get; }
         private CourseListViewModel _courseListViewModel { get; }
 
-        [ObservableProperty]
+
         private ObservableCollection<CourseNode> _courseNodes = new ObservableCollection<CourseNode>();
+
+        public ObservableCollection<CourseNode> CourseNodes
+        {
+            get => _courseNodes;
+            set
+            {
+                _courseNodes = value;
+                OnPropertyChanged(nameof(CourseNodes));
+                OnScheduleChanged(); 
+            }
+        }
 
         [ObservableProperty]
         private bool _isOpenDialog = false;
 
-  
+        private event EventHandler _scheduleChanged;
+
+        public event EventHandler ScheduleChanged
+        {
+            add
+            {
+                _scheduleChanged += value;
+            }
+            remove
+            {
+                _scheduleChanged -= value;
+            }
+        }
+
+        private void OnScheduleChanged()
+        {
+            if (_scheduleChanged != null)
+            {
+                _scheduleChanged(this, new EventArgs());
+            }
+        }
+
 
         public CourseListEditViewModel()
         {

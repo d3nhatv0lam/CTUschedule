@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +46,36 @@ namespace CTUschedule.Models
         {
             Course = course;
             SetSlotStatus();
+        }
+
+        public static ObservableCollection<CourseNode> Uncheck_UnExpandCourseNode(ObservableCollection<CourseNode> oldCourseNodes)
+        {
+            ObservableCollection<CourseNode> newCourseNodes = DeepCopy(oldCourseNodes);
+            foreach (var node in newCourseNodes)
+            {
+                node.IsExpanded = false;
+                node.Course.IsSelected = false;
+                if (node.SubNodes == null) continue;
+                foreach (var childnode in node.SubNodes)
+                {
+                    childnode.Course.IsSelected = false;
+                }
+            }
+            return newCourseNodes;
+        }
+
+        private static ObservableCollection<CourseNode> DeepCopy(ObservableCollection<CourseNode> list)
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(list);
+                return JsonConvert.DeserializeObject<ObservableCollection<CourseNode>>(json);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return null;
         }
 
         private void setStatus(bool Red, bool Yellow, bool Green)

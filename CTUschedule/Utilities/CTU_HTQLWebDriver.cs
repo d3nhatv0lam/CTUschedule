@@ -222,18 +222,22 @@ namespace Utilities
             actions.SendKeys(Keys.Delete).Build().Perform();
         }
 
-        public void QuickSearch(string searchText)
+        public async void QuickSearch(string searchText)
         {
-            try
+            await Task.Run(() =>
             {
-                var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("rc_select_2")));
-                ClearAllText();
-                SearchBox.SendKeys(searchText);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+                try
+                {
+                    var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("rc_select_2")));
+                    ClearAllText();
+                    SearchBox.SendKeys(searchText);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            });
+            
         }
 
         public async void Search(string searchText)

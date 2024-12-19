@@ -1,4 +1,6 @@
-﻿using CTUschedule.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CTUschedule.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,39 +13,27 @@ namespace CTUschedule.ViewModels
     public partial class ScheduleViewModel : ViewModelBase
     {
         public static ScheduleViewModel Instance { get; set; }
-        private CourseListViewModel _courseListViewModel { get; }
-        public ObservableCollection<CourseNode> CourseNodes { get; set; }
+        private CourseListEditViewModel _courseListEditViewModel { get; }
+        public ObservableCollection<CourseNode> CourseNodes { get; set;}
 
-      
+        [ObservableProperty]
+        // 9row, 6colum
+        private List<ObservableCollection<int>> _schedule = new List<ObservableCollection<int>>();
+
+
 
         public ScheduleViewModel() 
         {
             Instance = this;
-            _courseListViewModel = CourseListViewModel.Instance;
-            _courseListViewModel.CourseListUpdate += _courseListViewModel_CourseListUpdate;
-
-            //CourseNodes = new ObservableCollection<CourseNode>
-            //{
-            //    new CourseNode("CT172","asd", new ObservableCollection<CourseNode>()
-            //    {
-            //        new CourseNode(new CourseInformation()
-            //        {
-            //            dkmh_nhom_hoc_phan_ma = "asdasgsdsfgfdh",
-            //            si_so_con_lai = 10,
-            //        }),
-            //         new CourseNode(new CourseInformation()
-            //        {
-            //            dkmh_nhom_hoc_phan_ma = "heelooo",
-            //            si_so_con_lai = 100,
-            //        }),
-            //    }),
-            //};
+            _courseListEditViewModel = CourseListEditViewModel.Instance;
+            _courseListEditViewModel.ScheduleChanged += _courseListEditViewModel_ScheduleChanged; ; 
         }
 
-        private void _courseListViewModel_CourseListUpdate(object? sender, EventArgs e)
+        private void _courseListEditViewModel_ScheduleChanged(object? sender, EventArgs e)
         {
-            CourseNodes = _courseListViewModel.SelectedCourseList;
+            CourseNodes = CourseNode.Uncheck_UnExpandCourseNode(_courseListEditViewModel.CourseNodes);
         }
+
 
         public void Init()
         {
