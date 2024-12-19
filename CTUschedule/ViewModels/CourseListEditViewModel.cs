@@ -73,7 +73,7 @@ namespace CTUschedule.ViewModels
 
             CourseNodes = new ObservableCollection<CourseNode>
             {
-                new CourseNode("CT172","asd", new ObservableCollection<CourseNode>()
+                new CourseNode("CT172","Nhập môn công nghệ phần mềm", new ObservableCollection<CourseNode>()
                 {
                     new CourseNode(new CourseInformation()
                     {
@@ -81,9 +81,9 @@ namespace CTUschedule.ViewModels
                         dkmh_nhom_hoc_phan_ma = "01",
                         dkmh_tu_dien_lop_hoc_phan_si_so = 40,
                         si_so_con_lai = 10,
-                        dkmh_thu_trong_tuan_ma = 5,
-                        tiet_hoc="---------",
-                        dkmh_tu_dien_phong_hoc_ten ="C1002",
+                        dkmh_thu_trong_tuan_ma = 6,
+                        tiet_hoc="1234-----",
+                        dkmh_tu_dien_phong_hoc_ten ="C1/102",
                         dkmh_tu_dien_giang_vien_ten_vn = "GV1",
                     }),
                      new CourseNode(new CourseInformation()
@@ -92,13 +92,13 @@ namespace CTUschedule.ViewModels
                         dkmh_nhom_hoc_phan_ma = "02",
                         dkmh_tu_dien_lop_hoc_phan_si_so = 200,
                         si_so_con_lai = 100,
-                        dkmh_thu_trong_tuan_ma = 7,
-                         tiet_hoc="---------",
+                        dkmh_thu_trong_tuan_ma = 5,
+                         tiet_hoc="12--------",
                         dkmh_tu_dien_phong_hoc_ten ="D1002",
                         dkmh_tu_dien_giang_vien_ten_vn = "GV1",
                     }),
                 }),
-                new CourseNode("CT17x","Test2", new ObservableCollection<CourseNode>()
+                new CourseNode("CT17x","Lập trình hướng đối tượng Test", new ObservableCollection<CourseNode>()
                 {
                     new CourseNode(new CourseInformation()
                     {
@@ -107,7 +107,7 @@ namespace CTUschedule.ViewModels
                         si_so_con_lai = 10,
                         dkmh_tu_dien_lop_hoc_phan_si_so = 40,
                         dkmh_thu_trong_tuan_ma = 3,
-                        tiet_hoc="---------",
+                        tiet_hoc="-----678-",
                         dkmh_tu_dien_phong_hoc_ten ="C1003",
                         dkmh_tu_dien_giang_vien_ten_vn = "Test3",
                     }),
@@ -117,6 +117,42 @@ namespace CTUschedule.ViewModels
                         dkmh_nhom_hoc_phan_ma = "02",
                         dkmh_tu_dien_lop_hoc_phan_si_so = 40,
                         si_so_con_lai = 0,
+                        dkmh_thu_trong_tuan_ma = 2,
+                        tiet_hoc="123------",
+                        dkmh_tu_dien_phong_hoc_ten ="DB/201",
+                        dkmh_tu_dien_giang_vien_ten_vn = "Test4",
+                    }),
+                      new CourseNode(new CourseInformation()
+                    {
+                        dkmh_tu_dien_hoc_phan_ma ="CT17x",
+                        dkmh_nhom_hoc_phan_ma = "03",
+                        dkmh_tu_dien_lop_hoc_phan_si_so = 40,
+                        si_so_con_lai = 1,
+                        dkmh_thu_trong_tuan_ma = 2,
+                        tiet_hoc="----678-",
+                        dkmh_tu_dien_phong_hoc_ten ="DB/201",
+                        dkmh_tu_dien_giang_vien_ten_vn = "Test4",
+                    }),
+                }),
+                new CourseNode("CT17x","Lập trình căn bản A*", new ObservableCollection<CourseNode>()
+                {
+                    new CourseNode(new CourseInformation()
+                    {
+                        dkmh_tu_dien_hoc_phan_ma ="CT17x",
+                        dkmh_nhom_hoc_phan_ma = "01",
+                        si_so_con_lai = 200,
+                        dkmh_tu_dien_lop_hoc_phan_si_so = 200,
+                        dkmh_thu_trong_tuan_ma = 3,
+                        tiet_hoc="---45-----",
+                        dkmh_tu_dien_phong_hoc_ten ="C1003",
+                        dkmh_tu_dien_giang_vien_ten_vn = "Test3",
+                    }),
+                     new CourseNode(new CourseInformation()
+                    {
+                         dkmh_tu_dien_hoc_phan_ma ="CTxxx",
+                        dkmh_nhom_hoc_phan_ma = "02",
+                        dkmh_tu_dien_lop_hoc_phan_si_so = 40,
+                        si_so_con_lai = 1,
                         dkmh_thu_trong_tuan_ma = 2,
                         tiet_hoc="123-----",
                         dkmh_tu_dien_phong_hoc_ten ="DB/201",
@@ -293,7 +329,7 @@ namespace CTUschedule.ViewModels
             {
                 Topmost = true,
             });
-            if (String.IsNullOrEmpty(LoadLocationResult.First())) return;
+            if (LoadLocationResult.Length == 0) return;
 
             try
             {

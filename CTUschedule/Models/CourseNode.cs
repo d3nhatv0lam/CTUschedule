@@ -16,6 +16,7 @@ namespace CTUschedule.Models
         public string TenHocPhan { get; set; }
         public bool IsExpanded { get; set; } = false;
 
+        public bool IsScheduleSelected { get; set; } = false;
         public bool IsRedStatus { get; set; } = false;
         public bool IsYellowStatus { get; set; } = false;
         public bool IsGreenStatus { get; set; } = false;

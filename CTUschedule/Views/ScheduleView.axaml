@@ -20,13 +20,16 @@
 			<!-- put your dialog content here-->
 		</dialogHost:DialogHost.DialogContent>
 		<!-- put the content over which the dialog is shown here (e.g. your main window grid)-->
-			<Grid>
-				<ScrollViewer
+			<Grid ShowGridLines="True" ColumnDefinitions="0.37*,4, *">
+				
+				<ScrollViewer 
+						Grid.Column="0"
 					   HorizontalScrollBarVisibility="Disabled"
 					   VerticalScrollBarVisibility="Auto"
 					   Theme="{StaticResource MaterialModernScrollViewer}">
 
-					<TreeView ItemsSource="{Binding CourseNodes}" >
+					<TreeView ItemsSource="{Binding CourseNodes}" 
+							  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 						<TreeView.Styles>
 							<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
 								<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
@@ -35,14 +38,13 @@
 
 						<TreeView.ItemTemplate>
 							<TreeDataTemplate ItemsSource="{Binding SubNodes}">
-								<!--// check box - nhóm hp - sĩ số còn lại - sĩ số lớp - tiết học - phòng hoc - giảng viên //-->
-								<Grid ColumnDefinitions="Auto,8, Auto , 30 ,Auto, 0.8* 0.8* 0.8* 0.8* * * 2*">
+								
+								<Grid ColumnDefinitions="Auto,8, Auto , 20 ,Auto,*,8, *">
 									<Grid.Styles>
 										<Style Selector="TextBlock">
 											<Setter Property="VerticalAlignment" Value="Center"/>
 											<Setter Property="FontFamily" Value="/Assets/Fonts/Montserrat/Montserrat-Medium.otf #Montserrat"/>
 											<Setter Property="FontWeight" Value="Bold"/>
-
 										</Style>
 										<Style Selector="TextBlock.RedStatus">
 											<Setter Property="Foreground" Value="Red"/>
@@ -60,21 +62,192 @@
 										Grid.Column="0"
 										Classes="accent"
 										IsChecked="{Binding Course.IsSelected , UpdateSourceTrigger=PropertyChanged}"
-									
+										Command="{Binding ((vm:ScheduleViewModel)DataContext).CheckBoxTaskCommand , RelativeSource={RelativeSource AncestorType=views:ScheduleView}}"
+										CommandParameter="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
 										/>
 
+									
 									<TextBlock Grid.Column="2" Text="{Binding MaHocPhan}" ToolTip.Tip="Mã Học Phần"/>
-									<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="Tên học phần"/>
-
-									<TextBlock Grid.Column="5" Text="{Binding Course.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
-									<TextBlock  Grid.Column="6" Text="{Binding Course.si_so_con_lai}" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-									<TextBlock  Grid.Column="7" Text="{Binding Course.dkmh_tu_dien_lop_hoc_phan_si_so}" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+			
+									<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="{Binding TenHocPhan}"/>
+									
+									<TextBlock Grid.Column="2" Text="{Binding Course.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
+									<TextBlock  Grid.Column="5" Text="{Binding Course.si_so_con_lai}" HorizontalAlignment="Center" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+									<TextBlock  Grid.Column="7" Text="{Binding Course.dkmh_tu_dien_lop_hoc_phan_si_so}" HorizontalAlignment="Center" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
 								</Grid>
 
 							</TreeDataTemplate>
 						</TreeView.ItemTemplate>
 					</TreeView>
 				</ScrollViewer>
+	
+				<GridSplitter Grid.Column="1" Background="Black" ResizeDirection="Columns"/>
+
+				<Border Grid.Column="2" Padding="10">
+					<Grid>
+						
+						<Grid Grid.Row="0" RowDefinitions="* * * * * * 0.5* * * * *" ColumnDefinitions="* * * * * * *">
+							<Grid.Styles>
+								<Style Selector="Border">
+									<Setter Property="BorderBrush" Value="Black"/>
+									<Setter Property="BorderThickness" Value="1"/>
+								</Style>
+								<Style Selector="Border > TextBlock">
+									<Setter Property="HorizontalAlignment" Value="Center"/>
+									<Setter Property="VerticalAlignment" Value="Center"/>
+								</Style>
+								
+								<Style Selector="Border.RedStatus">
+										<Setter Property="Background" Value="Red"/>
+								</Style>
+								<Style Selector="Border.YellowStatus">
+										<Setter Property="Background" Value="#FFA500"/>
+								</Style>
+								<Style Selector="Border.GreenStatus">
+										<Setter Property="Background" Value="Green"/>
+								</Style>
+							</Grid.Styles>
+								
+								<Border Grid.Row="10" Grid.Column="6"> </Border>
+								<Border Grid.Row="10" Grid.Column="5"> </Border>
+								<Border Grid.Row="10" Grid.Column="4"> </Border>
+								<Border Grid.Row="10" Grid.Column="3"> </Border>
+								<Border Grid.Row="10" Grid.Column="2"> </Border>
+								<Border Grid.Row="10" Grid.Column="1"> </Border>
+							
+								<Border Grid.Row="10" Grid.Column="0">
+									<TextBlock Text="9"/>
+								</Border>
+								
+								<Border Grid.Row="9" Grid.Column="6"> </Border>
+								<Border Grid.Row="9" Grid.Column="5"> </Border>
+								<Border Grid.Row="9" Grid.Column="4"> </Border>
+								<Border Grid.Row="9" Grid.Column="3"> </Border>
+								<Border Grid.Row="9" Grid.Column="2"> </Border>
+								<Border Grid.Row="9" Grid.Column="1"> </Border>
+							
+								<Border Grid.Row="9" Grid.Column="0"> 
+									<TextBlock Text="8"/>
+								</Border>
+							
+								<Border Grid.Row="8" Grid.Column="6"> </Border>
+								<Border Grid.Row="8" Grid.Column="5"> </Border>
+								<Border Grid.Row="8" Grid.Column="4"> </Border>
+								<Border Grid.Row="8" Grid.Column="3"> </Border>
+								<Border Grid.Row="8" Grid.Column="2"> </Border>
+								<Border Grid.Row="8" Grid.Column="1"> </Border>
+							
+								<Border Grid.Row="8" Grid.Column="0"> 
+									<TextBlock Text="7"/>
+								</Border>
+							
+								<Border Grid.Row="7" Grid.Column="6"> </Border>
+								<Border Grid.Row="7" Grid.Column="5"> </Border>
+								<Border Grid.Row="7" Grid.Column="4"> </Border>
+								<Border Grid.Row="7" Grid.Column="3"> </Border>
+								<Border Grid.Row="7" Grid.Column="2"> </Border>
+								<Border Grid.Row="7" Grid.Column="1"> </Border>
+							
+								<Border Grid.Row="7" Grid.Column="0">
+									<TextBlock Text="6"/>
+								</Border>
+
+								<Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="8" Background="LightSteelBlue"> 
+								</Border>
+							
+								<Border Grid.Row="5" Grid.Column="6"> </Border>
+								<Border Grid.Row="5" Grid.Column="5"> </Border>
+								<Border Grid.Row="5" Grid.Column="4"> </Border>
+								<Border Grid.Row="5" Grid.Column="3"> </Border>
+								<Border Grid.Row="5" Grid.Column="2"> </Border>
+								<Border Grid.Row="5" Grid.Column="1"> </Border>
+							
+								<Border Grid.Row="5" Grid.Column="0"> 
+									<TextBlock Text="5"/>
+								</Border>
+							
+								<Border Grid.Row="4" Grid.Column="6"> </Border>
+								<Border Grid.Row="4" Grid.Column="5"> </Border>
+								<Border Grid.Row="4" Grid.Column="4"> </Border>
+								<Border Grid.Row="4" Grid.Column="3"> </Border>
+								<Border Grid.Row="4" Grid.Column="2"> </Border>
+								<Border Grid.Row="4" Grid.Column="1"> </Border>
+								<Border Grid.Row="4" Grid.Column="0">
+									<TextBlock Text="4"/>
+								</Border>
+							
+								<Border Grid.Row="3" Grid.Column="6"> </Border>
+								<Border Grid.Row="3" Grid.Column="5"> </Border>
+								<Border Grid.Row="3" Grid.Column="4"> </Border>
+								<Border Grid.Row="3" Grid.Column="3"> </Border>
+								<Border Grid.Row="3" Grid.Column="2"> </Border>
+								<Border Grid.Row="3" Grid.Column="1"> </Border>
+							
+								<Border Grid.Row="3" Grid.Column="0">
+									<TextBlock Text="3"/>
+								</Border>
+							
+								<Border Grid.Row="2" Grid.Column="6"> </Border>
+								<Border Grid.Row="2" Grid.Column="5"> </Border>
+								<Border Grid.Row="2" Grid.Column="4"> </Border>
+								<Border Grid.Row="2" Grid.Column="3"> </Border>
+								<Border Grid.Row="2" Grid.Column="2"> </Border>
+								<Border Grid.Row="2" Grid.Column="1"> </Border>
+							
+								<Border Grid.Row="2" Grid.Column="0"> 
+									<TextBlock Text="2"/>
+								</Border>
+							
+								<Border Grid.Row="1" Grid.Column="6"> </Border>
+								<Border Grid.Row="1" Grid.Column="5"> </Border>
+								<Border Grid.Row="1" Grid.Column="4"> </Border>
+								<Border Grid.Row="1" Grid.Column="3"> </Border>
+								<Border Grid.Row="1" Grid.Column="2"> </Border>
+							
+								<Border Grid.Row="1"
+										Grid.RowSpan="{Binding Schedule[1][1].SoTietHoc}"
+										Grid.Column="1"
+										Classes.RedStatus="{Binding Schedule[1][1].IsRedStatus}" Classes.YellowStatus="{Binding Schedule[1][1].IsYellowStatus}" Classes.GreenStatus="{Binding Schedule[1][1].IsGreenStatus}">
+									
+										<StackPanel Orientation="Vertical">
+											<TextBlock Text="{Binding Schedule[1][1].MaHocPhan}"/>
+										</StackPanel>
+								</Border>
+							
+								<Border Grid.Row="1" Grid.Column="0">
+									<TextBlock Text="1"/>
+								</Border>
+							
+								<Border Grid.Row="0" Grid.Column="6">
+									<TextBlock Text="Thứ 7"/>
+								</Border>
+								<Border Grid.Row="0" Grid.Column="5"> 
+									<TextBlock Text="Thứ 6"/>
+								</Border>
+								<Border Grid.Row="0" Grid.Column="4"> 
+									<TextBlock Text="Thứ 5"/>
+								</Border>
+								<Border Grid.Row="0" Grid.Column="3">
+									<TextBlock Text="Thứ 4"/>
+								</Border>
+								<Border Grid.Row="0" Grid.Column="2">
+									<TextBlock Text="Thứ 3"/>
+								</Border>
+								<Border Grid.Row="0" Grid.Column="1"> 
+									<TextBlock Text="Thứ 2"/>
+								</Border>
+								
+								<Border Grid.Row="0" Grid.Column="0"> 
+									<TextBlock Text="Tiết"/>
+								</Border>
+
+									
+								
+						</Grid>
+						
+					</Grid>	
+				</Border>
+
 			</Grid>
 	</dialogHost:DialogHost>
 
