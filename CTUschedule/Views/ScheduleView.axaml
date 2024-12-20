@@ -20,7 +20,7 @@
 			<!-- put your dialog content here-->
 		</dialogHost:DialogHost.DialogContent>
 		<!-- put the content over which the dialog is shown here (e.g. your main window grid)-->
-			<Grid ShowGridLines="True" ColumnDefinitions="0.37*,4, *">
+			<Grid ColumnDefinitions="0.37*,4, *">
 				
 				<ScrollViewer 
 						Grid.Column="0"
@@ -61,9 +61,9 @@
 									<CheckBox
 										Grid.Column="0"
 										Classes="accent"
-										IsChecked="{Binding Course.IsSelected , UpdateSourceTrigger=PropertyChanged}"
+										IsChecked="{Binding IsScheduleSelected , UpdateSourceTrigger=PropertyChanged}"
 										Command="{Binding ((vm:ScheduleViewModel)DataContext).CheckBoxTaskCommand , RelativeSource={RelativeSource AncestorType=views:ScheduleView}}"
-										CommandParameter="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
+										CommandParameter="{Binding $self, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
 										/>
 
 									
@@ -71,9 +71,9 @@
 			
 									<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="{Binding TenHocPhan}"/>
 									
-									<TextBlock Grid.Column="2" Text="{Binding Course.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
-									<TextBlock  Grid.Column="5" Text="{Binding Course.si_so_con_lai}" HorizontalAlignment="Center" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-									<TextBlock  Grid.Column="7" Text="{Binding Course.dkmh_tu_dien_lop_hoc_phan_si_so}" HorizontalAlignment="Center" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+									<TextBlock Grid.Column="2" Text="{Binding representativeNode.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
+									<TextBlock  Grid.Column="5" Text="{Binding representativeNode.si_so_con_lai}" HorizontalAlignment="Center" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+									<TextBlock  Grid.Column="7" Text="{Binding representativeNode.dkmh_tu_dien_lop_hoc_phan_si_so}" HorizontalAlignment="Center" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
 								</Grid>
 
 							</TreeDataTemplate>
@@ -205,8 +205,8 @@
 								<Border Grid.Row="1" Grid.Column="2"> </Border>
 							
 								<Border Grid.Row="1"
-										Grid.RowSpan="{Binding Schedule[1][1].SoTietHoc}"
 										Grid.Column="1"
+										Grid.RowSpan="{Binding Schedule[1][1].SoTietHoc}"
 										Classes.RedStatus="{Binding Schedule[1][1].IsRedStatus}" Classes.YellowStatus="{Binding Schedule[1][1].IsYellowStatus}" Classes.GreenStatus="{Binding Schedule[1][1].IsGreenStatus}">
 									
 										<StackPanel Orientation="Vertical">

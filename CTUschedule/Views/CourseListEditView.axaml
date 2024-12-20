@@ -183,72 +183,102 @@
 
 			</Grid>
 
+			<Grid Grid.Row="1" RowDefinitions="auto *">
+
+						
+					
+			<Separator Grid.Row="0" Foreground="Black"/>
+					
+				<ScrollViewer 
+						Grid.Row="1"
+						HorizontalScrollBarVisibility="Disabled"
+						VerticalScrollBarVisibility="Auto"
+						Theme="{StaticResource MaterialModernScrollViewer}">
+
+					<Grid>
+						<TreeView ItemsSource="{Binding CourseNodes}" >
+							<TreeView.Styles>
+								<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
+									<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+								</Style>
+							</TreeView.Styles>
+
+							<TreeView.ItemTemplate>
+								<TreeDataTemplate ItemsSource="{Binding SubNodes}">
+									<!--// check box - nhóm hp - sĩ số còn lại - sĩ số lớp - tiết học - phòng hoc - giảng viên //-->
+									<Grid ColumnDefinitions="Auto,8, Auto , 30 ,Auto, 0.3* 0.3* 0.3* 1.5* 1.5*">
+										<Grid.Styles>
+											<Style Selector="TextBlock">
+												<Setter Property="VerticalAlignment" Value="Center"/>
+												<Setter Property="HorizontalAlignment" Value="Center"/>
+												<Setter Property="FontFamily" Value="/Assets/Fonts/Montserrat/Montserrat-Medium.otf #Montserrat"/>
+												<Setter Property="FontWeight" Value="Bold"/>
+												
+
+											</Style>
+											<Style Selector="TextBlock.RedStatus">
+												<Setter Property="Foreground" Value="Red"/>
+											</Style>
+											<Style Selector="TextBlock.YellowStatus">
+												<Setter Property="Foreground" Value="#FFA500"/>
+											</Style>
+											<Style Selector="TextBlock.GreenStatus">
+												<Setter Property="Foreground" Value="Green"/>
+											</Style>
+										</Grid.Styles>
 
 
-			<StackPanel  Grid.Row="1" Orientation="Vertical">
-				<Separator Foreground="Black"/>
-				<ScrollViewer
-					   HorizontalScrollBarVisibility="Disabled"
-					   VerticalScrollBarVisibility="Auto"
-					   Theme="{StaticResource MaterialModernScrollViewer}">
+										<CheckBox
+											Grid.Column="0"
+											Classes="accent"
+											IsChecked="{Binding IsSelected , UpdateSourceTrigger=PropertyChanged}"
+											Command="{Binding ((vm:CourseListEditViewModel)DataContext).Selected_UnSelectItemCommand , RelativeSource={RelativeSource AncestorType=views:CourseListEditView}}"
+											CommandParameter="{Binding $self, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"/>
 
-					<TreeView ItemsSource="{Binding CourseNodes}" >
-						<TreeView.Styles>
-							<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
-								<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-							</Style>
-						</TreeView.Styles>
+										<TextBlock Grid.Column="2" Text="{Binding MaHocPhan}" ToolTip.Tip="Mã Học Phần"/>
+										<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="Tên học phần"/>
 
-						<TreeView.ItemTemplate>
-							<TreeDataTemplate ItemsSource="{Binding SubNodes}">
-								<!--// check box - nhóm hp - sĩ số còn lại - sĩ số lớp - tiết học - phòng hoc - giảng viên //-->
-								<Grid ColumnDefinitions="Auto,8, Auto , 30 ,Auto, 0.8* 0.8* 0.8* 0.8* * * 2*">
-									<Grid.Styles>
-										<Style Selector="TextBlock">
-											<Setter Property="VerticalAlignment" Value="Center"/>
-											<Setter Property="FontFamily" Value="/Assets/Fonts/Montserrat/Montserrat-Medium.otf #Montserrat"/>
-											<Setter Property="FontWeight" Value="Bold"/>
+										<TextBlock Grid.Column="5" Text="{Binding representativeNode.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
+										<TextBlock  Grid.Column="6" Text="{Binding representativeNode.si_so_con_lai}" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+										<TextBlock  Grid.Column="7" Text="{Binding representativeNode.dkmh_tu_dien_lop_hoc_phan_si_so}" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
 
-										</Style>
-										<Style Selector="TextBlock.RedStatus">
-											<Setter Property="Foreground" Value="Red"/>
-										</Style>
-										<Style Selector="TextBlock.YellowStatus">
-											<Setter Property="Foreground" Value="#FFA500"/>
-										</Style>
-										<Style Selector="TextBlock.GreenStatus">
-											<Setter Property="Foreground" Value="Green"/>
-										</Style>
-									</Grid.Styles>
+										<ItemsControl Grid.Column="8" ItemsSource="{Binding CourseGroup}" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}">
+											<ItemsControl.Styles>
+												<Style Selector="ItemsControl.RedStatus">
+													<Setter Property="Foreground" Value="Red"/>
+												</Style>
+												<Style Selector="ItemsControl.YellowStatus">
+													<Setter Property="Foreground" Value="#FFA500"/>
+												</Style>
+												<Style Selector="ItemsControl.GreenStatus">
+													<Setter Property="Foreground" Value="Green"/>
+												</Style>
+											</ItemsControl.Styles>
+											<ItemsControl.ItemTemplate>
+												<DataTemplate>
+													<Grid ColumnDefinitions="0.8* * *">
+														<TextBlock Grid.Column="0" Text="{Binding dkmh_thu_trong_tuan_ma}" ToolTip.Tip="Thứ đi học trong tuần"/>
+														<TextBlock Grid.Column="1" Text="{Binding tiet_hoc}" ToolTip.Tip="Tiết học"/>
+														<TextBlock Grid.Column="2" Text="{Binding dkmh_tu_dien_phong_hoc_ten}" ToolTip.Tip="Phòng học"/>
+													</Grid>
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ItemsControl>
+										<TextBlock  Grid.Column="9"  Text="{Binding representativeNode.dkmh_tu_dien_giang_vien_ten_vn}" HorizontalAlignment="Center" ToolTip.Tip="Giảng viên" TextWrapping="WrapWithOverflow" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
+									</Grid>
 
-
-									<CheckBox
-										Grid.Column="0"
-										Classes="accent"
-										IsChecked="{Binding Course.IsSelected , UpdateSourceTrigger=PropertyChanged}"
-										Command="{Binding ((vm:CourseListEditViewModel)DataContext).Selected_UnSelectItemCommand , RelativeSource={RelativeSource AncestorType=views:CourseListEditView}}"
-										CommandParameter="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"/>
-
-									<TextBlock Grid.Column="2" Text="{Binding MaHocPhan}" ToolTip.Tip="Mã Học Phần"/>
-									<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="Tên học phần"/>
-
-									<TextBlock Grid.Column="5" Text="{Binding Course.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
-									<TextBlock  Grid.Column="6" Text="{Binding Course.si_so_con_lai}" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-									<TextBlock  Grid.Column="7" Text="{Binding Course.dkmh_tu_dien_lop_hoc_phan_si_so}" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-									<TextBlock  Grid.Column="8" Text="{Binding Course.dkmh_thu_trong_tuan_ma}" ToolTip.Tip="Thứ đi học trong tuần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-									<TextBlock  Grid.Column="9" Text="{Binding Course.tiet_hoc}" ToolTip.Tip="Tiết học" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-									<TextBlock  Grid.Column="10" Text="{Binding Course.dkmh_tu_dien_phong_hoc_ten}" ToolTip.Tip="Phòng học" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-									<TextBlock  Grid.Column="11"  Text="{Binding Course.dkmh_tu_dien_giang_vien_ten_vn}" HorizontalAlignment="Center" ToolTip.Tip="Giảng viên" TextWrapping="WrapWithOverflow" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
-								</Grid>
-
-							</TreeDataTemplate>
-						</TreeView.ItemTemplate>
-					</TreeView>
+								</TreeDataTemplate>
+							</TreeView.ItemTemplate>
+						</TreeView>
+					</Grid>
 				</ScrollViewer>
-			</StackPanel>
-		 
-			
+
+			</Grid>
+	
+				
 		</Grid>
+			
+
 		
 	</Border>
 		

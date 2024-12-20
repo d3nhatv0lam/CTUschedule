@@ -205,18 +205,23 @@ namespace CTUschedule.ViewModels
             //// get All học phần đã chọn vào 1 subnode
             for (int i = 0; i < FilterCourseList.Count; i++)
             {
+                // tìm thấy một nhóm HP được chọn
                 if (!FilterCourseList[i].IsSelected) continue;
-
+                // 1 node chứa N nhóm giống nhau
+                ObservableCollection<CourseInformation> CourseGroup = new ObservableCollection<CourseInformation>();
                 for (int j = 0; j < FilterCourseList.Count; j++)
                 {
+                    // kiểm tra xem các Course khác có cùng nhóm đã được chọn
                     if (FilterCourseList[i].dkmh_nhom_hoc_phan_ma == FilterCourseList[j].dkmh_nhom_hoc_phan_ma)
                     {
-                        subNode.Add(new CourseNode(FilterCourseList[j]));
-                        // sau khi add xong rồi thì xóa đi
+                        // them vào nhóm
+                        CourseGroup.Add(FilterCourseList[j]);
+                        // sau khi add xong rồi thì un check đi
                         FilterCourseList[j].IsSelected = false;
                     }
-                    else continue;
                 }
+                // add vào subnode
+                subNode.Add(new CourseNode(CourseGroup));
             }
             if (subNode.Count == 0) return;
 
@@ -225,18 +230,19 @@ namespace CTUschedule.ViewModels
             for (int i = 0; i < SelectedCourseList.Count; i++)
             {
                 // đã có thì update cái mới đè lên
-                if (SelectedCourseList[i].MaHocPhan == subNode.First().Course.dkmh_tu_dien_hoc_phan_ma)
+                if (SelectedCourseList[i].MaHocPhan == subNode.First().CourseGroup.First().dkmh_tu_dien_hoc_phan_ma)
                 {
-
                     SelectedCourseList[i] = new CourseNode(MaHocPhan, TenHocPhan, subNode);
-                    IsChanged = true; break;
+                    IsChanged = true; 
+                    break;
                 }
             }
             // chưa lưu thì lưu
             if (!IsChanged) SelectedCourseList.Add(new CourseNode(MaHocPhan, TenHocPhan, subNode));
 
+            //Update lại UI của trang này
             FilterCourseList = new ObservableCollection<CourseInformation>(FilterCourseList);
-            // gọi trang lịch tkb update
+            // gọi trang Edit Update lại
             OnCourseListUpdate();
 
             INotificationPopup SuccessPopup = new NotificationPopupController(NotificationPopupController.Type.Succes, "Thêm Nhóm thành Công!", "Bạn đã có thể thêm vào thời khóa biểu");

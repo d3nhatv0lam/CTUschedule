@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using Avalonia.VisualTree;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CTUschedule.Models;
 using Newtonsoft.Json;
@@ -16,13 +18,15 @@ namespace CTUschedule.ViewModels
     {
         public static ScheduleViewModel Instance { get; set; }
         private CourseListEditViewModel _courseListEditViewModel { get; }
-        public ObservableCollection<CourseNode> CourseNodes { get; set;}
+        public ObservableCollection<CourseNode> CourseNodes { get; set;} = new ObservableCollection<CourseNode>();
 
         [ObservableProperty]
         // 9row, 6colum
         private List<ObservableCollection<ScheduleCell>> _schedule = new List<ObservableCollection<ScheduleCell>>();
         private List<ObservableCollection<ScheduleCell>> emptyScheduleTable;
 
+        private List<ScheduleCell> ScheduleItemPool = new List<ScheduleCell>();
+        private List<ScheduleCell> SelectedScheduleItem;
 
         public ScheduleViewModel() 
         {
@@ -37,6 +41,7 @@ namespace CTUschedule.ViewModels
         public void Init()
         {
             emptyScheduleTable = EmptyTableSchedule();
+            CourseNodes = CourseNode.UnExpandAllCourseNode(CourseNodes);
             Schedule = emptyScheduleTable;
         }
 
@@ -59,40 +64,68 @@ namespace CTUschedule.ViewModels
 
         private void _courseListEditViewModel_ScheduleChanged(object? sender, EventArgs e)
         {
-            CourseNodes = CourseNode.Uncheck_UnExpandCourseNode(_courseListEditViewModel.CourseNodes);
+            //CourseNodes = CourseNode.Uncheck_UnExpandCourseNode(_courseListEditViewModel.CourseNodes);
+            CourseNodes = _courseListEditViewModel.CourseNodes;
+            //ScheduleItemPool = CreateScheduleItemPool();
         }
 
+        private List<ScheduleCell> CreateScheduleItemPool()
+        {
+            List<ScheduleCell> newPool = new List<ScheduleCell>();
+            //foreach (var node in CourseNodes)
+            //{
+            //    foreach(var child in node.SubNodes)
+            //    {
+            //        ScheduleCell newScheduleItem = new ScheduleCell(child.Course);
+            //        newPool.Add(newScheduleItem);
+            //    }
+            //}
+            return newPool;
+        }
 
         [RelayCommand]
-        public void CheckBoxTask(ObservableCollection<CourseNode> scheduleList)
+        public void CheckBoxTask(TreeViewItem treeViewItem)
         {
-            if (scheduleList.Count != 0) return;
+            // Check u check in Child
+            var parent = treeViewItem.Parent as TreeViewItem;
+            if (parent == null) return;
 
-            //reload all schedule
-            foreach (var node in CourseNodes)
-            {
-                bool IsReallyChoose = false;
-                foreach(var child in node.SubNodes)
-                {
-                   
-                    if (child.Course.IsSelected)
-                    {
-                        if (IsReallyChoose)
-                        {
-                            Debug.WriteLine("Trung mon roi!");
-                            break;
-                        }
-                        IsReallyChoose = true;
-                        ScheduleCellTableIndex scheduleCellTableIndex = ScheduleCellTableIndex.GetTableIndex(child.Course);
-                        var tableIndex = Schedule[scheduleCellTableIndex.TietBatDau][scheduleCellTableIndex.ThuDiHoc - 1];
-                        tableIndex = new ScheduleCell(child.Course);
-                        Schedule[scheduleCellTableIndex.TietBatDau][scheduleCellTableIndex.ThuDiHoc - 1] = tableIndex;
-                        Schedule = new List<ObservableCollection<ScheduleCell>>(Schedule);
-                    }
-                }
-                IsReallyChoose = false;
-            }
+            // get MaHocPhan of Child
+            var grid = parent.GetVisualDescendants().OfType<Grid>().FirstOrDefault();
+            if (grid == null) return;
+            var maHocPhan = grid.GetVisualDescendants().OfType<TextBlock>().FirstOrDefault().Text;
+
+            ObservableCollection<CourseNode>? subNode = parent.ItemsSource as ObservableCollection<CourseNode>;
+
+
         }
+
+        //[RelayCommand]
+        //public void CheckBoxTask(ObservableCollection<CourseNode> scheduleList)
+        //{
+        //    if (scheduleList.Count != 0) return;
+
+        //    //reload all schedule
+        //    foreach (var node in CourseNodes)
+        //    {
+        //        bool IsReallyChoose = false;
+        //        foreach (var child in node.SubNodes)
+        //        {
+
+        //            if (child.Course.IsSelected)
+        //            {
+        //                if (IsReallyChoose)
+        //                {
+        //                    Debug.WriteLine("Trung mon roi!");
+        //                    break;
+        //                }
+        //                IsReallyChoose = true;
+
+        //            }
+        //        }
+        //        IsReallyChoose = false;
+        //    }
+        //}
 
     }
 }

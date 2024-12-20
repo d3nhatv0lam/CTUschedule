@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using OpenQA.Selenium.DevTools.V129.DOM;
+using OpenQA.Selenium.DevTools.V129.Memory;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,11 +13,11 @@ namespace CTUschedule.Models
 {
     public class CourseNode
     {
-
         public string MaHocPhan { get; set; }
         public string TenHocPhan { get; set; }
-        public bool IsExpanded { get; set; } = false;
 
+        public bool IsSelected { get; set; } = false;
+        public bool IsExpanded { get; set; } = false;
         public bool IsScheduleSelected { get; set; } = false;
         public bool IsRedStatus { get; set; } = false;
         public bool IsYellowStatus { get; set; } = false;
@@ -23,10 +25,16 @@ namespace CTUschedule.Models
 
         public ObservableCollection<CourseNode>? SubNodes { get; set; } = new ObservableCollection<CourseNode>();
 
-        public CourseInformation? Course { get; set; } = new CourseInformation()
+        public CourseInformation? representativeNode
         {
-            si_so_con_lai = null,
-        };
+            get
+            {
+                if (CourseGroup.Count == 0) return null;
+                return (CourseInformation)CourseGroup[0];
+            }
+        }
+        public ObservableCollection<CourseInformation> CourseGroup { get; set; } = new ObservableCollection<CourseInformation>();
+
 
         public CourseNode() { }
         
@@ -43,10 +51,35 @@ namespace CTUschedule.Models
             SubNodes = subNodes;
         }
 
-        public CourseNode(CourseInformation? course)
+        public CourseNode(ObservableCollection<CourseInformation> course)
         {
-            Course = course;
-            SetSlotStatus();
+            CourseGroup = course;
+            SetSlotStatus(CourseGroup.First());
+        }
+
+        private void SetSlotStatus(CourseInformation course)
+        {
+            if (course == null || course.si_so_con_lai == null) return;
+            if (course.si_so_con_lai == 0) setStatus(false, false, false);
+            else
+            // (0%,10%]
+            if (course.si_so_con_lai <= 0.1 * course.dkmh_tu_dien_lop_hoc_phan_si_so)
+                setStatus(true, false, false);
+            else
+            // (10%,40%)
+            if (course.si_so_con_lai > 0.1 * course.dkmh_tu_dien_lop_hoc_phan_si_so && course.si_so_con_lai < 0.4 * course.dkmh_tu_dien_lop_hoc_phan_si_so)
+                setStatus(false, true, false);
+            // [40%,100%]
+            else setStatus(false, false, true);
+        }
+
+        public static ObservableCollection<CourseNode> UnExpandAllCourseNode(ObservableCollection<CourseNode> courseNodes)
+        {
+            foreach (var node in courseNodes)
+            {
+                node.IsExpanded = false;
+            }
+            return courseNodes;
         }
 
         public static ObservableCollection<CourseNode> Uncheck_UnExpandCourseNode(ObservableCollection<CourseNode> oldCourseNodes)
@@ -54,12 +87,17 @@ namespace CTUschedule.Models
             ObservableCollection<CourseNode> newCourseNodes = DeepCopy(oldCourseNodes);
             foreach (var node in newCourseNodes)
             {
+                // parent node
                 node.IsExpanded = false;
-                node.Course.IsSelected = false;
+                node.IsSelected = false;
+
                 if (node.SubNodes == null) continue;
                 foreach (var childnode in node.SubNodes)
                 {
-                    childnode.Course.IsSelected = false;
+                    foreach (CourseInformation course in childnode.CourseGroup)
+                    {
+                        course.IsSelected = false;
+                    }
                 }
             }
             return newCourseNodes;
@@ -86,20 +124,6 @@ namespace CTUschedule.Models
             IsGreenStatus = Green;
         }
 
-        private void SetSlotStatus()
-        {
-            if (Course == null || Course.si_so_con_lai == null) return;
-            if (Course.si_so_con_lai == 0) setStatus(false, false, false);
-            else
-            // (0%,10%]
-            if (Course.si_so_con_lai <= 0.1 * Course.dkmh_tu_dien_lop_hoc_phan_si_so)
-                setStatus(true, false, false);
-            else
-            // (10%,40%)
-            if (Course.si_so_con_lai > 0.1 * Course.dkmh_tu_dien_lop_hoc_phan_si_so && Course.si_so_con_lai < 0.4 * Course.dkmh_tu_dien_lop_hoc_phan_si_so)
-                setStatus(false, true, false);
-            // [40%,100%]
-            else setStatus(false, false, true);
-        }
+       
     }
 }
