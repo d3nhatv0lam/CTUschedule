@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using OpenQA.Selenium.DevTools.V129.DOM;
 using OpenQA.Selenium.DevTools.V129.Memory;
 using System;
@@ -15,9 +16,9 @@ namespace CTUschedule.Models
     {
         public string MaHocPhan { get; set; }
         public string TenHocPhan { get; set; }
-
         public bool IsSelected { get; set; } = false;
         public bool IsExpanded { get; set; } = false;
+        public bool IsShowPreview { get; set; } = false;
         public bool IsScheduleSelected { get; set; } = false;
         public bool IsRedStatus { get; set; } = false;
         public bool IsYellowStatus { get; set; } = false;
@@ -25,6 +26,7 @@ namespace CTUschedule.Models
 
         public ObservableCollection<CourseNode>? SubNodes { get; set; } = new ObservableCollection<CourseNode>();
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public CourseInformation? representativeNode
         {
             get
@@ -32,7 +34,9 @@ namespace CTUschedule.Models
                 if (CourseGroup.Count == 0) return null;
                 return (CourseInformation)CourseGroup[0];
             }
+            set { }
         }
+
         public ObservableCollection<CourseInformation> CourseGroup { get; set; } = new ObservableCollection<CourseInformation>();
 
 

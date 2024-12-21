@@ -7,12 +7,18 @@
 			 xmlns:model="using:CTUschedule.Models"
 			 xmlns:views="using:CTUschedule.Views"
              x:DataType="vm:ScheduleViewModel"
+			 xmlns:Conv="using:CTUschedule.Converter"
+			 
 			 
 			 xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
 			 xmlns:p1="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
 			 xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
 			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="CTUschedule.Views.ScheduleView">
+
+	<UserControl.Resources>
+		<Conv:ScheduleGroupFomatConverter x:Key="GroupFomatConverter"/>
+	</UserControl.Resources>
 
 
 	<dialogHost:DialogHost CloseOnClickAway="True">
@@ -88,23 +94,41 @@
 						
 						<Grid Grid.Row="0" RowDefinitions="* * * * * * 0.5* * * * *" ColumnDefinitions="* * * * * * *">
 							<Grid.Styles>
+
 								<Style Selector="Border">
 									<Setter Property="BorderBrush" Value="Black"/>
 									<Setter Property="BorderThickness" Value="1"/>
+									<Setter Property="Background" Value="White"/>
 								</Style>
 								<Style Selector="Border > TextBlock">
 									<Setter Property="HorizontalAlignment" Value="Center"/>
 									<Setter Property="VerticalAlignment" Value="Center"/>
+									<Setter Property="FontWeight" Value="Bold"/>
+								</Style>
+								<Style Selector="Border > StackPanel > TextBlock">
+									<Setter Property="HorizontalAlignment" Value="Center"/>
+									<Setter Property="VerticalAlignment" Value="Center"/>
+									<Setter Property="TextWrapping" Value="WrapWithOverflow"/>
 								</Style>
 								
 								<Style Selector="Border.RedStatus">
-										<Setter Property="Background" Value="Red"/>
+										<Setter Property="Background" Value="#d80000"/>
+									<Style Selector="^ > TextBlock">
+										<Setter Property="Foreground" Value="White"/>
+									</Style>
+
 								</Style>
 								<Style Selector="Border.YellowStatus">
 										<Setter Property="Background" Value="#FFA500"/>
+									<Style Selector="^ > TextBlock">
+										<Setter Property="Foreground" Value="White"/>
+									</Style>
 								</Style>
 								<Style Selector="Border.GreenStatus">
 										<Setter Property="Background" Value="Green"/>
+									<Style Selector="^ > TextBlock">
+										<Setter Property="Foreground" Value="White"/>
+									</Style>
 								</Style>
 							</Grid.Styles>
 								
@@ -115,9 +139,7 @@
 								<Border Grid.Row="10" Grid.Column="2"> </Border>
 								<Border Grid.Row="10" Grid.Column="1"> </Border>
 							
-								<Border Grid.Row="10" Grid.Column="0">
-									<TextBlock Text="9"/>
-								</Border>
+								
 								
 								<Border Grid.Row="9" Grid.Column="6"> </Border>
 								<Border Grid.Row="9" Grid.Column="5"> </Border>
@@ -126,9 +148,7 @@
 								<Border Grid.Row="9" Grid.Column="2"> </Border>
 								<Border Grid.Row="9" Grid.Column="1"> </Border>
 							
-								<Border Grid.Row="9" Grid.Column="0"> 
-									<TextBlock Text="8"/>
-								</Border>
+								
 							
 								<Border Grid.Row="8" Grid.Column="6"> </Border>
 								<Border Grid.Row="8" Grid.Column="5"> </Border>
@@ -137,9 +157,7 @@
 								<Border Grid.Row="8" Grid.Column="2"> </Border>
 								<Border Grid.Row="8" Grid.Column="1"> </Border>
 							
-								<Border Grid.Row="8" Grid.Column="0"> 
-									<TextBlock Text="7"/>
-								</Border>
+								
 							
 								<Border Grid.Row="7" Grid.Column="6"> </Border>
 								<Border Grid.Row="7" Grid.Column="5"> </Border>
@@ -148,12 +166,7 @@
 								<Border Grid.Row="7" Grid.Column="2"> </Border>
 								<Border Grid.Row="7" Grid.Column="1"> </Border>
 							
-								<Border Grid.Row="7" Grid.Column="0">
-									<TextBlock Text="6"/>
-								</Border>
 
-								<Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="8" Background="LightSteelBlue"> 
-								</Border>
 							
 								<Border Grid.Row="5" Grid.Column="6"> </Border>
 								<Border Grid.Row="5" Grid.Column="5"> </Border>
@@ -162,9 +175,7 @@
 								<Border Grid.Row="5" Grid.Column="2"> </Border>
 								<Border Grid.Row="5" Grid.Column="1"> </Border>
 							
-								<Border Grid.Row="5" Grid.Column="0"> 
-									<TextBlock Text="5"/>
-								</Border>
+								
 							
 								<Border Grid.Row="4" Grid.Column="6"> </Border>
 								<Border Grid.Row="4" Grid.Column="5"> </Border>
@@ -172,9 +183,7 @@
 								<Border Grid.Row="4" Grid.Column="3"> </Border>
 								<Border Grid.Row="4" Grid.Column="2"> </Border>
 								<Border Grid.Row="4" Grid.Column="1"> </Border>
-								<Border Grid.Row="4" Grid.Column="0">
-									<TextBlock Text="4"/>
-								</Border>
+								
 							
 								<Border Grid.Row="3" Grid.Column="6"> </Border>
 								<Border Grid.Row="3" Grid.Column="5"> </Border>
@@ -183,9 +192,7 @@
 								<Border Grid.Row="3" Grid.Column="2"> </Border>
 								<Border Grid.Row="3" Grid.Column="1"> </Border>
 							
-								<Border Grid.Row="3" Grid.Column="0">
-									<TextBlock Text="3"/>
-								</Border>
+								
 							
 								<Border Grid.Row="2" Grid.Column="6"> </Border>
 								<Border Grid.Row="2" Grid.Column="5"> </Border>
@@ -194,14 +201,25 @@
 								<Border Grid.Row="2" Grid.Column="2"> </Border>
 								<Border Grid.Row="2" Grid.Column="1"> </Border>
 							
-								<Border Grid.Row="2" Grid.Column="0"> 
-									<TextBlock Text="2"/>
-								</Border>
+								
 							
 								<Border Grid.Row="1" Grid.Column="6"> </Border>
 								<Border Grid.Row="1" Grid.Column="5"> </Border>
 								<Border Grid.Row="1" Grid.Column="4"> </Border>
-								<Border Grid.Row="1" Grid.Column="3"> </Border>
+							<Border Grid.Row="1"
+									Grid.Column="3"
+									Grid.RowSpan="{Binding Schedule[1][3].SoTietHoc}"
+									Classes.RedStatus="{Binding Schedule[1][3].IsRedStatus}" Classes.YellowStatus="{Binding Schedule[1][1].IsYellowStatus}" Classes.GreenStatus="{Binding Schedule[1][1].IsGreenStatus}">
+
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[1][3].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][3].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][3].NhomHocPhan, Converter={StaticResource GroupFomatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][3].PhongHoc}"/>
+									<TextBlock Text="{Binding Schedule[1][3].GiangVien}"/>
+								</StackPanel>
+							</Border>
+							
 								<Border Grid.Row="1" Grid.Column="2"> </Border>
 							
 								<Border Grid.Row="1"
@@ -211,7 +229,46 @@
 									
 										<StackPanel Orientation="Vertical">
 											<TextBlock Text="{Binding Schedule[1][1].MaHocPhan}"/>
+											<TextBlock Text="{Binding Schedule[1][1].TenHocPhan}"/>
+											<TextBlock Text="{Binding Schedule[1][1].NhomHocPhan, Converter={StaticResource GroupFomatConverter}}"/>
+											<TextBlock Text="{Binding Schedule[1][1].PhongHoc}"/>
+											<TextBlock Text="{Binding Schedule[1][1].GiangVien}"/>
 										</StackPanel>
+								</Border>
+
+							<Border Grid.Row="10" Grid.Column="0">
+								<TextBlock Text="9"/>
+							</Border>
+
+							<Border Grid.Row="9" Grid.Column="0">
+								<TextBlock Text="8"/>
+							</Border>
+
+							<Border Grid.Row="8" Grid.Column="0">
+								<TextBlock Text="7"/>
+							</Border>
+
+							<Border Grid.Row="7" Grid.Column="0">
+								<TextBlock Text="6"/>
+							</Border>
+
+							<Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="8" Background="LightSteelBlue">
+							</Border>
+
+							<Border Grid.Row="5" Grid.Column="0">
+								<TextBlock Text="5"/>
+							</Border>
+
+							<Border Grid.Row="4" Grid.Column="0">
+								<TextBlock Text="4"/>
+							</Border>
+
+							<Border Grid.Row="3" Grid.Column="0">
+									<TextBlock Text="3"/>
+								</Border>
+
+								<Border Grid.Row="2" Grid.Column="0">
+									<TextBlock Text="2"/>
 								</Border>
 							
 								<Border Grid.Row="1" Grid.Column="0">

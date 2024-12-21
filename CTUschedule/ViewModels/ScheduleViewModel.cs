@@ -23,7 +23,6 @@ namespace CTUschedule.ViewModels
         [ObservableProperty]
         // 9row, 6colum
         private List<ObservableCollection<ScheduleCell>> _schedule = new List<ObservableCollection<ScheduleCell>>();
-        private List<ObservableCollection<ScheduleCell>> emptyScheduleTable;
 
         private List<ScheduleCell> ScheduleItemPool = new List<ScheduleCell>();
         private List<ScheduleCell> SelectedScheduleItem;
@@ -40,9 +39,9 @@ namespace CTUschedule.ViewModels
 
         public void Init()
         {
-            emptyScheduleTable = EmptyTableSchedule();
+
             CourseNodes = CourseNode.UnExpandAllCourseNode(CourseNodes);
-            Schedule = emptyScheduleTable;
+            Schedule = EmptyTableSchedule();
         }
 
         // get empty table
@@ -64,23 +63,60 @@ namespace CTUschedule.ViewModels
 
         private void _courseListEditViewModel_ScheduleChanged(object? sender, EventArgs e)
         {
-            //CourseNodes = CourseNode.Uncheck_UnExpandCourseNode(_courseListEditViewModel.CourseNodes);
             CourseNodes = _courseListEditViewModel.CourseNodes;
-            //ScheduleItemPool = CreateScheduleItemPool();
+            ScheduleItemPool = CreateScheduleItemPool();
+            RenderSchedule();
         }
 
         private List<ScheduleCell> CreateScheduleItemPool()
         {
             List<ScheduleCell> newPool = new List<ScheduleCell>();
-            //foreach (var node in CourseNodes)
-            //{
-            //    foreach(var child in node.SubNodes)
-            //    {
-            //        ScheduleCell newScheduleItem = new ScheduleCell(child.Course);
-            //        newPool.Add(newScheduleItem);
-            //    }
-            //}
+            foreach (var node in CourseNodes)
+            {
+                foreach (var child in node.SubNodes)
+                {
+                    foreach (var course in child.CourseGroup)
+                    {
+                        ScheduleCell newScheduleItem = new ScheduleCell(course);
+                        newPool.Add(newScheduleItem);
+                    }
+                }
+            }
             return newPool;
+        }
+
+        private void RenderSchedule()
+        {
+            foreach (var node in CourseNodes)
+            {
+                //if (node.MaHocPhan == maHocPhan)
+                {
+                    foreach (var child in node.SubNodes)
+                    {
+                        if (child.IsScheduleSelected)
+                        {
+                            AddCourseToSchedule(child.CourseGroup);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void AddCourseToSchedule(ObservableCollection<CourseInformation> courseGroup)
+        {
+            foreach (var course in courseGroup) 
+            { 
+                foreach(var itempool in ScheduleItemPool)
+                {
+                    // check luôn mã học phần vì trong pool có nhiều nhóm mà khác học phần
+                    if (course.dkmh_tu_dien_hoc_phan_ma == itempool.MaHocPhan && course.dkmh_nhom_hoc_phan_ma == itempool.NhomHocPhan)
+                    {
+                        itempool.IsShowCell = true;
+                        Schedule[itempool.RowIndex][itempool.ColumnIndex] = itempool;
+                    }
+                }
+            }
+            Schedule = Schedule;
         }
 
         [RelayCommand]
@@ -95,8 +131,8 @@ namespace CTUschedule.ViewModels
             if (grid == null) return;
             var maHocPhan = grid.GetVisualDescendants().OfType<TextBlock>().FirstOrDefault().Text;
 
-            ObservableCollection<CourseNode>? subNode = parent.ItemsSource as ObservableCollection<CourseNode>;
-
+            Schedule = EmptyTableSchedule();
+            RenderSchedule();
 
         }
 

@@ -12,14 +12,17 @@ namespace CTUschedule.Models
     {
         public string MaHocPhan { get; set; }
         public string TenHocPhan { get; set; }
-
         public string NhomHocPhan { get; set; }
         public string PhongHoc { get; set; }
         public string GiangVien { get; set; }
+
+        public bool IsShowCell { get; set; } = false;
+
         public int SoTietHoc  { get; set; }
         public int TietBatDau { get; set; } // hang
-
         public int ThuDiHoc { get; set; } // cot
+
+        public int RowRange { get => TietBatDau + SoTietHoc - 1; }
 
         public int RowIndex
         {
