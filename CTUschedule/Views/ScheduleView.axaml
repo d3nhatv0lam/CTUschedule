@@ -17,7 +17,8 @@
              x:Class="CTUschedule.Views.ScheduleView">
 
 	<UserControl.Resources>
-		<Conv:ScheduleGroupFomatConverter x:Key="GroupFomatConverter"/>
+		<Conv:ScheduleGroupFomatConverter x:Key="GroupFormatConverter"/>
+		<Conv:ScheduleStudyRoomFomatConverter x:Key="RoomFormatConverter"/>
 	</UserControl.Resources>
 
 
@@ -26,287 +27,1130 @@
 			<!-- put your dialog content here-->
 		</dialogHost:DialogHost.DialogContent>
 		<!-- put the content over which the dialog is shown here (e.g. your main window grid)-->
-			<Grid ColumnDefinitions="0.37*,4, *">
-				
-				<ScrollViewer 
-						Grid.Column="0"
-					   HorizontalScrollBarVisibility="Disabled"
-					   VerticalScrollBarVisibility="Auto"
-					   Theme="{StaticResource MaterialModernScrollViewer}">
+		<Grid ColumnDefinitions="0.37*,4, *">
 
-					<TreeView ItemsSource="{Binding CourseNodes}" 
-							  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-						<TreeView.Styles>
-							<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
-								<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-							</Style>
-						</TreeView.Styles>
+			<ScrollViewer
+					Grid.Column="0"
+				   HorizontalScrollBarVisibility="Disabled"
+				   VerticalScrollBarVisibility="Auto"
+				   Theme="{StaticResource MaterialModernScrollViewer}">
 
-						<TreeView.ItemTemplate>
-							<TreeDataTemplate ItemsSource="{Binding SubNodes}">
-								
-								<Grid ColumnDefinitions="Auto,8, Auto , 20 ,Auto,*,8, *">
-									<Grid.Styles>
-										<Style Selector="TextBlock">
-											<Setter Property="VerticalAlignment" Value="Center"/>
-											<Setter Property="FontFamily" Value="/Assets/Fonts/Montserrat/Montserrat-Medium.otf #Montserrat"/>
-											<Setter Property="FontWeight" Value="Bold"/>
-										</Style>
-										<Style Selector="TextBlock.RedStatus">
-											<Setter Property="Foreground" Value="Red"/>
-										</Style>
-										<Style Selector="TextBlock.YellowStatus">
-											<Setter Property="Foreground" Value="#FFA500"/>
-										</Style>
-										<Style Selector="TextBlock.GreenStatus">
-											<Setter Property="Foreground" Value="Green"/>
-										</Style>
-									</Grid.Styles>
+				<TreeView ItemsSource="{Binding CourseNodes}"
+						  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+					<TreeView.Styles>
+						<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
+							<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+						</Style>
+					</TreeView.Styles>
+
+					<TreeView.ItemTemplate>
+						<TreeDataTemplate ItemsSource="{Binding SubNodes}">
+
+							<Grid ColumnDefinitions="Auto,8, Auto , 20 ,Auto,*,8, *">
+								<Grid.Styles>
+									<Style Selector="TextBlock">
+										<Setter Property="VerticalAlignment" Value="Center"/>
+										<Setter Property="FontFamily" Value="/Assets/Fonts/Montserrat/Montserrat-Medium.otf #Montserrat"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Style>
+									<Style Selector="TextBlock.RedStatus">
+										<Setter Property="Foreground" Value="Red"/>
+									</Style>
+									<Style Selector="TextBlock.YellowStatus">
+										<Setter Property="Foreground" Value="#FFA500"/>
+									</Style>
+									<Style Selector="TextBlock.GreenStatus">
+										<Setter Property="Foreground" Value="Green"/>
+									</Style>
+								</Grid.Styles>
 
 
-									<CheckBox
-										Grid.Column="0"
-										Classes="accent"
-										IsChecked="{Binding IsScheduleSelected , UpdateSourceTrigger=PropertyChanged}"
-										Command="{Binding ((vm:ScheduleViewModel)DataContext).CheckBoxTaskCommand , RelativeSource={RelativeSource AncestorType=views:ScheduleView}}"
-										CommandParameter="{Binding $self, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
+								<CheckBox
+									Grid.Column="0"
+									Classes="accent"
+									IsChecked="{Binding IsScheduleSelected , UpdateSourceTrigger=PropertyChanged}"
+									Command="{Binding ((vm:ScheduleViewModel)DataContext).CheckBoxTaskCommand , RelativeSource={RelativeSource AncestorType=views:ScheduleView}}"
+									CommandParameter="{Binding $self, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
 										/>
 
-									
-									<TextBlock Grid.Column="2" Text="{Binding MaHocPhan}" ToolTip.Tip="Mã Học Phần"/>
-			
-									<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="{Binding TenHocPhan}"/>
-									
-									<TextBlock Grid.Column="2" Text="{Binding representativeNode.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
-									<TextBlock  Grid.Column="5" Text="{Binding representativeNode.si_so_con_lai}" HorizontalAlignment="Center" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-									<TextBlock  Grid.Column="7" Text="{Binding representativeNode.dkmh_tu_dien_lop_hoc_phan_si_so}" HorizontalAlignment="Center" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-								</Grid>
 
-							</TreeDataTemplate>
-						</TreeView.ItemTemplate>
-					</TreeView>
-				</ScrollViewer>
-	
-				<GridSplitter Grid.Column="1" Background="Black" ResizeDirection="Columns"/>
+								<TextBlock Grid.Column="2" Text="{Binding MaHocPhan}" ToolTip.Tip="Mã Học Phần"/>
 
-				<Border Grid.Column="2" Padding="10">
-					<Grid>
-						
-						<Grid Grid.Row="0" RowDefinitions="* * * * * * 0.5* * * * *" ColumnDefinitions="* * * * * * *">
-							<Grid.Styles>
+								<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="{Binding TenHocPhan}"/>
 
-								<Style Selector="Border">
-									<Setter Property="BorderBrush" Value="Black"/>
-									<Setter Property="BorderThickness" Value="1"/>
-									<Setter Property="Background" Value="White"/>
-								</Style>
-								<Style Selector="Border > TextBlock">
-									<Setter Property="HorizontalAlignment" Value="Center"/>
-									<Setter Property="VerticalAlignment" Value="Center"/>
-									<Setter Property="FontWeight" Value="Bold"/>
-								</Style>
-								<Style Selector="Border > StackPanel > TextBlock">
-									<Setter Property="HorizontalAlignment" Value="Center"/>
-									<Setter Property="VerticalAlignment" Value="Center"/>
-									<Setter Property="TextWrapping" Value="WrapWithOverflow"/>
-								</Style>
-								
-								<Style Selector="Border.RedStatus">
-										<Setter Property="Background" Value="#d80000"/>
-									<Style Selector="^ > TextBlock">
-										<Setter Property="Foreground" Value="White"/>
-									</Style>
+								<TextBlock Grid.Column="2" Text="{Binding representativeNode.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
+								<TextBlock  Grid.Column="5" Text="{Binding representativeNode.si_so_con_lai}" HorizontalAlignment="Center" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+								<TextBlock  Grid.Column="7" Text="{Binding representativeNode.dkmh_tu_dien_lop_hoc_phan_si_so}" HorizontalAlignment="Center" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+							</Grid>
 
-								</Style>
-								<Style Selector="Border.YellowStatus">
-										<Setter Property="Background" Value="#FFA500"/>
-									<Style Selector="^ > TextBlock">
-										<Setter Property="Foreground" Value="White"/>
-									</Style>
-								</Style>
-								<Style Selector="Border.GreenStatus">
-										<Setter Property="Background" Value="Green"/>
-									<Style Selector="^ > TextBlock">
-										<Setter Property="Foreground" Value="White"/>
-									</Style>
-								</Style>
-							</Grid.Styles>
-								
-								<Border Grid.Row="10" Grid.Column="6"> </Border>
-								<Border Grid.Row="10" Grid.Column="5"> </Border>
-								<Border Grid.Row="10" Grid.Column="4"> </Border>
-								<Border Grid.Row="10" Grid.Column="3"> </Border>
-								<Border Grid.Row="10" Grid.Column="2"> </Border>
-								<Border Grid.Row="10" Grid.Column="1"> </Border>
-							
-								
-								
-								<Border Grid.Row="9" Grid.Column="6"> </Border>
-								<Border Grid.Row="9" Grid.Column="5"> </Border>
-								<Border Grid.Row="9" Grid.Column="4"> </Border>
-								<Border Grid.Row="9" Grid.Column="3"> </Border>
-								<Border Grid.Row="9" Grid.Column="2"> </Border>
-								<Border Grid.Row="9" Grid.Column="1"> </Border>
-							
-								
-							
-								<Border Grid.Row="8" Grid.Column="6"> </Border>
-								<Border Grid.Row="8" Grid.Column="5"> </Border>
-								<Border Grid.Row="8" Grid.Column="4"> </Border>
-								<Border Grid.Row="8" Grid.Column="3"> </Border>
-								<Border Grid.Row="8" Grid.Column="2"> </Border>
-								<Border Grid.Row="8" Grid.Column="1"> </Border>
-							
-								
-							
-								<Border Grid.Row="7" Grid.Column="6"> </Border>
-								<Border Grid.Row="7" Grid.Column="5"> </Border>
-								<Border Grid.Row="7" Grid.Column="4"> </Border>
-								<Border Grid.Row="7" Grid.Column="3"> </Border>
-								<Border Grid.Row="7" Grid.Column="2"> </Border>
-								<Border Grid.Row="7" Grid.Column="1"> </Border>
-							
+						</TreeDataTemplate>
+					</TreeView.ItemTemplate>
+				</TreeView>
+			</ScrollViewer>
 
-							
-								<Border Grid.Row="5" Grid.Column="6"> </Border>
-								<Border Grid.Row="5" Grid.Column="5"> </Border>
-								<Border Grid.Row="5" Grid.Column="4"> </Border>
-								<Border Grid.Row="5" Grid.Column="3"> </Border>
-								<Border Grid.Row="5" Grid.Column="2"> </Border>
-								<Border Grid.Row="5" Grid.Column="1"> </Border>
-							
-								
-							
-								<Border Grid.Row="4" Grid.Column="6"> </Border>
-								<Border Grid.Row="4" Grid.Column="5"> </Border>
-								<Border Grid.Row="4" Grid.Column="4"> </Border>
-								<Border Grid.Row="4" Grid.Column="3"> </Border>
-								<Border Grid.Row="4" Grid.Column="2"> </Border>
-								<Border Grid.Row="4" Grid.Column="1"> </Border>
-								
-							
-								<Border Grid.Row="3" Grid.Column="6"> </Border>
-								<Border Grid.Row="3" Grid.Column="5"> </Border>
-								<Border Grid.Row="3" Grid.Column="4"> </Border>
-								<Border Grid.Row="3" Grid.Column="3"> </Border>
-								<Border Grid.Row="3" Grid.Column="2"> </Border>
-								<Border Grid.Row="3" Grid.Column="1"> </Border>
-							
-								
-							
-								<Border Grid.Row="2" Grid.Column="6"> </Border>
-								<Border Grid.Row="2" Grid.Column="5"> </Border>
-								<Border Grid.Row="2" Grid.Column="4"> </Border>
-								<Border Grid.Row="2" Grid.Column="3"> </Border>
-								<Border Grid.Row="2" Grid.Column="2"> </Border>
-								<Border Grid.Row="2" Grid.Column="1"> </Border>
-							
-								
-							
-								<Border Grid.Row="1" Grid.Column="6"> </Border>
-								<Border Grid.Row="1" Grid.Column="5"> </Border>
-								<Border Grid.Row="1" Grid.Column="4"> </Border>
-							<Border Grid.Row="1"
-									Grid.Column="3"
-									Grid.RowSpan="{Binding Schedule[1][3].SoTietHoc}"
-									Classes.RedStatus="{Binding Schedule[1][3].IsRedStatus}" Classes.YellowStatus="{Binding Schedule[1][1].IsYellowStatus}" Classes.GreenStatus="{Binding Schedule[1][1].IsGreenStatus}">
+			<GridSplitter Grid.Column="1" Background="Black" ResizeDirection="Columns"/>
 
+			<Border Grid.Column="2" Padding="10">
+				<Grid>
+
+					<Grid Grid.Row="0" RowDefinitions="* * * * * * 0.5* * * * *" ColumnDefinitions="* * * * * * *">
+						<Grid.Styles>
+
+							<Style Selector="Border">
+								<Setter Property="BorderBrush" Value="Black"/>
+								<Setter Property="BorderThickness" Value="1"/>
+								<Setter Property="Background" Value="White"/>
+							</Style>
+							<Style Selector="Border > TextBlock">
+								<Setter Property="HorizontalAlignment" Value="Center"/>
+								<Setter Property="VerticalAlignment" Value="Center"/>
+								<Setter Property="FontWeight" Value="Bold"/>
+							</Style>
+							<Style Selector="Border > ScrollViewer > StackPanel > TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Setter Property="VerticalAlignment" Value="Center"/>
+								<Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+							</Style>
+
+							<Style Selector="Border.RedStatus">
+								<Setter Property="Background" Value="#FF2A04"/>
+								<Style Selector="^ > ScrollViewer > StackPanel > TextBlock">
+									<Setter Property="Foreground" Value="White"/>
+								</Style>
+
+							</Style>
+							<Style Selector="Border.YellowStatus">
+								<Setter Property="Background" Value="#FFB302"/>
+								<Style Selector="^ > ScrollViewer > StackPanel > TextBlock">
+									<Setter Property="Foreground" Value="#00008B"/>
+								</Style>
+							</Style>
+							<Style Selector="Border.GreenStatus">
+								<Setter Property="Background" Value="#00E200"/>
+								<Style Selector="^ > ScrollViewer > StackPanel > TextBlock">
+									<Setter Property="Foreground" Value="White"/>
+								</Style>
+							</Style>
+						</Grid.Styles>
+
+
+
+						<Border Grid.Row="10"
+								Grid.Column="6"
+								Grid.RowSpan="{Binding Schedule[10][6].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[10][6].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[10][6].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[10][6].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[10][6].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][6].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][6].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="10"
+								Grid.Column="5"
+								Grid.RowSpan="{Binding Schedule[10][5].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[10][5].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[10][5].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[10][5].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[10][5].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][5].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][5].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][5].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][5].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="10"
+								Grid.Column="4"
+								Grid.RowSpan="{Binding Schedule[10][4].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[10][4].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[10][4].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[10][4].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[10][4].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][4].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][4].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][4].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][4].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="10"
+								Grid.Column="3"
+								Grid.RowSpan="{Binding Schedule[10][3].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[10][3].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[10][3].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[10][3].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[10][3].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][3].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][3].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="10"
+								Grid.Column="2"
+								Grid.RowSpan="{Binding Schedule[10][2].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[10][2].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[10][2].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[10][2].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[10][2].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][2].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][2].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][2].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][2].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="10"
+								Grid.Column="1"
+								Grid.RowSpan="{Binding Schedule[10][1].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[10][1].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[10][1].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[10][1].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[10][1].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][1].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[10][1].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][1].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[10][1].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+
+						<Border Grid.Row="9"
+								Grid.Column="6"
+								Grid.RowSpan="{Binding Schedule[9][6].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[9][6].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[9][6].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[9][6].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[9][6].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][6].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][6].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="9"
+								Grid.Column="5"
+								Grid.RowSpan="{Binding Schedule[9][5].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[9][5].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[9][5].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[9][5].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[9][5].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][5].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][5].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][5].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][5].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="9"
+								Grid.Column="4"
+								Grid.RowSpan="{Binding Schedule[9][4].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[9][4].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[9][4].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[9][4].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[9][4].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][4].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][4].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][4].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][4].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="9"
+								Grid.Column="3"
+								Grid.RowSpan="{Binding Schedule[9][3].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[9][3].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[9][3].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[9][3].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[9][3].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][3].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][3].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="9"
+								Grid.Column="2"
+								Grid.RowSpan="{Binding Schedule[9][2].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[9][2].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[9][2].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[9][2].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[9][2].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][2].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][2].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][2].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][2].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="9"
+								Grid.Column="1"
+								Grid.RowSpan="{Binding Schedule[9][1].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[9][1].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[9][1].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[9][1].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[9][1].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][1].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[9][1].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][1].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[9][1].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+
+						<Border Grid.Row="8"
+								Grid.Column="6"
+								Grid.RowSpan="{Binding Schedule[8][6].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[8][6].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[8][6].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[8][6].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[8][6].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][6].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][6].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="8"
+								Grid.Column="5"
+								Grid.RowSpan="{Binding Schedule[8][5].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[8][5].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[8][5].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[8][5].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[8][5].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][5].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][5].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][5].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][5].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="8"
+								Grid.Column="4"
+								Grid.RowSpan="{Binding Schedule[8][4].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[8][4].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[8][4].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[8][4].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[8][4].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][4].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][4].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][4].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][4].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="8"
+								Grid.Column="3"
+								Grid.RowSpan="{Binding Schedule[8][3].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[8][3].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[8][3].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[8][3].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[8][3].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][3].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][3].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="8"
+								Grid.Column="2"
+								Grid.RowSpan="{Binding Schedule[8][2].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[8][2].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[8][2].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[8][2].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[8][2].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][2].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][2].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][2].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][2].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="8"
+								Grid.Column="1"
+								Grid.RowSpan="{Binding Schedule[8][1].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[8][1].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[8][1].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[8][1].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[8][1].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][1].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[8][1].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][1].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[8][1].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+
+						<Border Grid.Row="7"
+								Grid.Column="6"
+								Grid.RowSpan="{Binding Schedule[7][6].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[7][6].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[7][6].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[7][6].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[7][6].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][6].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][6].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="7"
+								Grid.Column="5"
+								Grid.RowSpan="{Binding Schedule[7][5].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[7][5].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[7][5].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[7][5].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[7][5].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][5].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][5].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][5].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][5].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="7"
+								Grid.Column="4"
+								Grid.RowSpan="{Binding Schedule[7][4].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[7][4].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[7][4].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[7][4].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[7][4].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][4].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][4].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][4].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][4].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="7"
+								Grid.Column="3"
+								Grid.RowSpan="{Binding Schedule[7][3].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[7][3].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[7][3].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[7][3].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[7][3].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][3].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][3].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="7"
+								Grid.Column="2"
+								Grid.RowSpan="{Binding Schedule[7][2].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[7][2].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[7][2].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[7][2].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[7][2].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][2].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][2].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][2].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][2].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="7"
+								Grid.Column="1"
+								Grid.RowSpan="{Binding Schedule[7][1].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[7][1].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[7][1].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[7][1].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[7][1].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][1].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[7][1].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][1].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[7][1].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+
+						<Border Grid.Row="5"
+								Grid.Column="6"
+								Grid.RowSpan="{Binding Schedule[5][6].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[5][6].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[5][6].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[5][6].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[5][6].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][6].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][6].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="5"
+								Grid.Column="5"
+								Grid.RowSpan="{Binding Schedule[5][5].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[5][5].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[5][5].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[5][5].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[5][5].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][5].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][5].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][5].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][5].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="5"
+								Grid.Column="4"
+								Grid.RowSpan="{Binding Schedule[5][4].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[5][4].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[5][4].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[5][4].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[5][4].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][4].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][4].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][4].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][4].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="5"
+								Grid.Column="3"
+								Grid.RowSpan="{Binding Schedule[5][3].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[5][3].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[5][3].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[5][3].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[5][3].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][3].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][3].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="5"
+								Grid.Column="2"
+								Grid.RowSpan="{Binding Schedule[5][2].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[5][2].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[5][2].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[5][2].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[5][2].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][2].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][2].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][2].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][2].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="5"
+								Grid.Column="1"
+								Grid.RowSpan="{Binding Schedule[5][1].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[5][1].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[5][1].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[5][1].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[5][1].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][1].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[5][1].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][1].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[5][1].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+
+						<Border Grid.Row="4"
+								Grid.Column="6"
+								Grid.RowSpan="{Binding Schedule[4][6].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[4][6].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[4][6].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[4][6].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[4][6].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][6].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][6].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="4"
+								Grid.Column="5"
+								Grid.RowSpan="{Binding Schedule[4][5].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[4][5].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[4][5].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[4][5].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[4][5].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][5].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][5].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][5].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][5].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="4"
+								Grid.Column="4"
+								Grid.RowSpan="{Binding Schedule[4][4].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[4][4].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[4][4].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[4][4].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[4][4].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][4].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][4].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][4].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][4].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="4"
+								Grid.Column="3"
+								Grid.RowSpan="{Binding Schedule[4][3].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[4][3].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[4][3].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[4][3].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[4][3].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][3].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][3].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="4"
+								Grid.Column="2"
+								Grid.RowSpan="{Binding Schedule[4][2].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[4][2].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[4][2].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[4][2].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[4][2].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][2].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][2].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][2].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][2].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="4"
+								Grid.Column="1"
+								Grid.RowSpan="{Binding Schedule[4][1].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[4][1].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[4][1].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[4][1].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[4][1].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][1].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[4][1].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][1].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[4][1].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+
+						<Border Grid.Row="3"
+								Grid.Column="6"
+								Grid.RowSpan="{Binding Schedule[3][6].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[3][6].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[3][6].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[3][6].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[3][6].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][6].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][6].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="3"
+								Grid.Column="5"
+								Grid.RowSpan="{Binding Schedule[3][5].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[3][5].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[3][5].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[3][5].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[3][5].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][5].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][5].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][5].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][5].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="3"
+								Grid.Column="4"
+								Grid.RowSpan="{Binding Schedule[3][4].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[3][4].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[3][4].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[3][4].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[3][4].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][4].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][4].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][4].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][4].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="3"
+								Grid.Column="3"
+								Grid.RowSpan="{Binding Schedule[3][3].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[3][3].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[3][3].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[3][3].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[3][3].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][3].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][3].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="3"
+								Grid.Column="2"
+								Grid.RowSpan="{Binding Schedule[3][2].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[3][2].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[3][2].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[3][2].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[3][2].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][2].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][2].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][2].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][2].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="3"
+								Grid.Column="1"
+								Grid.RowSpan="{Binding Schedule[3][1].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[3][1].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[3][1].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[3][1].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[3][1].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][1].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[3][1].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][1].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[3][1].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+
+						<Border Grid.Row="2"
+								Grid.Column="6"
+								Grid.RowSpan="{Binding Schedule[2][6].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[2][6].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[2][6].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[2][6].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[2][6].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][6].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][6].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="2"
+								Grid.Column="5"
+								Grid.RowSpan="{Binding Schedule[2][5].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[2][5].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[2][5].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[2][5].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[2][5].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][5].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][5].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][5].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][5].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="2"
+								Grid.Column="4"
+								Grid.RowSpan="{Binding Schedule[2][4].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[2][4].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[2][4].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[2][4].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[2][4].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][4].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][4].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][4].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][4].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="2"
+								Grid.Column="3"
+								Grid.RowSpan="{Binding Schedule[2][3].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[2][3].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[2][3].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[2][3].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[2][3].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][3].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][3].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="2"
+								Grid.Column="2"
+								Grid.RowSpan="{Binding Schedule[2][2].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[2][2].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[2][2].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[2][2].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[2][2].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][2].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][2].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][2].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][2].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="2"
+								Grid.Column="1"
+								Grid.RowSpan="{Binding Schedule[2][1].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[2][1].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[2][1].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[2][1].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[2][1].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][1].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[2][1].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][1].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[2][1].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+
+						<Border Grid.Row="1"
+								Grid.Column="6"
+								Grid.RowSpan="{Binding Schedule[1][6].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[1][6].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[1][6].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[1][6].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[1][6].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][6].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][6].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="1"
+								Grid.Column="5"
+								Grid.RowSpan="{Binding Schedule[1][5].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[1][5].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[1][5].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[1][5].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[1][5].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][5].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][5].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][5].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][5].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="1"
+								Grid.Column="4"
+								Grid.RowSpan="{Binding Schedule[1][4].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[1][4].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[1][4].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[1][4].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[1][4].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][4].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][4].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][4].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][4].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+
+						<Border Grid.Row="1"
+								Grid.Column="3"
+								Grid.RowSpan="{Binding Schedule[1][3].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[1][3].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[1][3].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[1][3].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
 								<StackPanel Orientation="Vertical">
 									<TextBlock Text="{Binding Schedule[1][3].MaHocPhan}"/>
 									<TextBlock Text="{Binding Schedule[1][3].TenHocPhan}"/>
-									<TextBlock Text="{Binding Schedule[1][3].NhomHocPhan, Converter={StaticResource GroupFomatConverter}}"/>
-									<TextBlock Text="{Binding Schedule[1][3].PhongHoc}"/>
+									<TextBlock Text="{Binding Schedule[1][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
 									<TextBlock Text="{Binding Schedule[1][3].GiangVien}"/>
 								</StackPanel>
-							</Border>
-							
-								<Border Grid.Row="1" Grid.Column="2"> </Border>
-							
-								<Border Grid.Row="1"
-										Grid.Column="1"
-										Grid.RowSpan="{Binding Schedule[1][1].SoTietHoc}"
-										Classes.RedStatus="{Binding Schedule[1][1].IsRedStatus}" Classes.YellowStatus="{Binding Schedule[1][1].IsYellowStatus}" Classes.GreenStatus="{Binding Schedule[1][1].IsGreenStatus}">
-									
-										<StackPanel Orientation="Vertical">
-											<TextBlock Text="{Binding Schedule[1][1].MaHocPhan}"/>
-											<TextBlock Text="{Binding Schedule[1][1].TenHocPhan}"/>
-											<TextBlock Text="{Binding Schedule[1][1].NhomHocPhan, Converter={StaticResource GroupFomatConverter}}"/>
-											<TextBlock Text="{Binding Schedule[1][1].PhongHoc}"/>
-											<TextBlock Text="{Binding Schedule[1][1].GiangVien}"/>
-										</StackPanel>
-								</Border>
+							</ScrollViewer>
+						</Border>
 
-							<Border Grid.Row="10" Grid.Column="0">
-								<TextBlock Text="9"/>
-							</Border>
+						<Border Grid.Row="1"
+								Grid.Column="2"
+								Grid.RowSpan="{Binding Schedule[1][2].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[1][2].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[1][2].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[1][2].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[1][2].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][2].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][2].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][2].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][2].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
 
-							<Border Grid.Row="9" Grid.Column="0">
-								<TextBlock Text="8"/>
-							</Border>
+						<Border Grid.Row="1"
+								Grid.Column="1"
+								Grid.RowSpan="{Binding Schedule[1][1].SoTietHoc}"
+								Classes.RedStatus="{Binding Schedule[1][1].IsRedStatus}"
+								Classes.YellowStatus="{Binding Schedule[1][1].IsYellowStatus}"
+								Classes.GreenStatus="{Binding Schedule[1][1].IsGreenStatus}">
+							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[1][1].MaHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][1].TenHocPhan}"/>
+									<TextBlock Text="{Binding Schedule[1][1].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][1].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+									<TextBlock Text="{Binding Schedule[1][1].GiangVien}"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
 
-							<Border Grid.Row="8" Grid.Column="0">
-								<TextBlock Text="7"/>
-							</Border>
 
-							<Border Grid.Row="7" Grid.Column="0">
-								<TextBlock Text="6"/>
-							</Border>
 
-							<Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="8" Background="LightSteelBlue">
-							</Border>
+						<!--<Border Grid.Row="1" 
+									Grid.Column="3"
+									Grid.RowSpan="{Binding Schedule[1][3].SoTietHoc}"
+									Classes.RedStatus="{Binding Schedule[1][3].IsRedStatus}" Classes.YellowStatus="{Binding Schedule[1][3].IsYellowStatus}" Classes.GreenStatus="{Binding Schedule[1][3].IsGreenStatus}">
+								<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
+									<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding Schedule[1][3].MaHocPhan}"/>
+										<TextBlock Text="{Binding Schedule[1][3].TenHocPhan}"/>
+										<TextBlock Text="{Binding Schedule[1][3].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
+										<TextBlock Text="{Binding Schedule[1][3].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
+										<TextBlock Text="{Binding Schedule[1][3].GiangVien}"/>
+									</StackPanel>
+							 </ScrollViewer>
+							</Border>-->
 
-							<Border Grid.Row="5" Grid.Column="0">
-								<TextBlock Text="5"/>
-							</Border>
 
-							<Border Grid.Row="4" Grid.Column="0">
-								<TextBlock Text="4"/>
-							</Border>
 
-							<Border Grid.Row="3" Grid.Column="0">
-									<TextBlock Text="3"/>
-								</Border>
+						<Border Grid.Row="10" Grid.Column="0">
+							<TextBlock Text="9"/>
+						</Border>
 
-								<Border Grid.Row="2" Grid.Column="0">
-									<TextBlock Text="2"/>
-								</Border>
-							
-								<Border Grid.Row="1" Grid.Column="0">
-									<TextBlock Text="1"/>
-								</Border>
-							
-								<Border Grid.Row="0" Grid.Column="6">
-									<TextBlock Text="Thứ 7"/>
-								</Border>
-								<Border Grid.Row="0" Grid.Column="5"> 
-									<TextBlock Text="Thứ 6"/>
-								</Border>
-								<Border Grid.Row="0" Grid.Column="4"> 
-									<TextBlock Text="Thứ 5"/>
-								</Border>
-								<Border Grid.Row="0" Grid.Column="3">
-									<TextBlock Text="Thứ 4"/>
-								</Border>
-								<Border Grid.Row="0" Grid.Column="2">
-									<TextBlock Text="Thứ 3"/>
-								</Border>
-								<Border Grid.Row="0" Grid.Column="1"> 
-									<TextBlock Text="Thứ 2"/>
-								</Border>
-								
-								<Border Grid.Row="0" Grid.Column="0"> 
-									<TextBlock Text="Tiết"/>
-								</Border>
+						<Border Grid.Row="9" Grid.Column="0">
+							<TextBlock Text="8"/>
+						</Border>
 
-									
-								
-						</Grid>
-						
-					</Grid>	
-				</Border>
+						<Border Grid.Row="8" Grid.Column="0">
+							<TextBlock Text="7"/>
+						</Border>
 
-			</Grid>
+						<Border Grid.Row="7" Grid.Column="0">
+							<TextBlock Text="6"/>
+						</Border>
+
+						<Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="8" Background="LightSteelBlue">
+						</Border>
+
+						<Border Grid.Row="5" Grid.Column="0">
+							<TextBlock Text="5"/>
+						</Border>
+
+						<Border Grid.Row="4" Grid.Column="0">
+							<TextBlock Text="4"/>
+						</Border>
+
+						<Border Grid.Row="3" Grid.Column="0">
+							<TextBlock Text="3"/>
+						</Border>
+
+						<Border Grid.Row="2" Grid.Column="0">
+							<TextBlock Text="2"/>
+						</Border>
+
+						<Border Grid.Row="1" Grid.Column="0">
+							<TextBlock Text="1"/>
+						</Border>
+
+						<Border Grid.Row="0" Grid.Column="6">
+							<TextBlock Text="Thứ 7"/>
+						</Border>
+						<Border Grid.Row="0" Grid.Column="5">
+							<TextBlock Text="Thứ 6"/>
+						</Border>
+						<Border Grid.Row="0" Grid.Column="4">
+							<TextBlock Text="Thứ 5"/>
+						</Border>
+						<Border Grid.Row="0" Grid.Column="3">
+							<TextBlock Text="Thứ 4"/>
+						</Border>
+						<Border Grid.Row="0" Grid.Column="2">
+							<TextBlock Text="Thứ 3"/>
+						</Border>
+						<Border Grid.Row="0" Grid.Column="1">
+							<TextBlock Text="Thứ 2"/>
+						</Border>
+
+						<Border Grid.Row="0" Grid.Column="0">
+							<TextBlock Text="Tiết"/>
+						</Border>
+
+
+
+					</Grid>
+
+				</Grid>
+			</Border>
+
+		</Grid>
 	</dialogHost:DialogHost>
 
-	
+
 </UserControl>

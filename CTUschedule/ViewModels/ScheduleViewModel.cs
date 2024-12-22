@@ -45,8 +45,8 @@ namespace CTUschedule.ViewModels
         }
 
         // get empty table
-        // thời khóa biểu mặc dịnh có 9 row 6 col
-        private List<ObservableCollection<ScheduleCell>> EmptyTableSchedule(int rows = 9, int columns = 6)
+        // thời khóa biểu mặc dịnh có 10 row 6 col
+        private List<ObservableCollection<ScheduleCell>> EmptyTableSchedule(int rows = 10, int columns = 6)
         {
             List<ObservableCollection<ScheduleCell>> newTable = new List<ObservableCollection<ScheduleCell>>();
             for (int i = 0; i <= rows; i++)

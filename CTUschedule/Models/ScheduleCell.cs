@@ -18,11 +18,10 @@ namespace CTUschedule.Models
 
         public bool IsShowCell { get; set; } = false;
 
-        public int SoTietHoc  { get; set; }
+        public int SoTietHoc { get; set; } = 1; // row span default is 1
         public int TietBatDau { get; set; } // hang
         public int ThuDiHoc { get; set; } // cot
 
-        public int RowRange { get => TietBatDau + SoTietHoc - 1; }
 
         public int RowIndex
         {
