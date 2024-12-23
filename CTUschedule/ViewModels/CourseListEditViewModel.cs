@@ -70,7 +70,7 @@ namespace CTUschedule.ViewModels
             Instance = this;
             _mainHomeViewModel = MainHomeViewModel.Instance;
             _courseListViewModel = CourseListViewModel.Instance;
-            _courseListViewModel.CourseListUpdate += _courseListViewModel_CourseListUpdate;
+            _courseListViewModel.CourseNodesUpdate += _courseListViewModel_CourseListUpdate;
 
             //CourseNodes = new ObservableCollection<CourseNode>
             //    {
@@ -191,6 +191,7 @@ namespace CTUschedule.ViewModels
                 deletedCourseNodes.Add(new CourseNode(node.MaHocPhan, node.TenHocPhan, subnodes));
             }
             CourseNodes = deletedCourseNodes;
+            _courseListViewModel.CourseNodes = deletedCourseNodes;
         }
 
         [RelayCommand]
@@ -199,9 +200,8 @@ namespace CTUschedule.ViewModels
             _mainHomeViewModel.IsChangingView = true;
             await Task.Run(() =>
             {
-                ObservableCollection<CourseNode> newData = new ObservableCollection<CourseNode>();
-
-                foreach (var node in CourseNodes)
+                ObservableCollection<CourseNode> data = new ObservableCollection<CourseNode>(CourseNodes);
+                foreach (var node in data)
                 {
                     // get MaHocPhan
                     string MaHocPhan = node.MaHocPhan;
@@ -278,7 +278,10 @@ namespace CTUschedule.ViewModels
             {
                 string json = System.IO.File.ReadAllText(LoadLocationResult.First());
                 var Loadednodes = JsonSerializer.Deserialize<List<CourseNode>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                CourseNodes = new ObservableCollection<CourseNode>(Loadednodes);
+                // lưu lại CourseNode cho trang trước
+                _courseListViewModel.CourseNodes = new ObservableCollection<CourseNode>(Loadednodes);
+                // lưu cho trang này
+                CourseNodes = _courseListViewModel.CourseNodes;
                 INotificationPopup LoadedPopup = new NotificationPopupController(NotificationPopupController.Type.Succes, "Load thành công!", "Dữ liệu đã được load!");
                 LoadedPopup.ShowNotification();
             }
@@ -310,7 +313,7 @@ namespace CTUschedule.ViewModels
 
         private void _courseListViewModel_CourseListUpdate(object? sender, EventArgs e)
         {
-            CourseNodes = _courseListViewModel.SelectedCourseList;
+            CourseNodes = _courseListViewModel.CourseNodes;
         }
 
     }

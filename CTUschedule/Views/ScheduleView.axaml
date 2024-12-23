@@ -8,7 +8,8 @@
 			 xmlns:views="using:CTUschedule.Views"
              x:DataType="vm:ScheduleViewModel"
 			 xmlns:Conv="using:CTUschedule.Converter"
-			 
+			  xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
 			 
 			 xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
 			 xmlns:p1="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
@@ -26,8 +27,57 @@
 		<dialogHost:DialogHost.DialogContent>
 			<!-- put your dialog content here-->
 		</dialogHost:DialogHost.DialogContent>
+		
 		<!-- put the content over which the dialog is shown here (e.g. your main window grid)-->
-		<Grid ColumnDefinitions="0.37*,4, *">
+		<Grid RowDefinitions="auto auto *" >
+			<Grid Grid.Row="0" 
+				  ColumnDefinitions="* auto">
+
+				<StackPanel Grid.Column="0" VerticalAlignment="Bottom" Orientation="Horizontal">
+					<TextBlock  Classes="Headline6" Margin="10 0 0 0"  Text="Thời khóa biểu" />
+				</StackPanel>
+
+
+				<StackPanel Grid.Column="1" Orientation="Horizontal">
+
+					<StackPanel.Styles>
+						<Style Selector="controls|FloatingButton">
+							<Setter Property="HorizontalAlignment" Value="Right"/>
+							<Setter Property="Margin" Value="5 0 5 0"/>
+							<Style Selector="^ > StackPanel > TextBlock">
+								<Setter Property="IsVisible" Value="False"/>
+							</Style>
+							<Setter Property="Transitions">
+								<Transitions>
+									<DoubleTransition Property="Width" Duration="0:0:0.3" Easing="QuarticEaseInOut"/>
+								</Transitions>
+							</Setter>
+
+							<Style Selector="^:pointerover">
+								<Setter Property="Width" Value="165"/>
+								<Style Selector="^ > StackPanel > TextBlock">
+									<Setter Property="IsVisible" Value="True"/>
+								</Style>
+							</Style>
+						</Style>
+					</StackPanel.Styles>
+
+					<controls:FloatingButton Classes="Accent Mini"
+											 Command="{Binding ReLoadDataCommand}">
+						<StackPanel Orientation="Horizontal">
+							<avalonia:MaterialIcon Kind="Reload" Height="25" Width="25"/>
+							<TextBlock Margin="5 0 0 0" Text="Cập nhật Nhóm HP" VerticalAlignment="Center">
+							</TextBlock>
+						</StackPanel>
+					</controls:FloatingButton>
+				</StackPanel>
+			</Grid>
+
+			<Border Grid.Row="1" Padding="10 0 10 0">
+				<Separator  Foreground="Black"/>
+			</Border>
+
+			<Grid Grid.Row="2" ColumnDefinitions="0.37*,4, *">
 
 			<ScrollViewer
 					Grid.Column="0"
@@ -37,15 +87,17 @@
 
 				<TreeView ItemsSource="{Binding CourseNodes}"
 						  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
 					<TreeView.Styles>
 						<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
 							<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+
 						</Style>
 					</TreeView.Styles>
 
 					<TreeView.ItemTemplate>
-						<TreeDataTemplate ItemsSource="{Binding SubNodes}">
 
+						<TreeDataTemplate ItemsSource="{Binding SubNodes}">
 							<Grid ColumnDefinitions="Auto,8, Auto , 20 ,Auto,*,8, *">
 								<Grid.Styles>
 									<Style Selector="TextBlock">
@@ -92,7 +144,6 @@
 
 			<Border Grid.Column="2" Padding="10">
 				<Grid>
-
 					<Grid Grid.Row="0" RowDefinitions="* * * * * * 0.5* * * * *" ColumnDefinitions="* * * * * * *">
 						<Grid.Styles>
 
@@ -111,7 +162,7 @@
 								<Setter Property="VerticalAlignment" Value="Center"/>
 								<Setter Property="TextWrapping" Value="WrapWithOverflow"/>
 							</Style>
-
+							
 							<Style Selector="Border.RedStatus">
 								<Setter Property="Background" Value="#FF2A04"/>
 								<Style Selector="^ > ScrollViewer > StackPanel > TextBlock">
@@ -1150,6 +1201,7 @@
 			</Border>
 
 		</Grid>
+	</Grid>
 	</dialogHost:DialogHost>
 
 

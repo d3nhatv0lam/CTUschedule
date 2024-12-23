@@ -36,6 +36,12 @@ namespace CTUschedule.Models
         {
             get => ThuDiHoc - 1;
         }
+
+        // [TietBatDau,RowRange]
+        public int TietKetThuc
+        {
+            get => TietBatDau + SoTietHoc - 1;
+        }
         public bool IsRedStatus { get; set; } = false;
         public bool IsYellowStatus { get; set; } = false;
         public bool IsGreenStatus { get; set; } = false;

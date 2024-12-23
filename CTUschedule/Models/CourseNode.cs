@@ -14,11 +14,14 @@ namespace CTUschedule.Models
 {
     public class CourseNode
     {
-        public string MaHocPhan { get; set; }
+
+    
+
+    public string MaHocPhan { get; set; }
         public string TenHocPhan { get; set; }
         public bool IsSelected { get; set; } = false;
         public bool IsExpanded { get; set; } = false;
-        public bool IsShowPreview { get; set; } = false;
+
         public bool IsScheduleSelected { get; set; } = false;
         public bool IsRedStatus { get; set; } = false;
         public bool IsYellowStatus { get; set; } = false;
