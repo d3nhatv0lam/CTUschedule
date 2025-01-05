@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CTUschedule.Models;
 using CTUschedule.Resources.Dialogs;
+using CTUschedule.Utilities;
 using DialogHostAvalonia;
 using System;
 using System.Collections.Generic;
@@ -68,9 +69,11 @@ namespace CTUschedule.ViewModels
         public CourseListEditViewModel()
         {
             Instance = this;
+
             _mainHomeViewModel = MainHomeViewModel.Instance;
             _courseListViewModel = CourseListViewModel.Instance;
             _courseListViewModel.CourseNodesUpdate += _courseListViewModel_CourseListUpdate;
+
 
             //CourseNodes = new ObservableCollection<CourseNode>
             //    {
@@ -197,6 +200,9 @@ namespace CTUschedule.ViewModels
         [RelayCommand]
         public async void ReloadData()
         {
+            //has internet mới thực hiện task được
+            if (!CheckerInternetHelper._isHasInternet) return;
+
             _mainHomeViewModel.IsChangingView = true;
             await Task.Run(() =>
             {

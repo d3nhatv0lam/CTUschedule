@@ -64,13 +64,19 @@ namespace CTUschedule.ViewModels
         public SignInViewModel()
         {
             _signin = new HTQL_Signin();
-            NavigateToSignin();
+            Init();
         }
 
         private void NavigateToSignin()
         {
             _signin.NavigateToSignin();
             LoadCapcha();
+        }
+
+        public void Init()
+        {
+            Capcha = String.Empty;
+            NavigateToSignin();
         }
 
         private void LoadCapcha()

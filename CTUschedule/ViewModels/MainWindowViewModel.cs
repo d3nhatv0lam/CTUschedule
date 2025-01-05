@@ -4,6 +4,7 @@ using CTUschedule.Resources.Dialogs;
 using CTUschedule.Utilities;
 using System.Collections.Generic;
 using System.Linq;
+using Utilities;
 
 namespace CTUschedule.ViewModels
 {
@@ -26,10 +27,23 @@ namespace CTUschedule.ViewModels
             Instance = this;
             CheckerInternetAssign();
 
-            //PageViewModels.Add(new SignInViewModel());
+            PageViewModels.Add(new SignInViewModel());
             PageViewModels.Add(new MainHomeViewModel());
 
             CurrentViewModel = PageViewModels.First();
+
+            // xảy ra khi check ra web đã bị logout
+            CTU_HTQLWebDriver.Instance.WebLoggedOut += Instance_WebLoggedOut;
+        }
+
+        private void Instance_WebLoggedOut(object? sender, System.EventArgs e)
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                INotificationPopup lostDataWaring = new NotificationPopupController(NotificationPopupController.Type.Warning, "Hết phiên đăng nhập!", "Login và lưu TKB còn dỡ của bạn.");
+                lostDataWaring.ShowNotification();
+                GoToSignInView();
+            });
         }
 
         public void ChangeViewFromIndex(int index)
@@ -41,11 +55,13 @@ namespace CTUschedule.ViewModels
         public void GoToSignInView()
         {
             CurrentViewModel = PageViewModels[0];
+            (PageViewModels[0] as SignInViewModel).Init();
         }
 
         public void GoToMainHomeView()
         {
             CurrentViewModel = PageViewModels[1];
+            (PageViewModels[1] as MainHomeViewModel).Init();
         }
 
         // init and UpdateUI for first check

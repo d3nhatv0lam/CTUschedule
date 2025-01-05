@@ -19,6 +19,9 @@ namespace CTUschedule.ViewModels
             { "Youtube", "https://www.youtube.com/@ucduong9984" },
         };
 
+        [ObservableProperty]
+        private bool _isOpenQRCode = false;
+
         public IntroduceViewModel()
         {
            
@@ -41,6 +44,9 @@ namespace CTUschedule.ViewModels
             FileName = ContactLink["Youtube"],
             UseShellExecute = true,
         });
+
+        [RelayCommand]
+        public void OpenQRCode() => IsOpenQRCode = true;
 
 
     }

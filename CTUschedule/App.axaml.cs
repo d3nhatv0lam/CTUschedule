@@ -32,6 +32,8 @@ namespace CTUschedule
                 {
                     DataContext = new MainWindowViewModel(),
                 };
+
+
             }
 
             base.OnFrameworkInitializationCompleted();

@@ -18,6 +18,7 @@ using CommunityToolkit.Mvvm.Input;
 using Avalonia.Threading;
 using CTUschedule.Resources.Dialogs;
 using System.Linq.Expressions;
+using CTUschedule.Utilities;
 
 namespace CTUschedule.ViewModels
 {
@@ -191,15 +192,23 @@ namespace CTUschedule.ViewModels
             }
         }
 
+        private bool IsHasInternet()
+        {
+            return CheckerInternetHelper._isHasInternet;
+        }
+
         [RelayCommand]
         public void SearchCourseData()
         {
+            if (!IsHasInternet()) return;
             courseCatalog.Search(CourseName);
             GetTenHocPhanVaMaHocPhanAfterSearch();
         }
 
         public void SearchCourseData(string courseName,List<string> nhomHocphan)
         {
+            if (!IsHasInternet()) return;
+
             courseCatalog.Search(courseName);
             GetTenHocPhanVaMaHocPhanAfterSearch();
 
@@ -283,6 +292,8 @@ namespace CTUschedule.ViewModels
                 CourseList.Clear();
                 FilterCourseList.Clear();
             });
+
+            if (!IsHasInternet()) return;
             courseCatalog.NavigateToCourseCatalog();
         }
     }
