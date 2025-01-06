@@ -61,6 +61,13 @@ namespace Utilities
         {
             options = new ChromeOptions();
             //options.AddArgument("--headless");
+            options.AddArgument("--start-maximized");
+            options.AddArgument("--disable-infobars");
+            options.AddArgument("--disable-extensions");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-application-cache");
+            options.AddArgument("--disable-gpu");
+            options.AddArgument("--disable-dev-shm-usage");
             var chromeDriverService = ChromeDriverService.CreateDefaultService();
             chromeDriverService.HideCommandPromptWindow = true;
             driver = new ChromeDriver(chromeDriverService, options);
@@ -70,6 +77,8 @@ namespace Utilities
         public void CloseWeb()
         {
             driver.Quit();
+            driver.Dispose();
+            driver = null;
         }
     }
 

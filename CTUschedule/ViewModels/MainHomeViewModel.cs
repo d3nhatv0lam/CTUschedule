@@ -80,6 +80,7 @@ namespace CTUschedule.ViewModels
             {
                 await Task.Run(() => viewModel.Init());
             }
+
             IsChangingView = false;
         }
     }

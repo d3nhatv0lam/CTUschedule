@@ -45,8 +45,6 @@ namespace CTUschedule.Resources.Dialogs
             Succes,
         }
 
-
-
         public NotificationPopupController(Type type,string title, string message)
         {
            this. Title = title;
@@ -110,7 +108,9 @@ namespace CTUschedule.Resources.Dialogs
             {
                 Thread.Sleep(5100);
                 return false;
+                
             });
+            window = null;
         }
 
     }

@@ -45,6 +45,7 @@ public partial class NotificationPopup : Window
     private async void WaitAndClose()
     {
         await Task.Delay(WaitTime);
+        this.DataContext = null;
         Close();
     }
 

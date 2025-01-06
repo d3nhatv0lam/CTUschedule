@@ -23,34 +23,34 @@ namespace CTUschedule.ViewModels
 
         [ObservableProperty]
         // 9row, 6colum
-        private List<ObservableCollection<ScheduleCell>> _schedule = new List<ObservableCollection<ScheduleCell>>();
+        private ObservableCollection<ObservableCollection<ScheduleCell>> _schedule;
 
-       
-        private List<ScheduleCell> ScheduleItemPool = new List<ScheduleCell>();
-        private List<ScheduleCell> SelectedScheduleItem = new List<ScheduleCell>();
+
+
+        private ObservableCollection<ScheduleCell> ScheduleItemPool = new ObservableCollection<ScheduleCell>();
+        private ObservableCollection<ScheduleCell> SelectedScheduleItem = new ObservableCollection<ScheduleCell>();
 
         public ScheduleViewModel() 
         {
             Instance = this;
             _courseListEditViewModel = CourseListEditViewModel.Instance;
             Init();
-
             _courseListEditViewModel.ScheduleChanged += _courseListEditViewModel_ScheduleChanged;
- 
         }
 
         public void Init()
         {
-
             CourseNodes = CourseNode.UnExpandAllCourseNode(CourseNodes);
             Schedule = EmptyTableSchedule();
         }
 
+
+
         // get empty table
         // thời khóa biểu mặc dịnh có 10 row 6 col
-        private List<ObservableCollection<ScheduleCell>> EmptyTableSchedule(int rows = 10, int columns = 6)
+        private ObservableCollection<ObservableCollection<ScheduleCell>> EmptyTableSchedule(int rows = 10, int columns = 6)
         {
-            List<ObservableCollection<ScheduleCell>> newTable = new List<ObservableCollection<ScheduleCell>>();
+            ObservableCollection<ObservableCollection<ScheduleCell>> newTable = new ObservableCollection<ObservableCollection<ScheduleCell>>();
             for (int i = 0; i <= rows; i++)
             {
                 ObservableCollection<ScheduleCell> row = new ObservableCollection<ScheduleCell>();
@@ -63,17 +63,31 @@ namespace CTUschedule.ViewModels
             return newTable;
         }
 
+        // đặt tất cả về thành ô trống => quản lý vùng nhớ hiệu quả
+        private void CleanScheduleTable(ObservableCollection<ObservableCollection<ScheduleCell>> table)
+        {
+            for (int i = 0; i < table.Count; i++)
+                for (int j = 0; j < table[i].Count; j++)
+                    table[i][j] = new ScheduleCell();
+        }
+
+        // xảy ra khi Node trang EditView có biến động
         private void _courseListEditViewModel_ScheduleChanged(object? sender, EventArgs e)
         {
             CourseNodes = _courseListEditViewModel.CourseNodes;
-            Schedule = EmptyTableSchedule();
+            
+            CleanScheduleTable(Schedule);
+            // xóa trước để quản lý vùng nhớ
+            ScheduleItemPool = null;
+            // sau đó gán lại
             ScheduleItemPool = CreateScheduleItemPool();
             RenderSchedule();
         }
 
-        private List<ScheduleCell> CreateScheduleItemPool()
+        // tạo một pool các item từ các Course
+        private ObservableCollection<ScheduleCell> CreateScheduleItemPool()
         {
-            List<ScheduleCell> newPool = new List<ScheduleCell>();
+            ObservableCollection<ScheduleCell> newPool = new ObservableCollection<ScheduleCell>();
             foreach (var node in CourseNodes)
             {
                 foreach (var child in node.SubNodes)
@@ -92,9 +106,10 @@ namespace CTUschedule.ViewModels
         private void AddCourseToSchedule(ObservableCollection<CourseInformation> courseGroup)
         {
             
-            foreach (var course in courseGroup) 
+            foreach (var course in courseGroup)
             { 
-                foreach(var itempool in ScheduleItemPool)
+                // tìm item trong itempool đê gắn lên TKB
+                foreach (var itempool in ScheduleItemPool)
                 {
                     // check luôn mã học phần vì trong pool có nhiều nhóm mà khác học phần
                     if (course.dkmh_tu_dien_hoc_phan_ma == itempool.MaHocPhan && course.dkmh_nhom_hoc_phan_ma == itempool.NhomHocPhan)
@@ -110,19 +125,19 @@ namespace CTUschedule.ViewModels
         private void RenderSchedule()
         {
             SelectedScheduleItem.Clear();
+
             foreach (var node in CourseNodes)
             {
+                foreach (var child in node.SubNodes)
                 {
-                    foreach (var child in node.SubNodes)
+                    // Selected này lấy ở FE
+                    if (child.IsScheduleSelected)
                     {
-                        if (child.IsScheduleSelected)
-                        {
-                            AddCourseToSchedule(child.CourseGroup);
-                        }
+                        AddCourseToSchedule(child.CourseGroup);
                     }
                 }
             }
-            Schedule = Schedule;
+            OnPropertyChanged(nameof(Schedule));
         }
 
         [RelayCommand]
@@ -171,69 +186,118 @@ namespace CTUschedule.ViewModels
                                     INotificationPopup TrungMonPopup = new NotificationPopupController(NotificationPopupController.Type.Error, "Trùng Môn", $"Đã có học phần {maHocPhan}!");
                                     TrungMonPopup.ShowNotification();
                                     checkbox.IsChecked = false;
-                                    CourseNodes = CourseNodes;
+                                    OnPropertyChanged(nameof(CourseNodes));
+                                    //CourseNodes = CourseNodes;
                                     return;
                                 }
                                 else
                                 isHasChecked = true;
                             }
                         }
+
+
                         // Sum : check trùng lịch
-                        foreach(var child in node.SubNodes)
+                        // nhét ở đây vì để kiểm tra phải có MaHocPhan = mahocphan và NhomHocPhan = nhomhocphan
+                        //foreach (var child in node.SubNodes)
+                        //{
+                        //    // tìm nhóm học phần đã nhấn check trong Child courseNode
+                        //    if (child.CourseGroup.First().dkmh_nhom_hoc_phan_ma == nhomhocphan)
+                        //    {
+                        //        // đem từng Course ra ( một CourseGroup có nhiều ngày học )
+                        //        foreach (var course in child.CourseGroup)
+                        //        {
+                        //            // tìm item trong pool của course được duyệt
+
+                        //            ScheduleCell appendItem = null;
+                        //            foreach (var itempool in ScheduleItemPool)
+                        //            {
+                        //                // item trong pool định danh từ courseNode dùng mã học phần và nhóm học phần
+                        //                if (course.dkmh_tu_dien_hoc_phan_ma == itempool.MaHocPhan && course.dkmh_nhom_hoc_phan_ma == itempool.NhomHocPhan)
+                        //                {
+                        //                    appendItem = itempool;
+                        //                    break;
+                        //                }
+                        //            }
+                        //            if (appendItem == null) continue;
+                        //            // kiểm tra coi có trùng lịch với những học phần đã add không
+                        //            foreach (var selectedItemInPool in SelectedScheduleItem)
+                        //            {
+                        //                // check coi trùng thứ đi học không
+                        //                if (appendItem.ThuDiHoc == selectedItemInPool.ThuDiHoc)
+                        //                {
+                        //                    // nếu trùng thứ đi học thì kiểm tra thêm
+                        //                    // tiet bat dau cua mon 2 < tiet ket thuc của mon 1         // tiet ket thuc cua mon 2 > tiet bat dau cua mon 1
+                        //                    if (appendItem.TietBatDau < selectedItemInPool.TietKetThuc || appendItem.TietKetThuc > selectedItemInPool.TietBatDau)
+                        //                    {
+                        //                        // => trung lich
+                        //                        INotificationPopup TrungLichpopup = new NotificationPopupController(NotificationPopupController.Type.Error, "Trùng Lịch", $"Trùng lịch với học phần {selectedItemInPool.MaHocPhan}!");
+                        //                        TrungLichpopup.ShowNotification();
+                        //                        checkbox.IsChecked = false;
+                        //                        //CourseNodes = CourseNodes;
+                        //                        OnPropertyChanged(nameof(CourseNodes));
+                        //                        return;
+                        //                    }
+                        //                }
+                        //            }
+                        //        }
+                        //    }
+                        //}
+
+                        List<ScheduleCell> cellWillShowed = new List<ScheduleCell>();
+                        // lấy ra các Cell sắp được thêm từ pool
+                        foreach (var itempool in ScheduleItemPool)
                         {
-                            // tìm nhóm học phần đã nhấn check
-                            if (child.CourseGroup.First().dkmh_nhom_hoc_phan_ma == nhomhocphan)
+                            // điều kiện cần để xác định cell
+                            if (itempool.MaHocPhan == maHocPhan && itempool.NhomHocPhan == nhomhocphan)
                             {
-                                
-                                foreach(var course in child.CourseGroup)
-                                {
-                                    // lấy ra từng item trong pool đó
-                                    ScheduleCell appendItem = null;
-                                    foreach (var itempool in ScheduleItemPool)
-                                    {
-                                        // item trong pool định danh từ courseNode dùng mã học phần và nhóm học phần
-                                        if (course.dkmh_tu_dien_hoc_phan_ma == itempool.MaHocPhan && course.dkmh_nhom_hoc_phan_ma == itempool.NhomHocPhan)
-                                        {
-                                            appendItem = itempool;
-                                            break;
-                                        }
-                                    }
-                                    if (appendItem == null) continue;
-                                    // kiểm tra coi có trùng lịch với những học phần đã add không
-                                    foreach(var selectedItemInPool in SelectedScheduleItem)
-                                    {
-                                            // check coi trùng thứ đi học không
-                                        if (appendItem.ThuDiHoc == selectedItemInPool.ThuDiHoc )
-                                        {
-                                            // nếu trùng thứ đi học thì kiểm tra thêm
-                                            // tiet bat dau cua mon 2 < tiet ket thuc của mon 1         // tiet ket thuc cua mon 2 > tiet bat dau cua mon 1
-                                            if (appendItem.TietBatDau < selectedItemInPool.TietKetThuc || appendItem.TietKetThuc > selectedItemInPool.TietBatDau)
-                                            {
-                                                // => trung lich
-                                                INotificationPopup TrungLichpopup = new NotificationPopupController(NotificationPopupController.Type.Error, "Trùng Lịch", $"Trùng lịch với học phần {selectedItemInPool.MaHocPhan}!");
-                                                TrungLichpopup.ShowNotification();
-                                                checkbox.IsChecked = false;
-                                                CourseNodes = CourseNodes;
-                                                return;
-                                            }     
-                                        }  
-                                    }
-                                }
+                                cellWillShowed.Add(itempool);
                             }
                         }
+                        
+                        // check trùng lịch của từng môn
+                        foreach (var appendCell in cellWillShowed)
+                        {
+                            foreach(var enableItemInPool in SelectedScheduleItem)
+                            {
+                                // nếu trùng thứ đi học thì kiểm tra thêm
+                                if (appendCell.ThuDiHoc == enableItemInPool.ThuDiHoc)
+                                {
+                                    
+                                    // trường hợp TKB này ở trên hơn so với tkb đã thêm vào lịch và tiết kết thúc của môn nằm trên vẫn nằm trên tiết bắt đầu của môn dưới
+                                    // append cell nằm  trên
+                                    if ( appendCell.TietBatDau < enableItemInPool.TietBatDau && appendCell.TietKetThuc < enableItemInPool.TietBatDau)
+                                           continue;
+                                    // append cell nằm dưới                                 // tiết bắt đầu môn nằm dưới phải lớn hơn tiết kết thúc môn nằm trên
+                                    if (appendCell.TietBatDau > enableItemInPool.TietBatDau && appendCell.TietBatDau > enableItemInPool.TietKetThuc) 
+                                        continue;
+
+                                    // tiet bat dau cua mon 2 < tiet ket thuc của mon 1         // tiet ket thuc cua mon 2 > tiet bat dau cua mon 1
+                                    // điều kiện đúng (có thể nhét vào )
+                                    //if (appendCell.TietKetThuc > enableItemInPool.TietBatDau) continue;
+                                    //if (appendCell.TietBatDau > enableItemInPool.TietKetThuc) continue;
+                                    //if (appendCell.TietBatDau <= enableItemInPool.TietKetThuc || appendCell.TietKetThuc > enableItemInPool.TietBatDau)
+                                    
+                                    // => trung lich
+                                    INotificationPopup TrungLichPopup = new NotificationPopupController(NotificationPopupController.Type.Error, "Trùng Lịch", $"Trùng lịch với học phần {enableItemInPool.MaHocPhan}!");
+                                    TrungLichPopup.ShowNotification();
+                                    checkbox.IsChecked = false;
+                                    OnPropertyChanged(nameof(CourseNodes));
+                                    cellWillShowed = null;
+                                    return;
+                                    
+                                }
+                                
+                            }
+                        }
+                        cellWillShowed = null;
                     }
                 }
 
             // check thành công, có thể thêm vào lịch
-            Schedule = EmptyTableSchedule();
+            CleanScheduleTable(Schedule);
             RenderSchedule();
         }
 
-        [RelayCommand]
-        public void Test()
-        {
-            Debug.WriteLine("hello");
-        }
 
         //[RelayCommand]
         //public void CheckBoxTask(ObservableCollection<CourseNode> scheduleList)

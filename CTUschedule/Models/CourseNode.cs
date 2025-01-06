@@ -89,40 +89,40 @@ namespace CTUschedule.Models
             return courseNodes;
         }
 
-        public static ObservableCollection<CourseNode> Uncheck_UnExpandCourseNode(ObservableCollection<CourseNode> oldCourseNodes)
-        {
-            ObservableCollection<CourseNode> newCourseNodes = DeepCopy(oldCourseNodes);
-            foreach (var node in newCourseNodes)
-            {
-                // parent node
-                node.IsExpanded = false;
-                node.IsSelected = false;
+        //public static ObservableCollection<CourseNode> Uncheck_UnExpandCourseNode(ObservableCollection<CourseNode> oldCourseNodes)
+        //{
+        //    ObservableCollection<CourseNode> newCourseNodes = DeepCopy(oldCourseNodes);
+        //    foreach (var node in newCourseNodes)
+        //    {
+        //        // parent node
+        //        node.IsExpanded = false;
+        //        node.IsSelected = false;
 
-                if (node.SubNodes == null) continue;
-                foreach (var childnode in node.SubNodes)
-                {
-                    foreach (CourseInformation course in childnode.CourseGroup)
-                    {
-                        course.IsSelected = false;
-                    }
-                }
-            }
-            return newCourseNodes;
-        }
+        //        if (node.SubNodes == null) continue;
+        //        foreach (var childnode in node.SubNodes)
+        //        {
+        //            foreach (CourseInformation course in childnode.CourseGroup)
+        //            {
+        //                course.IsSelected = false;
+        //            }
+        //        }
+        //    }
+        //    return newCourseNodes;
+        //}
 
-        private static ObservableCollection<CourseNode> DeepCopy(ObservableCollection<CourseNode> list)
-        {
-            try
-            {
-                var json = JsonConvert.SerializeObject(list);
-                return JsonConvert.DeserializeObject<ObservableCollection<CourseNode>>(json);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-            return null;
-        }
+        //private static ObservableCollection<CourseNode> DeepCopy(ObservableCollection<CourseNode> list)
+        //{
+        //    try
+        //    {
+        //        var json = JsonConvert.SerializeObject(list);
+        //        return JsonConvert.DeserializeObject<ObservableCollection<CourseNode>>(json);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.Message);
+        //    }
+        //    return null;
+        //}
 
         private void setStatus(bool Red, bool Yellow, bool Green)
         {

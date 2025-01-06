@@ -8,6 +8,8 @@
 			 xmlns:views="using:CTUschedule.Views"
              x:DataType="vm:ScheduleViewModel"
 			 xmlns:Conv="using:CTUschedule.Converter"
+			 xmlns:utilities="using:CTUschedule.Utilities"
+			 
 			  xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
 			 
@@ -21,6 +23,7 @@
 		<Conv:ScheduleGroupFomatConverter x:Key="GroupFormatConverter"/>
 		<Conv:ScheduleStudyRoomFomatConverter x:Key="RoomFormatConverter"/>
 	</UserControl.Resources>
+
 
 
 	<dialogHost:DialogHost CloseOnClickAway="True">
@@ -86,6 +89,7 @@
 				   Theme="{StaticResource MaterialModernScrollViewer}">
 
 				<TreeView ItemsSource="{Binding CourseNodes}"
+						  
 						  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
 					<TreeView.Styles>
@@ -188,17 +192,17 @@
 
 						<Border Grid.Row="10"
 								Grid.Column="6"
-								Grid.RowSpan="{Binding Schedule[10][6].SoTietHoc}"
-								Classes.RedStatus="{Binding Schedule[10][6].IsRedStatus}"
-								Classes.YellowStatus="{Binding Schedule[10][6].IsYellowStatus}"
-								Classes.GreenStatus="{Binding Schedule[10][6].IsGreenStatus}">
+								Grid.RowSpan="{Binding Schedule[10][6].SoTietHoc, Mode=OneWay}"
+								Classes.RedStatus="{Binding Schedule[10][6].IsRedStatus , Mode=OneWay}"
+								Classes.YellowStatus="{Binding Schedule[10][6].IsYellowStatus , Mode=OneWay}"
+								Classes.GreenStatus="{Binding Schedule[10][6].IsGreenStatus , Mode=OneWay}">
 							<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Theme="{StaticResource MaterialModernScrollViewer}">
 								<StackPanel Orientation="Vertical">
-									<TextBlock Text="{Binding Schedule[10][6].MaHocPhan}"/>
-									<TextBlock Text="{Binding Schedule[10][6].TenHocPhan}"/>
-									<TextBlock Text="{Binding Schedule[10][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}}"/>
-									<TextBlock Text="{Binding Schedule[10][6].PhongHoc, Converter={StaticResource RoomFormatConverter}}"/>
-									<TextBlock Text="{Binding Schedule[10][6].GiangVien}"/>
+									<TextBlock Text="{Binding Schedule[10][6].MaHocPhan , Mode=OneWay}"/>
+									<TextBlock Text="{Binding Schedule[10][6].TenHocPhan , Mode=OneWay}"/>
+									<TextBlock Text="{Binding Schedule[10][6].NhomHocPhan, Converter={StaticResource GroupFormatConverter}, Mode=OneWay}"/>
+									<TextBlock Text="{Binding Schedule[10][6].PhongHoc, Converter={StaticResource RoomFormatConverter}, Mode=OneWay}"/>
+									<TextBlock Text="{Binding Schedule[10][6].GiangVien , Mode=OneWay}"/>
 								</StackPanel>
 							</ScrollViewer>
 						</Border>

@@ -27,7 +27,7 @@ namespace CTUschedule.ViewModels
             Instance = this;
             CheckerInternetAssign();
 
-            PageViewModels.Add(new SignInViewModel());
+            //PageViewModels.Add(new SignInViewModel());
             PageViewModels.Add(new MainHomeViewModel());
 
             CurrentViewModel = PageViewModels.First();
@@ -46,11 +46,6 @@ namespace CTUschedule.ViewModels
             });
         }
 
-        public void ChangeViewFromIndex(int index)
-        {
-            if (index < 0 || index >= PageViewModels.Count) return;
-            CurrentViewModel = PageViewModels[index];
-        }
 
         public void GoToSignInView()
         {
