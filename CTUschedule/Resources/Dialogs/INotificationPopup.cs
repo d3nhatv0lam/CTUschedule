@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Material.Icons;
 
 namespace CTUschedule.Resources.Dialogs
 {
@@ -12,7 +13,7 @@ namespace CTUschedule.Resources.Dialogs
     public interface INotificationPopup
     {
 
-        public string symbolKind {  get; set; }
+        public MaterialIconKind symbolKind {  get; set; }
         public string symbolColorHex { get; set; }
         
         public string LineColorHex { get; set; }
@@ -27,7 +28,7 @@ namespace CTUschedule.Resources.Dialogs
     {
         public NotificationPopup window;
 
-        public string symbolKind { get; set; }
+        public MaterialIconKind symbolKind { get; set; }
         public string symbolColorHex { get; set; }
         public string LineColorHex { get; set; }
         public string Title { get; set; }
@@ -72,14 +73,14 @@ namespace CTUschedule.Resources.Dialogs
             {
                 case Type.Error:
                     {
-                        symbolKind = "AlertOctagonOutline";
+                        symbolKind = MaterialIconKind.AlertOctagonOutline;
                         symbolColorHex = "#971c38";
                         LineColorHex = "#FF0000";
                     }
                     break;
                 case Type.Warning:
                     {
-                        symbolKind = "AlertOutline";
+                        symbolKind = MaterialIconKind.AlertOutline;
                         symbolColorHex = "#ffbc11";
                         LineColorHex = "#ff9966";
                     }
@@ -89,7 +90,7 @@ namespace CTUschedule.Resources.Dialogs
 
                 case Type.Succes:
                     {
-                        symbolKind = "CheckCircleOutline";
+                        symbolKind = MaterialIconKind.CheckCircleOutline;
                         symbolColorHex = "#99cc33";
                         LineColorHex = "#339900";
                     }

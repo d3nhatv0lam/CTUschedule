@@ -30,11 +30,19 @@ namespace CTUschedule.Models
         public ObservableCollection<CourseNode>? SubNodes { get; set; } = new ObservableCollection<CourseNode>();
 
         [System.Text.Json.Serialization.JsonIgnore]
+        private CourseInformation _courseInformation;
+
+        [System.Text.Json.Serialization.JsonIgnore]
         public CourseInformation? representativeNode
         {
             get
             {
-                if (CourseGroup.Count == 0) return null;
+                if (CourseGroup.Count == 0) 
+                {
+                    if (_courseInformation == null)
+                        _courseInformation = new CourseInformation();
+                    return _courseInformation;
+                }
                 return (CourseInformation)CourseGroup[0];
             }
             set { }

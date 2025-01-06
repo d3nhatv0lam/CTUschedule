@@ -18,7 +18,7 @@
 		<dialogHost:DialogHost CloseOnClickAway="True" IsOpen="{Binding IsOpenQRCode}">
 				<dialogHost:DialogHost.DialogContent>
 					
-					<controls:Card MinWidth="240" Width="400" Height="500" VerticalAlignment="Top">
+					<controls:Card Width="400" Height="500" VerticalAlignment="Top">
 						<Grid RowDefinitions="auto * 30" Margin="0,4">
 							<TextBlock Grid.Row="0" Classes="Headline6" HorizontalAlignment="Center" Text="~~Các bạn có thể ủng hộ mình gói mì~~"/>
 							<TextBlock Grid.Row="2" VerticalAlignment="Center" FontSize="17" HorizontalAlignment="Center" Text="Cảm ơn các bạn đã sử dụng ứng dụng của mình" TextAlignment="Center" TextWrapping="WrapWithOverflow"/>

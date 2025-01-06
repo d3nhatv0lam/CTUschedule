@@ -57,13 +57,13 @@
 
 	<Border Classes="_border" x:Name="IBorder" Background="#F8FAFC"   CornerRadius="8">
 		<Grid ColumnDefinitions="10 auto 10 *">
-			<TextBlock Name="icon" Height="0" Width="0" ></TextBlock>
+			<!--<TextBlock Name="icon" Height="0" Width="0" ></TextBlock>-->
 		
-			<materialIcons:MaterialIcon Grid.Column="1" 
-										Kind="{Binding Path=Text,ElementName=icon}"
+			<materialIcons:MaterialIcon x:Name="PopupIcon" Grid.Column="1" 
 										Width="40" 
 										Height="40" 
-										Foreground="{Binding Path=Foreground, ElementName=icon}"/>
+										/>
+			<!--Foreground="{Binding Path=Foreground, ElementName=icon}"-->
 
 			<StackPanel Grid.Column="3" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left">
 				<TextBlock Name="title"

@@ -26,20 +26,12 @@
 
 
 
-	<dialogHost:DialogHost CloseOnClickAway="True">
-		<dialogHost:DialogHost.DialogContent>
-			<!-- put your dialog content here-->
-		</dialogHost:DialogHost.DialogContent>
-		
-		<!-- put the content over which the dialog is shown here (e.g. your main window grid)-->
-		<Grid RowDefinitions="auto auto *" >
+
+	<Grid RowDefinitions="auto auto *" >
 			<Grid Grid.Row="0" 
 				  ColumnDefinitions="* auto">
-
-				<StackPanel Grid.Column="0" VerticalAlignment="Bottom" Orientation="Horizontal">
-					<TextBlock  Classes="Headline6" Margin="10 0 0 0"  Text="Thời khóa biểu" />
-				</StackPanel>
-
+			
+					<TextBlock Grid.Column="0" VerticalAlignment="Bottom"  Classes="Headline6" Margin="10 0 0 0"  Text="Thời khóa biểu" />
 
 				<StackPanel Grid.Column="1" Orientation="Horizontal">
 
@@ -76,11 +68,11 @@
 				</StackPanel>
 			</Grid>
 
-			<Border Grid.Row="1" Padding="10 0 10 0">
+			<Border Grid.Row="1"  Padding="10 0 10 0" >
 				<Separator  Foreground="Black"/>
 			</Border>
 
-			<Grid Grid.Row="2" ColumnDefinitions="0.37*,4, *">
+		<Grid Grid.Row="2" ColumnDefinitions="0.37*,4, *">
 
 			<ScrollViewer
 					Grid.Column="0"
@@ -130,13 +122,13 @@
 										/>
 
 
-								<TextBlock Grid.Column="2" Text="{Binding MaHocPhan}" ToolTip.Tip="Mã Học Phần"/>
+								<TextBlock Grid.Column="2" Text="{Binding MaHocPhan ,TargetNullValue='',FallbackValue=''}" ToolTip.Tip="Mã Học Phần"/>
 
-								<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="{Binding TenHocPhan}"/>
+								<TextBlock Grid.Column="4" Text="{Binding TenHocPhan ,TargetNullValue='',FallbackValue=''}"  ToolTip.Tip="{Binding TenHocPhan}"/>
 
-								<TextBlock Grid.Column="2" Text="{Binding representativeNode.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
-								<TextBlock  Grid.Column="5" Text="{Binding representativeNode.si_so_con_lai}" HorizontalAlignment="Center" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-								<TextBlock  Grid.Column="7" Text="{Binding representativeNode.dkmh_tu_dien_lop_hoc_phan_si_so}" HorizontalAlignment="Center" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+								<TextBlock Grid.Column="2" Text="{Binding representativeNode.dkmh_nhom_hoc_phan_ma ,TargetNullValue='',FallbackValue=''}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
+								<TextBlock  Grid.Column="5" Text="{Binding representativeNode.si_so_con_lai ,TargetNullValue='',FallbackValue=''}" HorizontalAlignment="Center" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+								<TextBlock  Grid.Column="7" Text="{Binding representativeNode.dkmh_tu_dien_lop_hoc_phan_si_so ,TargetNullValue='',FallbackValue=''}" HorizontalAlignment="Center" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
 							</Grid>
 
 						</TreeDataTemplate>
@@ -147,7 +139,7 @@
 			<GridSplitter Grid.Column="1" Background="Black" ResizeDirection="Columns"/>
 
 			<Border Grid.Column="2" Padding="10">
-				<Grid>
+				
 					<Grid Grid.Row="0" RowDefinitions="* * * * * * 0.5* * * * *" ColumnDefinitions="* * * * * * *">
 						<Grid.Styles>
 
@@ -1200,13 +1192,10 @@
 
 
 					</Grid>
-
-				</Grid>
 			</Border>
 
 		</Grid>
 	</Grid>
-	</dialogHost:DialogHost>
 
 
 </UserControl>

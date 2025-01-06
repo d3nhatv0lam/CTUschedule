@@ -75,7 +75,8 @@ namespace CTUschedule.ViewModels
         private void _courseListEditViewModel_ScheduleChanged(object? sender, EventArgs e)
         {
             CourseNodes = _courseListEditViewModel.CourseNodes;
-            
+            OnPropertyChanged(nameof(CourseNodes));
+
             CleanScheduleTable(Schedule);
             // xóa trước để quản lý vùng nhớ
             ScheduleItemPool = null;

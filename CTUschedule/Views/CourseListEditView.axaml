@@ -6,6 +6,7 @@
 			 xmlns:vm="using:CTUschedule.ViewModels"
 			 xmlns:views="using:CTUschedule.Views"
 			 xmlns:model="using:CTUschedule.Models"
+			 xmlns:Conv="using:CTUschedule.Converter"
              x:DataType="vm:CourseListEditViewModel"
 			 
 			 xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
@@ -14,6 +15,10 @@
 			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              
              x:Class="CTUschedule.Views.CourseListEditView">
+
+	<UserControl.Resources>
+		<Conv:NullToStringEmpty x:Key="NullToStringConverter"/>
+	</UserControl.Resources>
 			 
 	<dialogHost:DialogHost IsOpen="{Binding IsOpenDialog}" CloseOnClickAway="True" 
 						  >
@@ -22,10 +27,9 @@
 			
 				<controls:Card  MinWidth="240" Width="350" Height="100" VerticalAlignment="Top">
 					<Grid RowDefinitions="*, Auto">
-						<StackPanel Grid.Row="0" Margin="0,4">
-							<TextBlock Classes="Headline6" Text="Xác nhận xóa các học phần đã chọn" />
+
+						<TextBlock  Grid.Row="0" Margin="0,4" Classes="Headline6" Text="Xác nhận xóa các học phần đã chọn" />
 						
-						</StackPanel>
 						<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
 
 							<Button Theme="{StaticResource MaterialFlatButton}"
@@ -46,7 +50,6 @@
 					</Grid>
 				</controls:Card>
 			
-		
         </dialogHost:DialogHost.DialogContent>
        
 		<Border Padding="10">
@@ -196,7 +199,8 @@
 						Theme="{StaticResource MaterialModernScrollViewer}">
 
 					<Grid>
-						<TreeView ItemsSource="{Binding CourseNodes}" >
+						<TreeView ItemsSource="{Binding CourseNodes}"
+								  >
 							<TreeView.Styles>
 								<Style Selector="TreeViewItem" x:DataType="model:CourseNode">
 									<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
@@ -235,12 +239,12 @@
 											Command="{Binding ((vm:CourseListEditViewModel)DataContext).Selected_UnSelectItemCommand , RelativeSource={RelativeSource AncestorType=views:CourseListEditView}}"
 											CommandParameter="{Binding $self, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"/>
 
-										<TextBlock Grid.Column="2" Text="{Binding MaHocPhan}" ToolTip.Tip="Mã Học Phần"/>
-										<TextBlock Grid.Column="4" Text="{Binding TenHocPhan}"  ToolTip.Tip="Tên học phần"/>
+										<TextBlock Grid.Column="2" Text="{Binding MaHocPhan,Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="Mã Học Phần"/>
+										<TextBlock Grid.Column="4" Text="{Binding TenHocPhan,Converter={StaticResource NullToStringConverter}}"  ToolTip.Tip="Tên học phần"/>
 
-										<TextBlock Grid.Column="5" Text="{Binding representativeNode.dkmh_nhom_hoc_phan_ma}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
-										<TextBlock  Grid.Column="6" Text="{Binding representativeNode.si_so_con_lai}" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
-										<TextBlock  Grid.Column="7" Text="{Binding representativeNode.dkmh_tu_dien_lop_hoc_phan_si_so}" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+										<TextBlock Grid.Column="5" Text="{Binding  representativeNode.dkmh_nhom_hoc_phan_ma,Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="Nhóm học phần" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
+										<TextBlock  Grid.Column="6" Text="{Binding representativeNode.si_so_con_lai,FallbackValue='',Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="sĩ số còn lại" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
+										<TextBlock  Grid.Column="7" Text="{Binding Path=representativeNode.dkmh_tu_dien_lop_hoc_phan_si_so,Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="Sĩ số Lớp" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}"/>
 
 										<ItemsControl Grid.Column="8" ItemsSource="{Binding CourseGroup}" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}">
 											<ItemsControl.Styles>
@@ -257,14 +261,14 @@
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
 													<Grid ColumnDefinitions="0.8* * *">
-														<TextBlock Grid.Column="0" Text="{Binding dkmh_thu_trong_tuan_ma}" ToolTip.Tip="Thứ đi học trong tuần"/>
-														<TextBlock Grid.Column="1" Text="{Binding tiet_hoc}" ToolTip.Tip="Tiết học"/>
-														<TextBlock Grid.Column="2" Text="{Binding dkmh_tu_dien_phong_hoc_ten}" ToolTip.Tip="Phòng học"/>
+														<TextBlock Grid.Column="0" Text="{Binding dkmh_thu_trong_tuan_ma,Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="Thứ đi học trong tuần"/>
+														<TextBlock Grid.Column="1" Text="{Binding tiet_hoc,Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="Tiết học"/>
+														<TextBlock Grid.Column="2" Text="{Binding dkmh_tu_dien_phong_hoc_ten,Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="Phòng học"/>
 													</Grid>
 												</DataTemplate>
 											</ItemsControl.ItemTemplate>
 										</ItemsControl>
-										<TextBlock  Grid.Column="9"  Text="{Binding representativeNode.dkmh_tu_dien_giang_vien_ten_vn}" HorizontalAlignment="Center" ToolTip.Tip="Giảng viên" TextWrapping="WrapWithOverflow" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
+										<TextBlock  Grid.Column="9"  Text="{Binding Path=representativeNode.dkmh_tu_dien_giang_vien_ten_vn,Converter={StaticResource NullToStringConverter},TargetNullValue=''}" HorizontalAlignment="Center" ToolTip.Tip="Giảng viên" TextWrapping="WrapWithOverflow" Classes.RedStatus="{Binding IsRedStatus}" Classes.YellowStatus="{Binding IsYellowStatus}" Classes.GreenStatus="{Binding IsGreenStatus}" />
 									</Grid>
 
 								</TreeDataTemplate>
