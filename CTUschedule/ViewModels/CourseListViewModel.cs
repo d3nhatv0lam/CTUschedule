@@ -203,7 +203,7 @@ namespace CTUschedule.ViewModels
         private static readonly object _lock = new object();
         CancellationTokenSource _cts;
 
-        // chạy lệnh quicksearch khi không có cập nhập gì về CourseName trong 500ms
+        // chạy lệnh quicksearch khi không có cập nhập gì về CourseName trong 250ms
         private void QuickSearchDelayAndRunOnLastUpdate()
         {
             // tạo một hàng đợi khi gọi hàm
@@ -217,7 +217,7 @@ namespace CTUschedule.ViewModels
                 // chỉ khi nào hàng đợi hết thì mới thực hiện được task quicksearch
                 Task.Run(async () =>
                 {
-                    await Task.Delay(300,token);
+                    await Task.Delay(250,token);
                     try
                     {
                         if (!token.IsCancellationRequested)
@@ -331,7 +331,8 @@ namespace CTUschedule.ViewModels
             if (!IsChanged) CourseNodes.Add(new CourseNode(MaHocPhan, TenHocPhan, subNode));
 
             //Update lại UI của trang này
-            FilterCourseList = new ObservableCollection<CourseInformation>(FilterCourseList);
+            //FilterCourseList = new ObservableCollection<CourseInformation>(FilterCourseList);
+            OnPropertyChanged(nameof(FilterCourseList));
             // gọi trang Edit Update lại
             OnCourseNodesUpdate();
         }

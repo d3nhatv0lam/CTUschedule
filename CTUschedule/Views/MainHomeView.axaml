@@ -77,7 +77,6 @@
 								  SelectedItem="{Binding SelectedNode , Mode=TwoWay}">
 
 							<TreeView.ItemTemplate>
-								
 								<TreeDataTemplate ItemsSource="{Binding SubNodes}">
 									<Grid ColumnDefinitions="Auto, 8, *">
 										<avalonia:MaterialIcon Kind="{Binding ImageKind}" />
