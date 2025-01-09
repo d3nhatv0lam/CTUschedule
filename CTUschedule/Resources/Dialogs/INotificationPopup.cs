@@ -44,6 +44,8 @@ namespace CTUschedule.Resources.Dialogs
             Warning,
             Information,
             Succes,
+            ScheduleHasItem,
+            ScheduleConflit,
         }
 
         public NotificationPopupController(Type type,string title, string message)
@@ -95,6 +97,21 @@ namespace CTUschedule.Resources.Dialogs
                         LineColorHex = "#339900";
                     }
                     break;
+                case Type.ScheduleHasItem:
+                    {
+                        symbolKind = MaterialIconKind.NotebookEditOutline;
+                        symbolColorHex = "#118bbd";
+                         LineColorHex = "#77cbed";
+                    }
+                    break;
+                case Type.ScheduleConflit:
+                    {
+                        symbolKind = MaterialIconKind.NotebookMinusOutline;
+                        symbolColorHex = "#118bbd";
+                        LineColorHex = "#77cbed";
+                    }
+                    break;
+
                 default:
                     break;
             };

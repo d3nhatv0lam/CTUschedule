@@ -22,6 +22,7 @@
 	<UserControl.Resources>
 		<Conv:ScheduleGroupFomatConverter x:Key="GroupFormatConverter"/>
 		<Conv:ScheduleStudyRoomFomatConverter x:Key="RoomFormatConverter"/>
+		<Conv:NullToStringEmpty x:Key="NullToStringConverter"/>
 	</UserControl.Resources>
 
 
@@ -81,7 +82,6 @@
 				   Theme="{StaticResource MaterialModernScrollViewer}">
 
 				<TreeView ItemsSource="{Binding CourseNodes}"
-						  
 						  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
 					<TreeView.Styles>
@@ -116,10 +116,36 @@
 								<CheckBox
 									Grid.Column="0"
 									Classes="accent"
+									ToolTip.Placement="BottomEdgeAlignedLeft"
 									IsChecked="{Binding IsScheduleSelected , UpdateSourceTrigger=PropertyChanged}"
 									Command="{Binding ((vm:ScheduleViewModel)DataContext).CheckBoxTaskCommand , RelativeSource={RelativeSource AncestorType=views:ScheduleView}}"
 									CommandParameter="{Binding $self, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
-										/>
+									>
+									<ToolTip.Tip>
+										<Grid MinWidth="250">
+											<ItemsControl ItemsSource="{Binding CourseGroup}">
+												<ItemsControl.Styles>
+													<Style Selector="TextBlock">
+														<Setter Property="VerticalAlignment" Value="Center"/>
+														<Setter Property="HorizontalAlignment" Value="Center"/>
+													</Style>
+												</ItemsControl.Styles>
+												
+												<ItemsControl.ItemTemplate>
+													
+													<DataTemplate>
+														<Grid ColumnDefinitions="0.8* * *">
+															<TextBlock Grid.Column="0" Text="{Binding dkmh_thu_trong_tuan_ma,Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="Thứ đi học trong tuần"/>
+															<TextBlock Grid.Column="1" Text="{Binding tiet_hoc,Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="Tiết học"/>
+															<TextBlock Grid.Column="2" Text="{Binding dkmh_tu_dien_phong_hoc_ten,Converter={StaticResource NullToStringConverter}}" ToolTip.Tip="Phòng học"/>
+														</Grid>
+													</DataTemplate>
+												</ItemsControl.ItemTemplate>
+											</ItemsControl>
+										</Grid>
+										
+									</ToolTip.Tip>
+								</CheckBox>
 
 
 								<TextBlock Grid.Column="2" Text="{Binding MaHocPhan ,TargetNullValue='',FallbackValue=''}" ToolTip.Tip="Mã Học Phần"/>

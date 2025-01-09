@@ -252,6 +252,11 @@ namespace Utilities
             
         }
 
+        public bool IsDriveUrlCatalogPage()
+        {
+            return driver.Url == HTQLWebDriver.CourseCatalogPage;
+        }
+
         public void NavigateToCourseCatalog()
         {
             // thử refesh lại
@@ -286,6 +291,8 @@ namespace Utilities
             actions.SendKeys(Keys.Delete).Build().Perform();
         }
 
+        CancellationTokenSource cts = new CancellationTokenSource();
+
         public async void QuickSearch(string searchText)
         {
             await Task.Run(() =>
@@ -293,7 +300,10 @@ namespace Utilities
                 try
                 {
                     var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("rc_select_2")));
+                    SearchBox.Click();
                     ClearAllText();
+                    cts.Token.ThrowIfCancellationRequested();
+                    Debug.WriteLine($"da dien: {searchText}");
                     SearchBox.SendKeys(searchText);
                 }
                 catch (Exception ex)
@@ -301,7 +311,6 @@ namespace Utilities
                     Debug.WriteLine(ex.Message);
                 }
             });
-            
         }
 
         public async void Search(string searchText)

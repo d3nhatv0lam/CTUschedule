@@ -184,7 +184,7 @@ namespace CTUschedule.ViewModels
                                 if (isHasChecked)
                                 {
                                     //Error, trung môn
-                                    INotificationPopup TrungMonPopup = new NotificationPopupController(NotificationPopupController.Type.Error, "Trùng Môn", $"Đã có học phần {maHocPhan}!");
+                                    INotificationPopup TrungMonPopup = new NotificationPopupController(NotificationPopupController.Type.ScheduleHasItem, "Trùng Môn", $"Đã có học phần {maHocPhan}!");
                                     TrungMonPopup.ShowNotification();
                                     checkbox.IsChecked = false;
                                     OnPropertyChanged(nameof(CourseNodes));
@@ -279,7 +279,7 @@ namespace CTUschedule.ViewModels
                                     //if (appendCell.TietBatDau <= enableItemInPool.TietKetThuc || appendCell.TietKetThuc > enableItemInPool.TietBatDau)
                                     
                                     // => trung lich
-                                    INotificationPopup TrungLichPopup = new NotificationPopupController(NotificationPopupController.Type.Error, "Trùng Lịch", $"Trùng lịch với học phần {enableItemInPool.MaHocPhan}!");
+                                    INotificationPopup TrungLichPopup = new NotificationPopupController(NotificationPopupController.Type.ScheduleConflit, "Trùng Lịch", $"Trùng lịch với học phần {enableItemInPool.MaHocPhan}!");
                                     TrungLichPopup.ShowNotification();
                                     checkbox.IsChecked = false;
                                     OnPropertyChanged(nameof(CourseNodes));

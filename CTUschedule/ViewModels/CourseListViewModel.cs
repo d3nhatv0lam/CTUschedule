@@ -19,6 +19,8 @@ using Avalonia.Threading;
 using CTUschedule.Resources.Dialogs;
 using System.Linq.Expressions;
 using CTUschedule.Utilities;
+using System.Threading;
+using Microsoft.VisualBasic;
 
 namespace CTUschedule.ViewModels
 {
@@ -34,7 +36,6 @@ namespace CTUschedule.ViewModels
             set
             {
                 //if (_courseName == value) return;
-
                 _courseName = value;
                 OnPropertyChanged(nameof(CourseName));
                 if (String.IsNullOrEmpty(_courseName))
@@ -42,7 +43,8 @@ namespace CTUschedule.ViewModels
                     QuickselectList.Clear();
                     return;
                 }
-                courseCatalog.QuickSearch(CourseName);
+                QuickSearchDelayAndRunOnLastUpdate();
+               
             }
         }
 
@@ -197,6 +199,39 @@ namespace CTUschedule.ViewModels
             return CheckerInternetHelper._isHasInternet;
         }
 
+        // khóa đối tượng cho 1 luồng
+        private static readonly object _lock = new object();
+        CancellationTokenSource _cts;
+
+        // chạy lệnh quicksearch khi không có cập nhập gì về CourseName trong 500ms
+        private void QuickSearchDelayAndRunOnLastUpdate()
+        {
+            // tạo một hàng đợi khi gọi hàm
+            lock (_lock)
+            {
+                _cts?.Cancel();
+                _cts = new CancellationTokenSource();
+                var token = _cts.Token;
+
+                // khi Task.run này xảy ra thì hàm này đã xong, thực hiện hàm đợi, khi đó sẽ hủy token cũ đi -> hủy luôn hàm Task.run này
+                // chỉ khi nào hàng đợi hết thì mới thực hiện được task quicksearch
+                Task.Run(async () =>
+                {
+                    await Task.Delay(300,token);
+                    try
+                    {
+                        if (!token.IsCancellationRequested)
+                            courseCatalog.QuickSearch(CourseName);
+                        
+                    }
+                    catch (TaskCanceledException)
+                    {
+
+                    }
+                });
+            }
+        }
+
         [RelayCommand]
         public void SearchCourseData()
         {
@@ -208,6 +243,11 @@ namespace CTUschedule.ViewModels
         public void SearchCourseData(string courseName,List<string> nhomHocphan)
         {
             if (!IsHasInternet()) return;
+            if (!courseCatalog.IsDriveUrlCatalogPage())
+            {
+                courseCatalog.NavigateToCourseCatalog();
+            }
+
 
             courseCatalog.Search(courseName);
             GetTenHocPhanVaMaHocPhanAfterSearch();
@@ -256,12 +296,33 @@ namespace CTUschedule.ViewModels
                 if (CourseNodes[i].MaHocPhan == subNode.First().CourseGroup.First().dkmh_tu_dien_hoc_phan_ma)
                 {
                     // lưu lại các tùy chọn tkb TRANG SCHEDULE
-                    for(int j = 0; j < subNode.Count; j++)
+                    //for(int j = 0; j < subNode.Count; j++)
+                    //{
+                    //    subNode[j].IsScheduleSelected = CourseNodes[i].SubNodes[j].IsScheduleSelected;
+                    //}
+
+                    // Từng subnode con sẽ đem insert vào node cha
+                    for (int j = 0; j < subNode.Count; j++)
                     {
-                        subNode[j].IsScheduleSelected = CourseNodes[i].SubNodes[j].IsScheduleSelected;
+                        // lấy nhóm học phần để tìm và chèn
+                        string nhomHocPhan = subNode[j].CourseGroup.First().dkmh_nhom_hoc_phan_ma;
+                        // tìm vị trí để chèn vào tăng dần cho đẹp
+                        int insertIndex = CourseNodeListFindIndex.FindIndex(CourseNodes[i],nhomHocPhan);
+                        // sợ có lỗi
+                        if (insertIndex == -1) continue;
+                        // nếu tồn tại nhóm HP này trong danh sách
+                        if (CourseNodes[i].SubNodes[insertIndex].CourseGroup.First().dkmh_nhom_hoc_phan_ma == nhomHocPhan)
+                        {
+                            // gán trạng thái lịch tkb lại cho node mới
+                            subNode[j].IsScheduleSelected = CourseNodes[i].SubNodes[insertIndex].IsScheduleSelected;
+                            //thay node mới vào
+                            CourseNodes[i].SubNodes[insertIndex] = subNode[j];
+                        }
+                        // chèn vào vị trí phù hợp
+                        else CourseNodes[i].SubNodes.Insert(insertIndex, subNode[j]);
                     }
 
-                    CourseNodes[i] = new CourseNode(MaHocPhan, TenHocPhan, subNode);
+                    //CourseNodes[i] = new CourseNode(MaHocPhan, TenHocPhan, subNode);
                     IsChanged = true;
                     break;
                 }
