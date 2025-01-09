@@ -7,6 +7,7 @@
 			  xmlns:vm="using:CTUschedule.ViewModels"
 			  x:DataType="vm:IntroduceViewModel"
 		
+			 xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
 			 xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
 			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
 			 x:Class="CTUschedule.Views.IntroduceView">
@@ -14,6 +15,22 @@
 	
 	
 		<Grid>
+		<dialogHost:DialogHost CloseOnClickAway="True" IsOpen="{Binding IsOpenQRCode}">
+				<dialogHost:DialogHost.DialogContent>
+					
+					<controls:Card Width="400" Height="500" VerticalAlignment="Top">
+						<Grid RowDefinitions="auto * 30" Margin="0,4">
+							<TextBlock Grid.Row="0" Classes="Headline6" HorizontalAlignment="Center" Text="~~Các bạn có thể ủng hộ mình gói mì~~"/>
+							<TextBlock Grid.Row="2" VerticalAlignment="Center" FontSize="17" HorizontalAlignment="Center" Text="Cảm ơn các bạn đã sử dụng ứng dụng của mình" TextAlignment="Center" TextWrapping="WrapWithOverflow"/>
+							<Image Grid.Row="1" Source="/Assets/Images/QRCode.jpg" Stretch="UniformToFill"/>
+						</Grid>
+					</controls:Card>
+					
+				</dialogHost:DialogHost.DialogContent>
+			
+			
+			<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Theme="{StaticResource MaterialModernScrollViewer}">
+			
 			<Border Padding="10">
 				<StackPanel Orientation="Vertical">
 					<StackPanel.Styles>
@@ -42,13 +59,16 @@
 						<TextBlock Classes="Body2"
 								   Text="• Sử dụng các nhóm học phần bạn chọn cho việc xếp thời khóa biểu nhanh gọn, thuận tiện."/>
 						<TextBlock Classes="Body2"
-									Text="• Xuất thời khóa biểu dưới dạng ảnh PNG, dễ dàng chia sẻ."/>
+									Text="• Cập nhật lại sỉ số các nhóm học phần đã soạn với một click!"/>
+
 					</StackPanel>
 
 					<StackPanel  Orientation="Vertical">
 						<TextBlock Classes="Headline6"
 							   Text="Các tính năng 'Có thể sẻ phát triển': ( hên xui á các bạn :P )"/>
-						
+
+						<TextBlock Classes="Body2"
+									Text="• Xuất thời khóa biểu dưới dạng ảnh PNG, dễ dàng chia sẻ."/>
 						<TextBlock Classes="Body2"
 									Text="• Xuất thời khóa biểu dưới dạng file Exel."/>
 						<TextBlock Classes="Body2"
@@ -66,7 +86,9 @@
 						<TextBlock Classes="Body2"
 									Text="• Dự án sử dụng Selenium Chrome tạo một trình duyệt và sử dụng tài khoản sinh viên dùng cho truy cập hệ thống quản lý, truy cập thông tin học phần. Nếu không có tài khoản sinh viên thì dự án không thể lấy các nhóm học phần dùng cho sắp xếp thời khóa biểu."/>
 						<TextBlock Classes="Body2"
-										Text="• Các bạn có thể kết nối với mình ở các liên kết."/>
+										Text="• Dự án còn nhiều lỗi có thể phát sinh, nếu bắt gặp lỗi thì bạn có thể gửi lỗi cho mình ở facebook, cảm ơn bạn."/>
+						<TextBlock Classes="Body2"
+										Text="• Kết nối, trò chuyện với mình ở các liên kết dưới:"/>
 
 					</StackPanel>
 					<!--// Contact Button //--> 
@@ -83,13 +105,17 @@
 						<controls:FloatingButton Command="{Binding OpenYoutubePage}"   Classes="Light" Foreground="Red" Background="White" Margin="5 0 0 5">
 							<avalonia:MaterialIcon Kind="Youtube" Height="50" Width="50"/>
 						</controls:FloatingButton>
-				</StackPanel>
 
-
-
+						<controls:FloatingButton ToolTip.Tip="ủng hộ mình gói mì :3" Command="{Binding OpenQRCode}" Classes="Light" Foreground="Black" Background="White" Margin="5 0 0 5">
+							<avalonia:MaterialIcon Kind="QrcodeScan" Height="35" Width="35"/>
+						</controls:FloatingButton>
+						
+					</StackPanel>
 				</StackPanel>
 			</Border>
-
+			</ScrollViewer>
+		</dialogHost:DialogHost>
+			
 		</Grid>
 		
 </UserControl>

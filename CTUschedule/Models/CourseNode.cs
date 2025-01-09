@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using OpenQA.Selenium.DevTools.V129.DOM;
+using OpenQA.Selenium.DevTools.V129.Memory;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,8 +15,11 @@ namespace CTUschedule.Models
     public class CourseNode
     {
 
-        public string MaHocPhan { get; set; }
+    
+
+    public string MaHocPhan { get; set; }
         public string TenHocPhan { get; set; }
+        public bool IsSelected { get; set; } = false;
         public bool IsExpanded { get; set; } = false;
 
         public bool IsScheduleSelected { get; set; } = false;
@@ -23,10 +29,27 @@ namespace CTUschedule.Models
 
         public ObservableCollection<CourseNode>? SubNodes { get; set; } = new ObservableCollection<CourseNode>();
 
-        public CourseInformation? Course { get; set; } = new CourseInformation()
+        [System.Text.Json.Serialization.JsonIgnore]
+        private CourseInformation _courseInformation;
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public CourseInformation? representativeNode
         {
-            si_so_con_lai = null,
-        };
+            get
+            {
+                if (CourseGroup.Count == 0) 
+                {
+                    if (_courseInformation == null)
+                        _courseInformation = new CourseInformation();
+                    return _courseInformation;
+                }
+                return (CourseInformation)CourseGroup[0];
+            }
+            set { }
+        }
+
+        public ObservableCollection<CourseInformation> CourseGroup { get; set; } = new ObservableCollection<CourseInformation>();
+
 
         public CourseNode() { }
         
@@ -43,41 +66,71 @@ namespace CTUschedule.Models
             SubNodes = subNodes;
         }
 
-        public CourseNode(CourseInformation? course)
+        public CourseNode(ObservableCollection<CourseInformation> course)
         {
-            Course = course;
-            SetSlotStatus();
+            CourseGroup = course;
+            SetSlotStatus(CourseGroup.First());
         }
 
-        public static ObservableCollection<CourseNode> Uncheck_UnExpandCourseNode(ObservableCollection<CourseNode> oldCourseNodes)
+        private void SetSlotStatus(CourseInformation course)
         {
-            ObservableCollection<CourseNode> newCourseNodes = DeepCopy(oldCourseNodes);
-            foreach (var node in newCourseNodes)
+            if (course == null || course.si_so_con_lai == null) return;
+            if (course.si_so_con_lai == 0) setStatus(false, false, false);
+            else
+            // (0%,10%]
+            if (course.si_so_con_lai <= 0.1 * course.dkmh_tu_dien_lop_hoc_phan_si_so)
+                setStatus(true, false, false);
+            else
+            // (10%,40%)
+            if (course.si_so_con_lai > 0.1 * course.dkmh_tu_dien_lop_hoc_phan_si_so && course.si_so_con_lai < 0.4 * course.dkmh_tu_dien_lop_hoc_phan_si_so)
+                setStatus(false, true, false);
+            // [40%,100%]
+            else setStatus(false, false, true);
+        }
+
+        public static ObservableCollection<CourseNode> UnExpandAllCourseNode(ObservableCollection<CourseNode> courseNodes)
+        {
+            foreach (var node in courseNodes)
             {
                 node.IsExpanded = false;
-                node.Course.IsSelected = false;
-                if (node.SubNodes == null) continue;
-                foreach (var childnode in node.SubNodes)
-                {
-                    childnode.Course.IsSelected = false;
-                }
             }
-            return newCourseNodes;
+            return courseNodes;
         }
 
-        private static ObservableCollection<CourseNode> DeepCopy(ObservableCollection<CourseNode> list)
-        {
-            try
-            {
-                var json = JsonConvert.SerializeObject(list);
-                return JsonConvert.DeserializeObject<ObservableCollection<CourseNode>>(json);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-            return null;
-        }
+        //public static ObservableCollection<CourseNode> Uncheck_UnExpandCourseNode(ObservableCollection<CourseNode> oldCourseNodes)
+        //{
+        //    ObservableCollection<CourseNode> newCourseNodes = DeepCopy(oldCourseNodes);
+        //    foreach (var node in newCourseNodes)
+        //    {
+        //        // parent node
+        //        node.IsExpanded = false;
+        //        node.IsSelected = false;
+
+        //        if (node.SubNodes == null) continue;
+        //        foreach (var childnode in node.SubNodes)
+        //        {
+        //            foreach (CourseInformation course in childnode.CourseGroup)
+        //            {
+        //                course.IsSelected = false;
+        //            }
+        //        }
+        //    }
+        //    return newCourseNodes;
+        //}
+
+        //private static ObservableCollection<CourseNode> DeepCopy(ObservableCollection<CourseNode> list)
+        //{
+        //    try
+        //    {
+        //        var json = JsonConvert.SerializeObject(list);
+        //        return JsonConvert.DeserializeObject<ObservableCollection<CourseNode>>(json);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.Message);
+        //    }
+        //    return null;
+        //}
 
         private void setStatus(bool Red, bool Yellow, bool Green)
         {
@@ -86,20 +139,6 @@ namespace CTUschedule.Models
             IsGreenStatus = Green;
         }
 
-        private void SetSlotStatus()
-        {
-            if (Course == null || Course.si_so_con_lai == null) return;
-            if (Course.si_so_con_lai == 0) setStatus(false, false, false);
-            else
-            // (0%,10%]
-            if (Course.si_so_con_lai <= 0.1 * Course.dkmh_tu_dien_lop_hoc_phan_si_so)
-                setStatus(true, false, false);
-            else
-            // (10%,40%)
-            if (Course.si_so_con_lai > 0.1 * Course.dkmh_tu_dien_lop_hoc_phan_si_so && Course.si_so_con_lai < 0.4 * Course.dkmh_tu_dien_lop_hoc_phan_si_so)
-                setStatus(false, true, false);
-            // [40%,100%]
-            else setStatus(false, false, true);
-        }
+       
     }
 }

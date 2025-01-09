@@ -30,6 +30,25 @@ namespace Utilities
         public IWebDriver driver;
         public WebDriverWait wait;
 
+        private event EventHandler _webLogedOut;
+
+        public event EventHandler WebLoggedOut
+        {
+           add
+            {
+                _webLogedOut += value;
+            }
+            remove
+            {
+                _webLogedOut -= value;
+            }
+        }
+
+        public void OnLoggedOut()
+        {
+            _webLogedOut(this, new EventArgs());
+        }
+
 
         public CTU_HTQLWebDriver()
         {
@@ -42,6 +61,13 @@ namespace Utilities
         {
             options = new ChromeOptions();
             //options.AddArgument("--headless");
+            options.AddArgument("--start-maximized");
+            options.AddArgument("--disable-infobars");
+            options.AddArgument("--disable-extensions");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-application-cache");
+            options.AddArgument("--disable-gpu");
+            options.AddArgument("--disable-dev-shm-usage");
             var chromeDriverService = ChromeDriverService.CreateDefaultService();
             chromeDriverService.HideCommandPromptWindow = true;
             driver = new ChromeDriver(chromeDriverService, options);
@@ -51,6 +77,8 @@ namespace Utilities
         public void CloseWeb()
         {
             driver.Quit();
+            driver.Dispose();
+            driver = null;
         }
     }
 
@@ -203,17 +231,58 @@ namespace Utilities
             //};
         }
 
-        public void NavigateToCourseCatalog()
+        private void ForceNavigateToCourseCatalog()
         {
             //truy cập Trang đăng ký học phần
             driver.Navigate().GoToUrl(HTQLWebDriver.MainPage);
-            var dkmh = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//*[@id=\"page-body\"]/div[1]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[1]/td[2]/div/span/img")));
-            //var dkmh = driver.FindElement(By.XPath("//*[@id=\"page-body\"]/div[1]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[1]/td[2]/div/span/img"));
-            dkmh.Click();
-            // chờ 3s để load trang
-            Thread.Sleep(3000);
-            // nảy tới trang catalog
-            driver.Navigate().GoToUrl(HTQLWebDriver.CourseCatalogPage);
+            try
+            {
+                var dkmh = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//*[@id=\"page-body\"]/div[1]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[1]/td[2]/div/span/img")));
+                dkmh.Click();
+                // chờ 3s để load trang
+                Thread.Sleep(3000);
+                // nảy tới trang catalog
+                driver.Navigate().GoToUrl(HTQLWebDriver.CourseCatalogPage);
+            } catch
+            {
+                // không truy cập được vào trang main => văng về login
+                HTQLWebDriver.OnLoggedOut();
+            }
+             //var dkmh = driver.FindElement(By.XPath("//*[@id=\"page-body\"]/div[1]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[1]/td[2]/div/span/img"));
+            
+        }
+
+        public bool IsDriveUrlCatalogPage()
+        {
+            return driver.Url == HTQLWebDriver.CourseCatalogPage;
+        }
+
+        public void NavigateToCourseCatalog()
+        {
+            // thử refesh lại
+            driver.Navigate().Refresh();
+            // giả định đang ở web List HP
+            try
+            {
+                // check has popup -> đã logout
+                var logoutPopup = driver.FindElement(By.XPath("/html/body/div[3]/div/div[2]/div/div[2]/div/div/div/div[2]/button"));
+                // chờ 5 giây để văng ra
+                Thread.Sleep(5000);
+                HTQLWebDriver.OnLoggedOut();
+            }
+            catch
+            {
+                // không có popup log out
+                // nếu đang ở web => còn dùng được
+                if (driver.Url == HTQLWebDriver.CourseCatalogPage) return;
+                // giả định đang ở web sign-in
+                if (driver.Url == HTQLWebDriver.SignInPage)
+                {
+                    HTQLWebDriver.OnLoggedOut();
+                    return;
+                }
+                ForceNavigateToCourseCatalog();
+            }
         }
 
         public void ClearAllText()
@@ -222,6 +291,8 @@ namespace Utilities
             actions.SendKeys(Keys.Delete).Build().Perform();
         }
 
+        CancellationTokenSource cts = new CancellationTokenSource();
+
         public async void QuickSearch(string searchText)
         {
             await Task.Run(() =>
@@ -229,7 +300,10 @@ namespace Utilities
                 try
                 {
                     var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("rc_select_2")));
+                    SearchBox.Click();
                     ClearAllText();
+                    cts.Token.ThrowIfCancellationRequested();
+                    Debug.WriteLine($"da dien: {searchText}");
                     SearchBox.SendKeys(searchText);
                 }
                 catch (Exception ex)
@@ -237,7 +311,6 @@ namespace Utilities
                     Debug.WriteLine(ex.Message);
                 }
             });
-            
         }
 
         public async void Search(string searchText)

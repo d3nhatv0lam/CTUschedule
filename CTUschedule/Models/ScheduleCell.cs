@@ -12,12 +12,36 @@ namespace CTUschedule.Models
     {
         public string MaHocPhan { get; set; }
         public string TenHocPhan { get; set; }
-
         public string NhomHocPhan { get; set; }
         public string PhongHoc { get; set; }
         public string GiangVien { get; set; }
-        public int SoTietHoc  { get; set; }
 
+        public bool IsShowCell { get; set; } = false;
+
+        public int SoTietHoc { get; set; } = 1; // row span default is 1
+        public int TietBatDau { get; set; } // hang
+        public int ThuDiHoc { get; set; } // cot
+
+
+        public int RowIndex
+        {
+            get
+            {
+                if (TietBatDau >= 6) return TietBatDau + 1;
+                return TietBatDau;
+            }
+        }
+
+        public int ColumnIndex
+        {
+            get => ThuDiHoc - 1;
+        }
+
+        // [TietBatDau,RowRange]
+        public int TietKetThuc
+        {
+            get => TietBatDau + SoTietHoc - 1;
+        }
         public bool IsRedStatus { get; set; } = false;
         public bool IsYellowStatus { get; set; } = false;
         public bool IsGreenStatus { get; set; } = false;
@@ -34,8 +58,19 @@ namespace CTUschedule.Models
             NhomHocPhan = course.dkmh_nhom_hoc_phan_ma;
             PhongHoc = course.dkmh_tu_dien_phong_hoc_ten;
             GiangVien = course.dkmh_tu_dien_giang_vien_ten_vn;
-            SoTietHoc = course.tiet_hoc.Trim('-').Length;
+
+            GetScheduleIndex(course);
             SetSlotStatus(course);
+        }
+
+        private void GetScheduleIndex(CourseInformation course)
+        {
+            if (course.dkmh_thu_trong_tuan_ma != null)
+            ThuDiHoc = (int)course.dkmh_thu_trong_tuan_ma;
+
+            string tiethoc = course.tiet_hoc.Trim('-');
+            TietBatDau = tiethoc[0] - '0';
+            SoTietHoc = tiethoc.Length;
         }
 
         private void setStatus(bool Red, bool Yellow, bool Green)
@@ -59,25 +94,6 @@ namespace CTUschedule.Models
                 setStatus(false, true, false);
             // [40%,100%]
             else setStatus(false, false, true);
-        }
-    }
-    public class ScheduleCellTableIndex
-    {
-        public int ThuDiHoc { get; set; } // cot
-        public int TietBatDau { get; set; } // hang
-        public int SoTietHoc { get; set; }
-
-        public static ScheduleCellTableIndex GetTableIndex(CourseInformation course)
-        {
-            ScheduleCellTableIndex newScheduleItem = new ScheduleCellTableIndex();
-            if (course.dkmh_thu_trong_tuan_ma != null) 
-            newScheduleItem.ThuDiHoc = (int)course.dkmh_thu_trong_tuan_ma;
-
-            string tiethoc = course.tiet_hoc.Trim('-');
-            newScheduleItem.TietBatDau = tiethoc[0] - '0';
-            newScheduleItem.SoTietHoc = tiethoc.Length;
-
-            return newScheduleItem;
         }
     }
 }

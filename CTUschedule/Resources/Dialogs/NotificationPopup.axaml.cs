@@ -12,6 +12,7 @@ using Material;
 using System.Windows;
 using System.Threading;
 using System.Threading.Tasks;
+using Material.Icons;
 
 namespace CTUschedule;
 
@@ -28,11 +29,10 @@ public partial class NotificationPopup : Window
         //AlertOctagonOutline
     }
 
-    public NotificationPopup(int Posindex, string symbolKind, string symbolColorHex, string LineColorHex, string Title, string Message)
+    public NotificationPopup(int Posindex, MaterialIconKind symbolKind, string symbolColorHex, string LineColorHex, string Title, string Message)
     {
         InitializeComponent();
         SetPopupPosition(Posindex);
-
         SetStatusNotification( symbolKind, symbolColorHex, LineColorHex, Title, Message);
     }
 
@@ -45,13 +45,14 @@ public partial class NotificationPopup : Window
     private async void WaitAndClose()
     {
         await Task.Delay(WaitTime);
+        this.DataContext = null;
         Close();
     }
 
-    private void SetStatusNotification(string symbolKind, string symbolColorHex,string LineColorHex , string Title, string Message)
+    private void SetStatusNotification(MaterialIconKind symbolKind, string symbolColorHex,string LineColorHex , string Title, string Message)
     {
-        icon.Text = symbolKind;
-        icon.Foreground = new SolidColorBrush(Color.Parse(symbolColorHex));
+        PopupIcon.Kind = symbolKind;
+        PopupIcon.Foreground = new SolidColorBrush(Color.Parse(symbolColorHex));
         line.Background = new SolidColorBrush(Color.Parse(LineColorHex));
         title.Text = Title;
         description.Text = Message;

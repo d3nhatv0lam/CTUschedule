@@ -12,7 +12,12 @@ public partial class CourseListEditView : UserControl
     public CourseListEditView()
     {
         InitializeComponent();
+        //this.Unloaded += _Unloaded;
     }
 
-   
+    private void _Unloaded(object? sender, RoutedEventArgs e)
+    {
+        this.DataContext = null;
+        this.Unloaded -= _Unloaded;
+    }
 }

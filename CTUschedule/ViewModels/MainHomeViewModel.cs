@@ -33,6 +33,7 @@ namespace CTUschedule.ViewModels
                 if (_selectedNode == value) return;
                 _selectedNode = value;
                 ChangeView(SelectedNode);
+                OnPropertyChanged(nameof(SelectedNode));
             }
         }
 
@@ -56,6 +57,11 @@ namespace CTUschedule.ViewModels
                 new Node(3,"Calendar","Thời khóa biểu"),
             };
             //SelectedNode = new ObservableCollection<Node>() { Nodes.First() };
+            Init();
+        }
+
+        public void Init()
+        {
             SelectedNode = Nodes.First();
         }
 
@@ -72,8 +78,9 @@ namespace CTUschedule.ViewModels
 
             if (CurrentViewModel is CourseListViewModel viewModel)
             {
-                //await Task.Run(() => viewModel.Init());
+                await Task.Run(() => viewModel.Init());
             }
+
             IsChangingView = false;
         }
     }

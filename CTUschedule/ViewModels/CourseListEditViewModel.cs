@@ -1,10 +1,12 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CTUschedule.Models;
 using CTUschedule.Resources.Dialogs;
+using CTUschedule.Utilities;
 using DialogHostAvalonia;
 using System;
 using System.Collections.Generic;
@@ -67,110 +69,44 @@ namespace CTUschedule.ViewModels
         public CourseListEditViewModel()
         {
             Instance = this;
+
             _mainHomeViewModel = MainHomeViewModel.Instance;
             _courseListViewModel = CourseListViewModel.Instance;
-            _courseListViewModel.CourseListUpdate += _courseListViewModel_CourseListUpdate;
+            _courseListViewModel.CourseNodesUpdate += _courseListViewModel_CourseListUpdate;
 
-            CourseNodes = new ObservableCollection<CourseNode>
-            {
-                new CourseNode("CT172","Nhập môn công nghệ phần mềm", new ObservableCollection<CourseNode>()
-                {
-                    new CourseNode(new CourseInformation()
-                    {
-                        dkmh_tu_dien_hoc_phan_ma ="CT172",
-                        dkmh_nhom_hoc_phan_ma = "01",
-                        dkmh_tu_dien_lop_hoc_phan_si_so = 40,
-                        si_so_con_lai = 10,
-                        dkmh_thu_trong_tuan_ma = 6,
-                        tiet_hoc="1234-----",
-                        dkmh_tu_dien_phong_hoc_ten ="C1/102",
-                        dkmh_tu_dien_giang_vien_ten_vn = "GV1",
-                    }),
-                     new CourseNode(new CourseInformation()
-                    {
-                         dkmh_tu_dien_hoc_phan_ma ="CT172",
-                        dkmh_nhom_hoc_phan_ma = "02",
-                        dkmh_tu_dien_lop_hoc_phan_si_so = 200,
-                        si_so_con_lai = 100,
-                        dkmh_thu_trong_tuan_ma = 5,
-                         tiet_hoc="12--------",
-                        dkmh_tu_dien_phong_hoc_ten ="D1002",
-                        dkmh_tu_dien_giang_vien_ten_vn = "GV1",
-                    }),
-                }),
-                new CourseNode("CT17x","Lập trình hướng đối tượng Test", new ObservableCollection<CourseNode>()
-                {
-                    new CourseNode(new CourseInformation()
-                    {
-                        dkmh_tu_dien_hoc_phan_ma ="CT17x",
-                        dkmh_nhom_hoc_phan_ma = "01",
-                        si_so_con_lai = 10,
-                        dkmh_tu_dien_lop_hoc_phan_si_so = 40,
-                        dkmh_thu_trong_tuan_ma = 3,
-                        tiet_hoc="-----678-",
-                        dkmh_tu_dien_phong_hoc_ten ="C1003",
-                        dkmh_tu_dien_giang_vien_ten_vn = "Test3",
-                    }),
-                     new CourseNode(new CourseInformation()
-                    {
-                         dkmh_tu_dien_hoc_phan_ma ="CT17x",
-                        dkmh_nhom_hoc_phan_ma = "02",
-                        dkmh_tu_dien_lop_hoc_phan_si_so = 40,
-                        si_so_con_lai = 0,
-                        dkmh_thu_trong_tuan_ma = 2,
-                        tiet_hoc="123------",
-                        dkmh_tu_dien_phong_hoc_ten ="DB/201",
-                        dkmh_tu_dien_giang_vien_ten_vn = "Test4",
-                    }),
-                      new CourseNode(new CourseInformation()
-                    {
-                        dkmh_tu_dien_hoc_phan_ma ="CT17x",
-                        dkmh_nhom_hoc_phan_ma = "03",
-                        dkmh_tu_dien_lop_hoc_phan_si_so = 40,
-                        si_so_con_lai = 1,
-                        dkmh_thu_trong_tuan_ma = 2,
-                        tiet_hoc="----678-",
-                        dkmh_tu_dien_phong_hoc_ten ="DB/201",
-                        dkmh_tu_dien_giang_vien_ten_vn = "Test4",
-                    }),
-                }),
-                new CourseNode("CT17x","Lập trình căn bản A*", new ObservableCollection<CourseNode>()
-                {
-                    new CourseNode(new CourseInformation()
-                    {
-                        dkmh_tu_dien_hoc_phan_ma ="CT17x",
-                        dkmh_nhom_hoc_phan_ma = "01",
-                        si_so_con_lai = 200,
-                        dkmh_tu_dien_lop_hoc_phan_si_so = 200,
-                        dkmh_thu_trong_tuan_ma = 3,
-                        tiet_hoc="---45-----",
-                        dkmh_tu_dien_phong_hoc_ten ="C1003",
-                        dkmh_tu_dien_giang_vien_ten_vn = "Test3",
-                    }),
-                     new CourseNode(new CourseInformation()
-                    {
-                         dkmh_tu_dien_hoc_phan_ma ="CTxxx",
-                        dkmh_nhom_hoc_phan_ma = "02",
-                        dkmh_tu_dien_lop_hoc_phan_si_so = 40,
-                        si_so_con_lai = 1,
-                        dkmh_thu_trong_tuan_ma = 2,
-                        tiet_hoc="123-----",
-                        dkmh_tu_dien_phong_hoc_ten ="DB/201",
-                        dkmh_tu_dien_giang_vien_ten_vn = "Test4",
-                    }),
-                      new CourseNode(new CourseInformation()
-                    {
-                        dkmh_tu_dien_hoc_phan_ma ="CT17x",
-                        dkmh_nhom_hoc_phan_ma = "03",
-                        dkmh_tu_dien_lop_hoc_phan_si_so = 40,
-                        si_so_con_lai = 1,
-                        dkmh_thu_trong_tuan_ma = 2,
-                        tiet_hoc="----678-",
-                        dkmh_tu_dien_phong_hoc_ten ="DB/201",
-                        dkmh_tu_dien_giang_vien_ten_vn = "Test4",
-                    }),
-                }),
-            };
+
+            //CourseNodes = new ObservableCollection<CourseNode>
+            //    {
+            //        new CourseNode("CT172","Nhập môn công nghệ phần mềm", new ObservableCollection<CourseNode>()
+            //        {
+            ////            group
+            //            new CourseNode(new ObservableCollection<CourseInformation>()
+            //                {
+            //                   new CourseInformation()
+            //                   {
+            //                        dkmh_tu_dien_hoc_phan_ma ="CT172",
+            //                        dkmh_nhom_hoc_phan_ma = "01",
+            //                        dkmh_tu_dien_lop_hoc_phan_si_so = 40,
+            //                        si_so_con_lai = 10,
+            //                        dkmh_thu_trong_tuan_ma = 6,
+            //                        tiet_hoc="1234-----",
+            //                        dkmh_tu_dien_phong_hoc_ten ="C1/102",
+            //                        dkmh_tu_dien_giang_vien_ten_vn = "GV1",
+            //                   },
+            //                   new CourseInformation()
+            //                   {
+            //                        dkmh_tu_dien_hoc_phan_ma ="CT172",
+            //                        dkmh_nhom_hoc_phan_ma = "01",
+            //                        dkmh_tu_dien_lop_hoc_phan_si_so = 200,
+            //                        si_so_con_lai = 100,
+            //                        dkmh_thu_trong_tuan_ma = 5,
+            //                        tiet_hoc="12--------",
+            //                        dkmh_tu_dien_phong_hoc_ten ="D1002",
+            //                        dkmh_tu_dien_giang_vien_ten_vn = "GV1",
+            //                   }
+            //                }),
+            //        }),
+            //    };
         }
 
         public void Init()
@@ -178,43 +114,62 @@ namespace CTUschedule.ViewModels
 
         }
 
-        [RelayCommand]
-        public void Selected_UnSelectItem(ObservableCollection<CourseNode>? course)
+        private string GetMaHocPhanOfTreeView(TreeViewItem treeViewItem)
         {
-            // check Node has Full Value
-            if (course.Count == 0)
+            var grid = treeViewItem.GetVisualDescendants().OfType<Grid>().FirstOrDefault();
+            if (grid == null) return String.Empty;
+            string maHocPhan = grid.GetVisualDescendants().OfType<TextBlock>().FirstOrDefault().Text;
+            return maHocPhan;
+        }
+
+        [RelayCommand]
+        public void Selected_UnSelectItem(TreeViewItem treeViewItem)
+        {
+            string MaHocPhan = "";
+            var parent = treeViewItem.Parent as TreeViewItem;
+            if (parent == null)
             {
-                foreach (var node in CourseNodes)
+                // treeview is parent
+                MaHocPhan = GetMaHocPhanOfTreeView(treeViewItem);
+
+                foreach(var node in CourseNodes)
                 {
-                    if (node.Course.IsSelected)
+                    // set all child of parent is checkbox value
+                    if (node.MaHocPhan == MaHocPhan)
                     {
-                        var check = node.SubNodes.Any((courseNode) => courseNode.Course.IsSelected == false);
-                        // has a element select is false => parent select = false;
-                        if (check == true) node.Course.IsSelected = false;
-                    }
-                    else
-                    {
-                        var check = node.SubNodes.All((courseNode) => courseNode.Course.IsSelected == true);
-                        if (check == true) node.Course.IsSelected = true;
+                        foreach(var child in node.SubNodes)
+                        {
+                            child.IsSelected = node.IsSelected;
+                        }
+                        break;
                     }
                 }
-                CourseNodes = new ObservableCollection<CourseNode>(CourseNodes);
-                return;
+                
             }
-
-            // set all Node is T/F
-            foreach (var node in CourseNodes)
+            // TreeViewItem is child
+            else
             {
-                if (node.MaHocPhan == course[0].Course.dkmh_tu_dien_hoc_phan_ma)
+                MaHocPhan = GetMaHocPhanOfTreeView(parent);
+                foreach (var node in CourseNodes)
                 {
-                    foreach (var updateNode in node.SubNodes)
+                    if (node.MaHocPhan == MaHocPhan)
                     {
-                        updateNode.Course.IsSelected = node.Course.IsSelected;
+                        if (node.IsSelected)
+                        {
+                            bool IsHasFalse = node.SubNodes.Any((courseNode) => courseNode.IsSelected == false);
+                            if (IsHasFalse) node.IsSelected = false;
+                        }
+                        else
+                        {
+                            // parent is false and all child is true => true
+                            bool IsAllTrue = node.SubNodes.All((courseNode) => courseNode.IsSelected == true);
+                            if (IsAllTrue) node.IsSelected = true;
+                        }
+                        break;
                     }
                 }
             }
             CourseNodes = new ObservableCollection<CourseNode>(CourseNodes);
-            //OnPropertyChanged(nameof(CourseNodes));
         }
 
         public void DeleteSelectedCourse()
@@ -223,22 +178,15 @@ namespace CTUschedule.ViewModels
             foreach (var node in CourseNodes)
             {
                 // cả nhánh đều được chọn => bỏ hết
-                if (node.Course.IsSelected) continue;
+                if (node.IsSelected) continue;
                 // tìm các con của node đó xem coi có node nào bị select không
                 ObservableCollection<CourseNode> subnodes = new ObservableCollection<CourseNode>();
                 // phải xóa 1 nhóm học phần
                 string nhomHocPhan = node.MaHocPhan;
-                foreach(var child in node.SubNodes)
+                foreach (var child in node.SubNodes)
                 {
                     // bị select thì bỏ ra
-                    if (child.Course.IsSelected)
-                    {
-                        // lưu nhóm học phần bị xóa lại để xóa hết các nhóm chung
-                        nhomHocPhan = child.Course.dkmh_nhom_hoc_phan_ma;
-                        continue;
-                    };
-                    //
-                    if (child.Course.dkmh_nhom_hoc_phan_ma == nhomHocPhan) continue;
+                    if (child.IsSelected) continue;
                     // không thì thêm vào
                     subnodes.Add(child);
                 }
@@ -246,28 +194,29 @@ namespace CTUschedule.ViewModels
                 deletedCourseNodes.Add(new CourseNode(node.MaHocPhan, node.TenHocPhan, subnodes));
             }
             CourseNodes = deletedCourseNodes;
-            //CourseNodes = new ObservableCollection<CourseNode>(deletedCourseNodes);
+            _courseListViewModel.CourseNodes = deletedCourseNodes;
         }
 
         [RelayCommand]
         public async void ReloadData()
         {
+            //has internet mới thực hiện task được
+            if (!CheckerInternetHelper._isHasInternet) return;
+
             _mainHomeViewModel.IsChangingView = true;
             await Task.Run(() =>
             {
-                ObservableCollection<CourseNode> newData = new ObservableCollection<CourseNode>();
-
-                foreach (var node in CourseNodes)
+                ObservableCollection<CourseNode> data = new ObservableCollection<CourseNode>(CourseNodes);
+                foreach (var node in data)
                 {
                     // get MaHocPhan
                     string MaHocPhan = node.MaHocPhan;
                     // get group hocphan
                     List<string> nhomHocPhan = new List<string>();
-                    foreach (var listitem in node.SubNodes)
+                    foreach (var groupItem in node.SubNodes)
                     {
-                        if (nhomHocPhan.Count == 0) nhomHocPhan.Add(listitem.Course.dkmh_nhom_hoc_phan_ma);
-                        else
-                        if (listitem.Course.dkmh_nhom_hoc_phan_ma != nhomHocPhan.Last()) nhomHocPhan.Add(listitem.Course.dkmh_nhom_hoc_phan_ma);
+                        if (groupItem.representativeNode != null) 
+                            nhomHocPhan.Add(groupItem.representativeNode.dkmh_nhom_hoc_phan_ma);
                     }
                     // search
                     _courseListViewModel.SearchCourseData(MaHocPhan, nhomHocPhan);
@@ -335,7 +284,10 @@ namespace CTUschedule.ViewModels
             {
                 string json = System.IO.File.ReadAllText(LoadLocationResult.First());
                 var Loadednodes = JsonSerializer.Deserialize<List<CourseNode>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                CourseNodes = new ObservableCollection<CourseNode>(Loadednodes);
+                // lưu lại CourseNode cho trang trước
+                _courseListViewModel.CourseNodes = new ObservableCollection<CourseNode>(Loadednodes);
+                // lưu cho trang này
+                CourseNodes = _courseListViewModel.CourseNodes;
                 INotificationPopup LoadedPopup = new NotificationPopupController(NotificationPopupController.Type.Succes, "Load thành công!", "Dữ liệu đã được load!");
                 LoadedPopup.ShowNotification();
             }
@@ -367,7 +319,7 @@ namespace CTUschedule.ViewModels
 
         private void _courseListViewModel_CourseListUpdate(object? sender, EventArgs e)
         {
-            CourseNodes = _courseListViewModel.SelectedCourseList;
+            CourseNodes = _courseListViewModel.CourseNodes;
         }
 
     }
