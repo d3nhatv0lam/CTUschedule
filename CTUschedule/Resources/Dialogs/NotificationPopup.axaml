@@ -54,27 +54,41 @@
 
 
 
+	<Grid>
+		<Border Classes="_border" x:Name="IBorder" Background="#F8FAFC"   CornerRadius="8">
+			<Grid ColumnDefinitions="10 auto 10 *">
 
-	<Border Classes="_border" x:Name="IBorder" Background="#F8FAFC"   CornerRadius="8">
-		<Grid ColumnDefinitions="10 auto 10 *">
-			<!--<TextBlock Name="icon" Height="0" Width="0" ></TextBlock>-->
-		
-			<materialIcons:MaterialIcon x:Name="PopupIcon" Grid.Column="1" 
-										Width="40" 
-										Height="40" 
+
+				<materialIcons:MaterialIcon x:Name="PopupIcon" Grid.Column="1"
+											Width="40"
+											Height="40"
 										/>
-			<!--Foreground="{Binding Path=Foreground, ElementName=icon}"-->
 
-			<StackPanel Grid.Column="3" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left">
-				<TextBlock Name="title"
-						   FontSize="22"/>
-				<TextBlock x:Name="description"
-						   TextWrapping="WrapWithOverflow"
-						   FontSize="16"/>
-			</StackPanel>
-			<Border Classes="Line" Name="line" Padding="10 0 0 10" Margin="2 0 0 0" CornerRadius="5" Background="Red" Height="3" Width="345" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-		
-		</Grid>
-	</Border>
 
+				<StackPanel Grid.Column="3" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left">
+					<TextBlock Name="title"
+							   FontSize="22"/>
+					<TextBlock x:Name="description"
+							   TextWrapping="WrapWithOverflow"
+							   FontSize="16"/>
+				</StackPanel>
+				<Border Classes="Line" Name="line" Padding="10 0 0 10" Margin="2 0 0 0" CornerRadius="5" Background="Red" Height="3" Width="345" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+
+			</Grid>
+		</Border>
+		<Button VerticalAlignment="Top"
+				HorizontalAlignment="Right"
+				Height="20" Width="20"
+				Margin="0 2 3 0"
+				Background="Transparent"
+				Click="Close_Click">
+			<materialIcons:MaterialIcon Kind="CloseThick"
+										Height="20" Width="20"
+										Margin="-11 0 0 0"
+										VerticalAlignment="Center" 
+										HorizontalAlignment="Center"
+										Foreground="Black"/>
+		</Button>
+	</Grid>
+	
 </Window>

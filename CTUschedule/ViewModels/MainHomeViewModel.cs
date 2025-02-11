@@ -13,8 +13,13 @@ namespace CTUschedule.ViewModels
 {
     public partial class MainHomeViewModel : ViewModelBase
     {
-        public static MainHomeViewModel Instance { get; set; }  
+        public static MainHomeViewModel Instance { get; set; }
         public ObservableCollection<Node> Nodes { get; }
+
+        public string Version
+        {
+            get => App._version;
+        }
 
         [ObservableProperty]
         private List<ViewModelBase> _pageViewModels;

@@ -27,7 +27,7 @@ namespace CTUschedule.ViewModels
             Instance = this;
             CheckerInternetAssign();
 
-            PageViewModels.Add(new SignInViewModel());
+            //PageViewModels.Add(new SignInViewModel());
             PageViewModels.Add(new MainHomeViewModel());
 
             CurrentViewModel = PageViewModels.First();
@@ -38,12 +38,20 @@ namespace CTUschedule.ViewModels
 
         private void Instance_WebLoggedOut(object? sender, System.EventArgs e)
         {
-            Dispatcher.UIThread.Invoke(() =>
+            try
             {
-                INotificationPopup lostDataWaring = new NotificationPopupController(NotificationPopupController.Type.Warning, "Hết phiên đăng nhập!", "Login và lưu TKB còn dỡ của bạn.");
-                lostDataWaring.ShowNotification();
-                GoToSignInView();
-            });
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    INotificationPopup lostDataWaring = new NotificationPopupController(NotificationPopupController.Type.Warning, "Hết phiên đăng nhập!", "Login và lưu TKB còn dỡ của bạn.");
+                    lostDataWaring.ShowNotification();
+                    GoToSignInView();
+                });
+            }
+            catch
+            {
+                // close when has drive web
+            }
+            
         }
 
 

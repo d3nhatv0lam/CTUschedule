@@ -32,6 +32,7 @@ public partial class NotificationPopup : Window
     public NotificationPopup(int Posindex, MaterialIconKind symbolKind, string symbolColorHex, string LineColorHex, string Title, string Message)
     {
         InitializeComponent();
+        this.DataContext = this;
         SetPopupPosition(Posindex);
         SetStatusNotification( symbolKind, symbolColorHex, LineColorHex, Title, Message);
     }
@@ -49,8 +50,15 @@ public partial class NotificationPopup : Window
         Close();
     }
 
+    private void Close_Click(object sender, RoutedEventArgs e) 
+    {
+        this.DataContext = null;
+        Close();
+    }
+
     private void SetStatusNotification(MaterialIconKind symbolKind, string symbolColorHex,string LineColorHex , string Title, string Message)
     {
+       
         PopupIcon.Kind = symbolKind;
         PopupIcon.Foreground = new SolidColorBrush(Color.Parse(symbolColorHex));
         line.Background = new SolidColorBrush(Color.Parse(LineColorHex));

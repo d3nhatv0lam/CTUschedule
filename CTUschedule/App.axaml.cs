@@ -11,6 +11,8 @@ namespace CTUschedule
 {
     public partial class App : Application
     {
+
+        public static string _version = "0.5 Beta";
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);

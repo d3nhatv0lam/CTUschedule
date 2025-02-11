@@ -62,8 +62,8 @@
 					Grid.Column="0">
 				
 				<controls:Card Classes="ChildDemo">
-					<Grid RowDefinitions="Auto, *">
-
+					<Grid RowDefinitions="Auto, *,Auto">
+						<!--// Title & Logo //-->
 						<Grid Grid.Row="0">
 							<StackPanel Orientation="Vertical">
 								<Image Source="avares://CTUschedule/Assets/Images/CTULogo100x100.png" Stretch="None"/>
@@ -71,22 +71,33 @@
 
 							</StackPanel>
 						</Grid>
-
+						<!--// View Selection //-->
 						<TreeView Grid.Row="1"
 								  ItemsSource="{Binding Nodes}"
 								  SelectedItem="{Binding SelectedNode , Mode=TwoWay}">
 
 							<TreeView.ItemTemplate>
 								<TreeDataTemplate ItemsSource="{Binding SubNodes}">
-									<Grid ColumnDefinitions="Auto, 8, *">
+									<Grid ColumnDefinitions="Auto, 5, *">
 										<avalonia:MaterialIcon Kind="{Binding ImageKind}" />
 										<TextBlock Text="{Binding Title}" Grid.Column="2" />
 									</Grid>
 								</TreeDataTemplate>
 							</TreeView.ItemTemplate>
-
-
 						</TreeView>
+
+						<StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+							<TextBlock Text="Version:" 
+									   FontWeight="Bold" 
+									   TextDecorations="Underline"/>
+							<TextBlock 
+								   HorizontalAlignment="Center"
+								   VerticalAlignment="Center"
+								   Text="{Binding Version}"
+								   Foreground="Purple"
+								   FontWeight="Bold"/>
+						</StackPanel>
+
 					</Grid>
 				</controls:Card>
 			</Grid>

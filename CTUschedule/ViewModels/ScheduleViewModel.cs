@@ -25,8 +25,6 @@ namespace CTUschedule.ViewModels
         // 9row, 6colum
         private ObservableCollection<ObservableCollection<ScheduleCell>> _schedule;
 
-
-
         private ObservableCollection<ScheduleCell> ScheduleItemPool = new ObservableCollection<ScheduleCell>();
         private ObservableCollection<ScheduleCell> SelectedScheduleItem = new ObservableCollection<ScheduleCell>();
 
@@ -197,52 +195,7 @@ namespace CTUschedule.ViewModels
                         }
 
 
-                        // Sum : check trùng lịch
-                        // nhét ở đây vì để kiểm tra phải có MaHocPhan = mahocphan và NhomHocPhan = nhomhocphan
-                        //foreach (var child in node.SubNodes)
-                        //{
-                        //    // tìm nhóm học phần đã nhấn check trong Child courseNode
-                        //    if (child.CourseGroup.First().dkmh_nhom_hoc_phan_ma == nhomhocphan)
-                        //    {
-                        //        // đem từng Course ra ( một CourseGroup có nhiều ngày học )
-                        //        foreach (var course in child.CourseGroup)
-                        //        {
-                        //            // tìm item trong pool của course được duyệt
-
-                        //            ScheduleCell appendItem = null;
-                        //            foreach (var itempool in ScheduleItemPool)
-                        //            {
-                        //                // item trong pool định danh từ courseNode dùng mã học phần và nhóm học phần
-                        //                if (course.dkmh_tu_dien_hoc_phan_ma == itempool.MaHocPhan && course.dkmh_nhom_hoc_phan_ma == itempool.NhomHocPhan)
-                        //                {
-                        //                    appendItem = itempool;
-                        //                    break;
-                        //                }
-                        //            }
-                        //            if (appendItem == null) continue;
-                        //            // kiểm tra coi có trùng lịch với những học phần đã add không
-                        //            foreach (var selectedItemInPool in SelectedScheduleItem)
-                        //            {
-                        //                // check coi trùng thứ đi học không
-                        //                if (appendItem.ThuDiHoc == selectedItemInPool.ThuDiHoc)
-                        //                {
-                        //                    // nếu trùng thứ đi học thì kiểm tra thêm
-                        //                    // tiet bat dau cua mon 2 < tiet ket thuc của mon 1         // tiet ket thuc cua mon 2 > tiet bat dau cua mon 1
-                        //                    if (appendItem.TietBatDau < selectedItemInPool.TietKetThuc || appendItem.TietKetThuc > selectedItemInPool.TietBatDau)
-                        //                    {
-                        //                        // => trung lich
-                        //                        INotificationPopup TrungLichpopup = new NotificationPopupController(NotificationPopupController.Type.Error, "Trùng Lịch", $"Trùng lịch với học phần {selectedItemInPool.MaHocPhan}!");
-                        //                        TrungLichpopup.ShowNotification();
-                        //                        checkbox.IsChecked = false;
-                        //                        //CourseNodes = CourseNodes;
-                        //                        OnPropertyChanged(nameof(CourseNodes));
-                        //                        return;
-                        //                    }
-                        //                }
-                        //            }
-                        //        }
-                        //    }
-                        //}
+                  
 
                         List<ScheduleCell> cellWillShowed = new List<ScheduleCell>();
                         // lấy ra các Cell sắp được thêm từ pool
@@ -272,14 +225,9 @@ namespace CTUschedule.ViewModels
                                     if (appendCell.TietBatDau > enableItemInPool.TietBatDau && appendCell.TietBatDau > enableItemInPool.TietKetThuc) 
                                         continue;
 
-                                    // tiet bat dau cua mon 2 < tiet ket thuc của mon 1         // tiet ket thuc cua mon 2 > tiet bat dau cua mon 1
-                                    // điều kiện đúng (có thể nhét vào )
-                                    //if (appendCell.TietKetThuc > enableItemInPool.TietBatDau) continue;
-                                    //if (appendCell.TietBatDau > enableItemInPool.TietKetThuc) continue;
-                                    //if (appendCell.TietBatDau <= enableItemInPool.TietKetThuc || appendCell.TietKetThuc > enableItemInPool.TietBatDau)
                                     
                                     // => trung lich
-                                    INotificationPopup TrungLichPopup = new NotificationPopupController(NotificationPopupController.Type.ScheduleConflit, "Trùng Lịch", $"Trùng lịch với học phần {enableItemInPool.MaHocPhan}!");
+                                    INotificationPopup TrungLichPopup = new NotificationPopupController(NotificationPopupController.Type.ScheduleConflit, "Trùng Lịch", $"Trùng lịch với {enableItemInPool.MaHocPhan} - Thứ {enableItemInPool.ThuDiHoc}");
                                     TrungLichPopup.ShowNotification();
                                     checkbox.IsChecked = false;
                                     OnPropertyChanged(nameof(CourseNodes));
@@ -298,34 +246,6 @@ namespace CTUschedule.ViewModels
             CleanScheduleTable(Schedule);
             RenderSchedule();
         }
-
-
-        //[RelayCommand]
-        //public void CheckBoxTask(ObservableCollection<CourseNode> scheduleList)
-        //{
-        //    if (scheduleList.Count != 0) return;
-
-        //    //reload all schedule
-        //    foreach (var node in CourseNodes)
-        //    {
-        //        bool IsReallyChoose = false;
-        //        foreach (var child in node.SubNodes)
-        //        {
-
-        //            if (child.Course.IsSelected)
-        //            {
-        //                if (IsReallyChoose)
-        //                {
-        //                    Debug.WriteLine("Trung mon roi!");
-        //                    break;
-        //                }
-        //                IsReallyChoose = true;
-
-        //            }
-        //        }
-        //        IsReallyChoose = false;
-        //    }
-        //}
 
     }
 }
