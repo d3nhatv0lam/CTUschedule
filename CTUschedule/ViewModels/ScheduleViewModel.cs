@@ -194,9 +194,6 @@ namespace CTUschedule.ViewModels
                             }
                         }
 
-
-                  
-
                         List<ScheduleCell> cellWillShowed = new List<ScheduleCell>();
                         // lấy ra các Cell sắp được thêm từ pool
                         foreach (var itempool in ScheduleItemPool)
@@ -246,6 +243,7 @@ namespace CTUschedule.ViewModels
             CleanScheduleTable(Schedule);
             RenderSchedule();
         }
+
 
     }
 }
