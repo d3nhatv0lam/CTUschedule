@@ -63,7 +63,7 @@
 							   Text="Danh sách nhóm học phần"
 							   VerticalAlignment="Bottom"/>
 					<!--// faq icon //-->
-					<Border Margin="10 0 0 0" Background="White" ToolTip.Placement="Right">	
+					<Border Margin="10 0 0 0" Background="Transparent" ToolTip.Placement="Right">	
 						<ToolTip.Tip>
 							<StackPanel Orientation="Vertical">
 								<StackPanel Orientation="Horizontal">

@@ -86,7 +86,9 @@
 							</TreeView.ItemTemplate>
 						</TreeView>
 
-						<StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+						<StackPanel Grid.Row="2" Orientation="Horizontal" 
+									VerticalAlignment="Center" 
+									HorizontalAlignment="Center">
 							<TextBlock Text="Version:" 
 									   FontWeight="Bold" 
 									   TextDecorations="Underline"/>
@@ -94,7 +96,6 @@
 								   HorizontalAlignment="Center"
 								   VerticalAlignment="Center"
 								   Text="{Binding Version}"
-								   Foreground="Purple"
 								   FontWeight="Bold"/>
 						</StackPanel>
 

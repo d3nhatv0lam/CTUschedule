@@ -9,8 +9,9 @@
 		xmlns:vm="using:CTUschedule.ViewModels"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/Images/Logo.ico"
-	     WindowStartupLocation="CenterScreen"
+	    WindowStartupLocation="CenterScreen"
 		Focusable="True"
+	
         Title="{Binding Title}">
 
     <Design.DataContext>
