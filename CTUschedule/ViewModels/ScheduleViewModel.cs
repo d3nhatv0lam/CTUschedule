@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -86,6 +87,7 @@ namespace CTUschedule.ViewModels
         // tạo một pool các item từ các Course
         private ObservableCollection<ScheduleCell> CreateScheduleItemPool()
         {
+            int currentColor = 0;
             ObservableCollection<ScheduleCell> newPool = new ObservableCollection<ScheduleCell>();
             foreach (var node in CourseNodes)
             {
@@ -93,10 +95,12 @@ namespace CTUschedule.ViewModels
                 {
                     foreach (var course in child.CourseGroup)
                     {
-                        ScheduleCell newScheduleItem = new ScheduleCell(course);
+                        ScheduleCell newScheduleItem = new ScheduleCell(course, ScheduleCell.Brushes[currentColor]);
                         newPool.Add(newScheduleItem);
                     }
                 }
+                if (currentColor < ScheduleCell.Brushes.Count - 1)
+                    currentColor++;
             }
             return newPool;
         }

@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.BiDi.Modules.Script;
+﻿using Avalonia.Media;
+using OpenQA.Selenium.BiDi.Modules.Script;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -10,11 +11,29 @@ namespace CTUschedule.Models
 {
     public class ScheduleCell
     {
+
+        public static List<Brush> Brushes = new List<Brush>
+        {
+            new SolidColorBrush(Color.Parse("#ffd1dc")), // hong phan
+            new SolidColorBrush(Color.Parse("#add8e6")), // xanh duong nhat
+            new SolidColorBrush(Color.Parse("#FFFacd")), // vang nhat chanh
+            new SolidColorBrush(Color.Parse("#e29b9a")),
+            new SolidColorBrush(Color.Parse("#f5f5dc")),
+            new SolidColorBrush(Color.Parse("#7d66ba")),
+            new SolidColorBrush(Color.Parse("#d5fad6")), // xanh la bac ha
+            new SolidColorBrush(Color.Parse("#B2f2e9")),
+            new SolidColorBrush(Color.Parse("#84aae5")),
+            new SolidColorBrush(Color.Parse("#8ad485")),
+            new SolidColorBrush(Color.Parse("#007ba7")), // xanh da troi
+            new SolidColorBrush(Color.Parse("#d1fff4")), // pastel cyan
+        };
+
         public string MaHocPhan { get; set; }
         public string TenHocPhan { get; set; }
         public string NhomHocPhan { get; set; }
         public string PhongHoc { get; set; }
         public string GiangVien { get; set; }
+        public Brush CellBursh { get; set; }
 
         public bool IsShowCell { get; set; } = false;
 
@@ -59,6 +78,18 @@ namespace CTUschedule.Models
             PhongHoc = course.dkmh_tu_dien_phong_hoc_ten;
             GiangVien = course.dkmh_tu_dien_giang_vien_ten_vn;
 
+            GetScheduleIndex(course);
+            SetSlotStatus(course);
+        }
+
+        public ScheduleCell(CourseInformation course,Brush color)
+        {
+            MaHocPhan = course.dkmh_tu_dien_hoc_phan_ma;
+            TenHocPhan = course.dkmh_tu_dien_hoc_phan_ten_vn;
+            NhomHocPhan = course.dkmh_nhom_hoc_phan_ma;
+            PhongHoc = course.dkmh_tu_dien_phong_hoc_ten;
+            GiangVien = course.dkmh_tu_dien_giang_vien_ten_vn;
+            CellBursh = color;
             GetScheduleIndex(course);
             SetSlotStatus(course);
         }
