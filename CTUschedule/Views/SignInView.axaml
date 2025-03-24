@@ -96,10 +96,10 @@
 								CornerRadius="16" 
 								Command="{Binding Login}"/>	
 						
-						<TextBlock Text="#Note: Nếu ảnh capcha bị lỗi, hãy thoát app và mở lại!, Cảm ơn bạn"
+						<TextBlock Text="#Note: Nếu ảnh capcha bị lỗi, hãy thoát app và mở lại hoặc nhấp vào nút login!, Cảm ơn bạn"
 									FontFamily="/Assets/Fonts/Montserrat/Montserrat-Italic.otf #Montserrat"
 									FontWeight="Bold"
-								   
+									TextAlignment="Center"
 									FontSize="15"
 									TextWrapping="Wrap"
 									Margin="0 50 0 0"/>

@@ -7,6 +7,14 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <Configurations>Debug;Release</Configurations>
+    <ApplicationIcon>Assets\Images\Logo.ico</ApplicationIcon>
+    <PackageIcon>Logo.ico</PackageIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -58,6 +66,16 @@
 
   <ItemGroup>
     <Content Include="Assets\Images\QRCode.jpg" />
+    <Content Include="Assets\Images\Logo.ico" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <None Update="Assets\Images\Logo.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 

@@ -8,7 +8,7 @@
         x:Class="CTUschedule.Views.MainWindow"
 		xmlns:vm="using:CTUschedule.ViewModels"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/Images/Logo.ico"
 	     WindowStartupLocation="CenterScreen"
 		Focusable="True"
         Title="{Binding Title}">
