@@ -308,8 +308,13 @@ namespace CTUschedule.ViewModels
                         string nhomHocPhan = subNode[j].CourseGroup.First().dkmh_nhom_hoc_phan_ma;
                         // tìm vị trí để chèn vào tăng dần cho đẹp
                         int insertIndex = CourseNodeListFindIndex.FindIndex(CourseNodes[i],nhomHocPhan);
-                        // sợ có lỗi
-                        if (insertIndex == -1) continue;
+
+                        // nhóm hp lớn nhất
+                        if (insertIndex == CourseNodes[i].SubNodes.Count)
+                        {
+                            CourseNodes[i].SubNodes.Add(subNode[j]);
+                        }
+                        else
                         // nếu tồn tại nhóm HP này trong danh sách
                         if (CourseNodes[i].SubNodes[insertIndex].CourseGroup.First().dkmh_nhom_hoc_phan_ma == nhomHocPhan)
                         {

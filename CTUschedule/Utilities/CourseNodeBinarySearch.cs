@@ -11,9 +11,10 @@ namespace CTUschedule.Utilities
     {
         public static int FindIndex(CourseNode CourseList,string nhomHocPhan)
         {
-            int index = -1;
+            int l = 0, r = CourseList.SubNodes!.Count - 1;
+            int index = CourseList.SubNodes.Count;
             int intNhomHocPhan = Int32.Parse(nhomHocPhan);
-            int l = 0, r = CourseList.SubNodes.Count - 1;
+
 
             while (l <= r) 
             {
