@@ -95,24 +95,6 @@
 								 PasswordChar="*"/>
 						
 						
-						<StackPanel Orientation="Horizontal">
-							<TextBox UseFloatingWatermark="True"
-								 Classes="clearButton"
-								 p1:TextFieldAssist.Label="Capcha" Foreground="{DynamicResource ForegroundBrush}"
-								 Text="{Binding Capcha}"
-								Margin="0 20 0 0"
-								Width="200"
-								 MaxLength="5"
-								 />
-						
-							<!---->
-							<Image Source="{Binding CapchaImage}"
-								   Stretch="Uniform"
-								   VerticalAlignment="Center"
-									HorizontalAlignment="Center"
-								   Margin="20 20 0 0"
-									/>
-						</StackPanel>
 
 						<Button Content="Login"
 								IsEnabled="{Binding !IsLogining}"
@@ -121,7 +103,7 @@
 								CornerRadius="16" 
 								Command="{Binding Login}"/>	
 						
-						<TextBlock Text="#Note: Nếu ảnh capcha bị lỗi, hãy thoát app và mở lại hoặc nhấp vào nút login!, Cảm ơn bạn"
+						<TextBlock Text="#Note: Đây là phiên bản Demo sản phẩm, Cảm ơn bạn đã quan tâm!"
 									FontFamily="/Assets/Fonts/Montserrat/Montserrat-Italic.otf #Montserrat"
 									FontWeight="Bold"
 									TextAlignment="Center" 

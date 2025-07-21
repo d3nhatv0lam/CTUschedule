@@ -109,7 +109,7 @@
 					<ToggleButton Classes="ExpanderButton" Name="ExpandButton"
 							Grid.Column="0"
 							Theme="{StaticResource MaterialFlatToggleButton}"
-							Content="{avalonia:MaterialIconExt Menu}"
+							Content="{avalonia:MaterialIconExt Kind=Menu}"
 							Foreground="White"
 								/>
 

@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 using System.Security.Authentication.ExtendedProtection;
 using OpenQA.Selenium.DevTools;
 using Newtonsoft.Json;
-using OpenQA.Selenium.DevTools.V85.Network;
 using System.Threading;
 using System.IO;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.DevTools.V138.Network;
+using OpenQA.Selenium.Internal;
 
 namespace Utilities
 {
@@ -60,7 +61,7 @@ namespace Utilities
         private void AssignWebDriver()
         {
             options = new ChromeOptions();
-            options.AddArgument("--headless");
+            //options.AddArgument("--headless");
             options.AddArgument("--start-maximized");
             options.AddArgument("--disable-infobars");
             options.AddArgument("--disable-extensions");
@@ -106,34 +107,40 @@ namespace Utilities
         public void NavigateToSignin()
         {
                 driver.Navigate().GoToUrl(HTQLWebDriver.SignInPage);
-                GetAndShowCapchaImage();
+                //GetAndShowCapchaImage();
         }
 
-        public bool SignIn(string UserName, string Password, string Capcha)
+        public bool SignIn(string UserName, string Password)
         {
             try
             {
                 // Write account, password
-                var username = driver.FindElement(By.Id("txtDinhDanh"));
-                var password = driver.FindElement(By.Id("txtMatKhau"));
-                var capcha = driver.FindElement(By.Id("txtMaBaoVe"));
-                var loginButton = driver.FindElement(By.Name("login"));
+                var username = driver.FindElement(By.Id("usernameUserInput"));
+                var password = driver.FindElement(By.Id("password"));
+                var loginButton = driver.FindElement(By.Id("sign-in-button"));
 
                 username.SendKeys(UserName);
                 password.SendKeys(Password);
-                capcha.SendKeys(Capcha);
                 loginButton.Click();
 
                 // check login fail
                 try
                 {
-                    Thread.Sleep(300);
-                    driver.SwitchTo().Alert().Accept();
-                    return false;
+                    Thread.Sleep(500);
+                    var usernameErrorText = driver.FindElement(By.Id("usernameErrorText"));
+                    if (usernameErrorText.Displayed) return false;
+                    var passwordErrorText = driver.FindElement(By.Id("passwordErrorText"));
+                    if (passwordErrorText.Displayed) return false;
+                    var signinFail = driver.FindElement(By.Id("error-msg"));
+                    if (signinFail.Displayed) return false;
+                    //driver.SwitchTo().Alert().Accept();
+                    Thread.Sleep(2000);
+                    return true;
                 }
-                catch (NoAlertPresentException e)
+                catch (Exception e)
                 {
                     // no alert
+                    // nhảy qua trang khác nên lỗi k tìm được
                     return true;
                 }
             }

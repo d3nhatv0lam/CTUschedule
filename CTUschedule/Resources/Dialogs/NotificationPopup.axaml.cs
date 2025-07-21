@@ -33,9 +33,15 @@ public partial class NotificationPopup : Window
     {
         InitializeComponent();
         this.DataContext = this;
-        SetPopupPosition(Posindex);
-        SetStatusNotification( symbolKind, symbolColorHex, LineColorHex, Title, Message);
+        SetStatusNotification(symbolKind, symbolColorHex, LineColorHex, Title, Message);
+        this.Opened += (s, e) =>
+        {
+            SetPopupPosition(Posindex);
+        };
+        
     }
+
+
 
     protected override void OnLoaded(RoutedEventArgs e)
     {
@@ -66,14 +72,36 @@ public partial class NotificationPopup : Window
         description.Text = Message;
     }
 
-    private void SetPopupPosition(int Posindex)
+    private void SetPopupPosition(int posIndex, int marginDip = 20, int spacingDip = 10)
     {
-        var primaryScreen = this.Screens.Primary;
+        //var primaryScreen = this.Screens.Primary;
 
-        // Lấy độ rộng và chiều cao của màn hình
+        //// Lấy độ rộng và chiều cao của màn hình
+        //int DesktopWidth = primaryScreen.WorkingArea.Width;
+        //int DesktopHeight = primaryScreen.WorkingArea.Height;
+
+        //int x = (DesktopWidth - (int)this.Width - marginDip);
+        //int y = (DesktopHeight - (int)this.Height * (posIndex + 1) - posIndex * spacingDip - marginDip);
+
+        //this.Position = new PixelPoint(x , y);
+
+        var primaryScreen = this.Screens.Primary;
+        double scale = primaryScreen.Scaling; // hệ số scale
+
         int DesktopWidth = primaryScreen.WorkingArea.Width;
         int DesktopHeight = primaryScreen.WorkingArea.Height;
 
-        this.Position = new PixelPoint((DesktopWidth - (int)this.Width - 20), (DesktopHeight - (int)this.Height*(Posindex+1) - Posindex*10 - 20));
+        // Chuyển kích thước cửa sổ sang pixel
+        int winWidth = (int)(this.Width * scale);
+        int winHeight = (int)(this.Height * scale);
+
+        // Margin, spacing cũng đổi sang pixel
+        int marginPx = (int)(marginDip * scale);
+        int spacingPx = (int)(spacingDip * scale);
+
+        int x = DesktopWidth - winWidth - marginPx;
+        int y = DesktopHeight - winHeight * (posIndex + 1) - posIndex * spacingPx - marginPx;
+
+        this.Position = new PixelPoint(x, y);
     }
 }

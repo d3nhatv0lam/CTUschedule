@@ -22,9 +22,6 @@ namespace CTUschedule.ViewModels
         private HTQL_Signin _signin;
         private string _mSSV = "";
         private string _password = "";
-        private string _capcha = "";
-        [ObservableProperty]
-        private Bitmap _capchaImage;
         [ObservableProperty]
         private bool _isLogining = false;
 
@@ -49,16 +46,7 @@ namespace CTUschedule.ViewModels
             }
         }
         
-        public string Capcha
-        {
-            get => _capcha;
-            set
-            {
-                if (value == _capcha) return;
-                _capcha = value;
-                OnPropertyChanged(nameof(Capcha));
-            }
-        }
+     
 
 
         public SignInViewModel()
@@ -70,34 +58,21 @@ namespace CTUschedule.ViewModels
         private void NavigateToSignin()
         {
             _signin.NavigateToSignin();
-            LoadCapcha();
         }
 
         public void Init()
         {
-            Capcha = String.Empty;
             NavigateToSignin();
         }
 
-        private void LoadCapcha()
-        {
-            try
-            {
-                CapchaImage = new Bitmap(_signin.CapchaPath);
-            }
-            catch (Exception ex)
-            {
 
-            }
-            
-        }
 
         [RelayCommand]
         public async void Login()
         {
             if (CheckerInternetHelper._isHasInternet == false) return;
             IsLogining = true;
-            bool Islogin = await Task.Run(() =>  _signin.SignIn(MSSV, Password, Capcha));
+            bool Islogin = await Task.Run(() =>  _signin.SignIn(MSSV, Password));
  
             if (!Islogin)
             {

@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.DevTools.V129.DOM;
-using OpenQA.Selenium.DevTools.V129.Memory;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

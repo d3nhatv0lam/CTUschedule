@@ -1,5 +1,4 @@
 ﻿using Avalonia.Media;
-using OpenQA.Selenium.BiDi.Modules.Script;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;

@@ -1,26 +1,20 @@
-﻿using OpenQA.Selenium.BiDi.Modules.Network;
-using OpenQA.Selenium.DevTools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Utilities;
-using OpenQA.Selenium.DevTools.V85.Network;
 using Newtonsoft.Json;
-using System.Net.Http.Json;
 using System.Diagnostics;
 using CTUschedule.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
-using System.Collections;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Threading;
 using CTUschedule.Resources.Dialogs;
-using System.Linq.Expressions;
 using CTUschedule.Utilities;
 using System.Threading;
-using Microsoft.VisualBasic;
+using OpenQA.Selenium.DevTools.V138.Network;
+
 
 namespace CTUschedule.ViewModels
 {
@@ -130,7 +124,7 @@ namespace CTUschedule.ViewModels
             courseCatalog.network.ResponseReceived += Network_ResponseReceived;
         }
 
-        private async void Network_ResponseReceived(object? sender, OpenQA.Selenium.DevTools.V85.Network.ResponseReceivedEventArgs e)
+        private async void Network_ResponseReceived(object? sender, OpenQA.Selenium.DevTools.V138.Network.ResponseReceivedEventArgs e)
         {
             if (e.Response.MimeType == "application/json")
             {
