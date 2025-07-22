@@ -87,6 +87,7 @@ namespace CTUschedule.ViewModels
                 if (_courseList == value) return;
                 _courseList= value;
                 ReloadFilterDatagid();
+                GetTenHocPhanVaMaHocPhanAfterSearch();
             }
         }
 
@@ -121,49 +122,109 @@ namespace CTUschedule.ViewModels
         {
             Instance = this;
             courseCatalog = new HTQL_CourseCatalog();
-            courseCatalog.network.ResponseReceived += Network_ResponseReceived;
+            courseCatalog.network.LoadingFinished += Network_LoadingFinished;
         }
 
-        private async void Network_ResponseReceived(object? sender, OpenQA.Selenium.DevTools.V138.Network.ResponseReceivedEventArgs e)
+        private async void Network_LoadingFinished(object? sender, LoadingFinishedEventArgs e)
         {
-            if (e.Response.MimeType == "application/json")
+            GetResponseBodyCommandResponse? responseBody = null;
+            try
             {
-                //responseBody;
-                GetResponseBodyCommandResponse responseBody = null;
-                // check quickSelect
-                try
-                {
-                     responseBody = await courseCatalog.network.GetResponseBody(new GetResponseBodyCommandSettings { RequestId = e.RequestId });
-                }
-                catch (Exception ex)
-                {
-                    // can't get respond
-                    Debug.WriteLine(ex.Message);
-                    // lỗi
-                }
-                finally
-                {
-                    //try get quickselect
-                    try
-                    {
-                        var quickslect =  JsonConvert.DeserializeObject<QuickSelectData>(responseBody.Body);
-                        QuickselectList = new ObservableCollection<QuickselectInformation>(quickslect.data.dkmh_tu_dien_hoc_phan_ma_auto_complete);
-                    }   
-                    catch
-                    {
-                        try
-                        {
-                            var courseListData = JsonConvert.DeserializeObject<CourseListData>(responseBody.Body);
-                            CourseList = new ObservableCollection<CourseInformation>(courseListData.data.data);
-                        }
-                        catch
-                        {
-                            // lỗi
-                        }
-                    }
-                }
+                responseBody = await courseCatalog.network.GetResponseBody(
+                    new GetResponseBodyCommandSettings { RequestId = e.RequestId });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[Network] GetResponseBody failed: " + ex.Message);
+                return;
+            }
+            if (string.IsNullOrEmpty(responseBody?.Body)) return;
+
+            // Chỉ xử lý JSON
+            if (IsJson(responseBody.Body))
+            {
+                if (TryParseQuickSelect(responseBody.Body)) return;
+                TryParseCourseList(responseBody.Body);
             }
         }
+
+        private bool IsJson(string body)
+        {
+            body = body.Trim();
+            return (body.StartsWith("{") && body.EndsWith("}")) ||
+                   (body.StartsWith("[") && body.EndsWith("]"));
+        }
+
+
+        private async void Network_ResponseReceived(
+    object? sender,
+    OpenQA.Selenium.DevTools.V138.Network.ResponseReceivedEventArgs e)
+        {
+            if (e.Response?.MimeType != "application/json") return;
+
+            GetResponseBodyCommandResponse? responseBody = null;
+
+            try
+            {
+                responseBody = await courseCatalog.network.GetResponseBody(
+                    new GetResponseBodyCommandSettings { RequestId = e.RequestId });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Network] Cannot get response body: {ex.Message}");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(responseBody?.Body))
+            {
+                Debug.WriteLine("[Network] Empty response body");
+                return;
+            }
+
+            // Thử parse QuickSelectData trước
+            if (TryParseQuickSelect(responseBody.Body)) return;
+
+            // Nếu không parse được QuickSelect thì thử CourseListData
+            TryParseCourseList(responseBody.Body);
+        }
+
+        private bool TryParseQuickSelect(string jsonBody)
+        {
+            try
+            {
+                var quickSelect = JsonConvert.DeserializeObject<QuickSelectData>(jsonBody);
+                if (quickSelect?.data?.dkmh_tu_dien_hoc_phan_ma_auto_complete == null)
+                    return false;
+
+                QuickselectList = new ObservableCollection<QuickselectInformation>(
+                    quickSelect.data.dkmh_tu_dien_hoc_phan_ma_auto_complete);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Network] QuickSelect parse error: {ex.Message}");
+                return false;
+            }
+        }
+
+        private bool TryParseCourseList(string jsonBody)
+        {
+            try
+            {
+                var courseListData = JsonConvert.DeserializeObject<CourseListData>(jsonBody);
+                if (courseListData?.data?.data == null) return false;
+
+                CourseList = new ObservableCollection<CourseInformation>(
+                    courseListData.data.data);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Network] CourseList parse error: {ex.Message}");
+                return false;
+            }
+        }
+
 
         private void ReloadFilterDatagid()
         {
@@ -231,7 +292,6 @@ namespace CTUschedule.ViewModels
         {
             if (!IsHasInternet()) return;
             courseCatalog.Search(CourseName);
-            GetTenHocPhanVaMaHocPhanAfterSearch();
         }
 
         public void SearchCourseData(string courseName,List<string> nhomHocphan)
@@ -244,7 +304,6 @@ namespace CTUschedule.ViewModels
 
 
             courseCatalog.Search(courseName);
-            GetTenHocPhanVaMaHocPhanAfterSearch();
 
             FilterCourseList = new ObservableCollection<CourseInformation>(CourseList.Where((course)=> nhomHocphan.Contains(course.dkmh_nhom_hoc_phan_ma)));
             // chọn tất cả

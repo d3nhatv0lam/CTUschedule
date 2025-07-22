@@ -61,7 +61,8 @@ namespace Utilities
         private void AssignWebDriver()
         {
             options = new ChromeOptions();
-            options.AddArgument("--headless");
+            options.AddArgument("--headless=new");
+            options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--start-maximized");
             options.AddArgument("--disable-infobars");
             options.AddArgument("--disable-extensions");
@@ -72,7 +73,7 @@ namespace Utilities
             var chromeDriverService = ChromeDriverService.CreateDefaultService();
             chromeDriverService.HideCommandPromptWindow = true;
             driver = new ChromeDriver(chromeDriverService, options);
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
         }
 
         public void CloseWeb()
@@ -304,7 +305,7 @@ namespace Utilities
             {
                 try
                 {
-                    var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("rc_select_2")));
+                    var SearchBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id("rc_select_2")));
                     SearchBox.Click();
                     ClearAllText();
                     SearchBox.SendKeys(searchText);
@@ -316,7 +317,7 @@ namespace Utilities
             });
         }
 
-        public async void Search(string searchText)
+        public void Search(string searchText)
         {
             try
             {
@@ -327,10 +328,9 @@ namespace Utilities
                 SearchBox.SendKeys(searchText);
 
 
-                var SearchButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id=\"root\"]/div/div/main/div[3]/div[1]/div[1]/div/div[3]/span")));
-      
+                var SearchButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("span[role=\"img\"][aria-label=\"search\"].anticon-search")));
+                wait.Until(driver => SearchBox.GetAttribute("value") == searchText);
                 SearchButton.Click();
-                Thread.Sleep(1000);
             }
             catch (Exception ex)
             {
