@@ -71,6 +71,7 @@ namespace CTUschedule.ViewModels
             get => _quickSelecteditem;
             set
             {
+                if (value == null) return;
                 //_quickSelecteditem = value;
                 CourseName = value.value;
             }

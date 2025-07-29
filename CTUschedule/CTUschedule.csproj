@@ -4,8 +4,6 @@
     <TargetFramework>net8.0</TargetFramework>
 	 <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Nullable>enable</Nullable>
-	  <SelfContained>true</SelfContained>
-	  <PublishSingleFile>true</PublishSingleFile>
 	  <PublishTrimmed>false</PublishTrimmed>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -21,8 +19,10 @@
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-		<SelfContained>true</SelfContained>
-		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>false</SelfContained>
+		<!-- hoặc bỏ dòng này -->
+		<PublishSingleFile>false</PublishSingleFile>
+		<!-- chạy trên framework không cần gom file -->
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<PublishTrimmed>false</PublishTrimmed>
 		<DebugSymbols>false</DebugSymbols>

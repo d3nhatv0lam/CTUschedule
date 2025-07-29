@@ -177,7 +177,7 @@ namespace Utilities
         }
     }
 
-    public class HTQL_CourseCatalog
+    public class HTQL_CourseCatalog : IDisposable
     {
         public static HTQL_CourseCatalog Instance;
 
@@ -203,14 +203,16 @@ namespace Utilities
         {
             this.HTQLWebDriver = CTU_HTQLWebDriver.Instance;
             actions = new Actions(driver);
+
+            var devTools = driver as IDevTools;
+            var session = devTools.GetDevToolsSession();
+            network = new NetworkAdapter(session);
+
             InitDevtool();
         }
 
         private async void InitDevtool()
         {
-            var devTools = driver as IDevTools;
-            var session = devTools.GetDevToolsSession();
-            network = new NetworkAdapter(session);
             var enableNetworkTask = network.Enable(new EnableCommandSettings());
             await enableNetworkTask;
 
@@ -338,6 +340,11 @@ namespace Utilities
                 driver.Navigate().Refresh();
             }
 
+        }
+
+        public void Dispose()
+        {
+           if (network is IDisposable disposable) disposable.Dispose();
         }
     }
 }

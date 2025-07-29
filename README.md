@@ -19,7 +19,7 @@
 ## 📌 Trước khi sử dụng
 * Phần mềm chỉ hoạt động trên **hệ điều hành Windows**.
 * Để có thể sử dụng được ứng dụng, **bạn phải đăng nhập bằng tài khoản hệ thống quản lý** của mình. Bởi vì ta chỉ có thể lưu và cập nhật các nhóm học phần khi đã đăng nhập
-* Nếu **trong quá trình sử dụng mà bị văng đột ngột**, có thể bạn thiếu `.NET runtime`. Bạn có thể vào link [.NET runtime Microsoft](https://dotnet.microsoft.com/en-us/download) để tải và cài đặt!
+* Nếu **trong quá trình sử dụng mà bị văng đột ngột**, có thể bạn thiếu `.NET runtime`. Bạn có thể vào [.NET Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.18-windows-x64-installer) để tải và cài đặt!
 ## 🚀 Cài đặt và sử dụng
 1.  Tải xuống file nén `.rar` mới nhất [Tại đây](https://github.com/d3nhatv0lam/CTUschedule/releases) 📦.
 2. Giải nén file `.rar` đã tải về  📂.

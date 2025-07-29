@@ -22,12 +22,12 @@ namespace CTUschedule
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.Exit += Desktop_Exit;
                 // Line below is needed to remove Avalonia data validation.
                 // Without this line you will get duplicate validations from both Avalonia and CT
                 BindingPlugins.DataValidators.RemoveAt(0);
 
                 CTU_HTQLWebDriver HTQLWebDriver = new CTU_HTQLWebDriver();
+                desktop.Exit += Desktop_Exit;
                 //desktop.MainWindow = new NotificationPopup();
 
                 desktop.MainWindow = new MainWindow
@@ -35,7 +35,7 @@ namespace CTUschedule
                     DataContext = new MainWindowViewModel(),
                 };
 
-
+                
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -44,6 +44,7 @@ namespace CTUschedule
         private void Desktop_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
         {
             CTU_HTQLWebDriver.Instance.CloseWeb();
+            HTQL_CourseCatalog.Instance.Dispose();
         }
     }
 }
