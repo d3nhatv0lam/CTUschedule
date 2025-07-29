@@ -1,4 +1,4 @@
-# 🚀 CTU Scheduler
+# 🚀 CTU Scheduler Demo
 Ứng dụng hỗ trợ các bạn sinh viên **Đại học Cần Thơ** trong việc xếp thời khóa biểu trước và trong khi đăng ký học phần!
 ## 🏞️ Tổng quan
 * Bạn cảm thấy việc sắp xếp thời khóa biểu một cách truyền thống dùng Excel quá tốn thời gian?
@@ -19,7 +19,7 @@
 ## 📌 Trước khi sử dụng
 * Phần mềm chỉ hoạt động trên **hệ điều hành Windows**.
 * Để có thể sử dụng được ứng dụng, **bạn phải đăng nhập bằng tài khoản hệ thống quản lý** của mình. Bởi vì ta chỉ có thể lưu và cập nhật các nhóm học phần khi đã đăng nhập
-* Nếu **trong quá trình sử dụng mà bị văng đột ngột**, có thể bạn thiếu `.NET runtime`. Bạn có thể vào [.NET Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.18-windows-x64-installer) để tải và cài đặt!
+* Nếu **trong quá trình sử dụng mà bị văng đột ngột**, có thể bạn thiếu `.NET runtime 8.0`. Bạn có thể vào [.NET Desktop Runtime 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.18-windows-x64-installer) để tải và cài đặt!
 ## 🚀 Cài đặt và sử dụng
 1.  Tải xuống file nén `.rar` mới nhất [Tại đây](https://github.com/d3nhatv0lam/CTUschedule/releases) 📦.
 2. Giải nén file `.rar` đã tải về  📂.
@@ -35,5 +35,5 @@
 Bạn có thể ủng hộ mình gói mì hehe~~ Love u <3
 
 ---
-# 🚀 CTU Schedule Helper (English)
+# 🚀 CTU Scheduler Demo (English)
 **`I will add later...`**
