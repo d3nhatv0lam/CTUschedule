@@ -26,7 +26,6 @@
 3. Mở thư mục đã giải nén , tìm và mở `CTUschedule.exe`.
 4. Trải nghiệm 🎉.
 ## Demo ứng dụng
-Tutu add lên nha các bạn
 * Demo chức năng sản phẩm: [Demo sản phẩm](https://youtu.be/WGhXLnUdkPA)
 * Demo cập nhật sĩ số học phần: [Cập nhật sĩ số học phần](https://youtu.be/FmY7GeEiG3c)
 
