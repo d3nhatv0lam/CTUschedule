@@ -2,13 +2,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CTUschedule.Resources.Dialogs;
 using CTUschedule.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Utilities;
 
 namespace CTUschedule.ViewModels
 {
-    public partial class MainWindowViewModel : ViewModelBase
+    public partial class MainWindowViewModel : ViewModelBase, IDisposable
     {
         public static MainWindowViewModel Instance;
         public CheckerInternetHelper internetHelper;
@@ -98,6 +99,11 @@ namespace CTUschedule.ViewModels
                 });
                 Title = "CTUschedule";
             }
+        }
+
+        public void Dispose()
+        {
+            internetHelper.Dispose();
         }
     }
 }

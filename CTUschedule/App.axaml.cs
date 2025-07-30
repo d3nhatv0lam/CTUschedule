@@ -5,6 +5,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using CTUschedule.ViewModels;
 using CTUschedule.Views;
+using System;
 using Utilities;
 
 namespace CTUschedule
@@ -12,7 +13,7 @@ namespace CTUschedule
     public partial class App : Application
     {
 
-        public static string _version = "0.5.4 Beta";
+        public static string _version = "0.5.5-Beta";
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -28,7 +29,7 @@ namespace CTUschedule
 
                 CTU_HTQLWebDriver HTQLWebDriver = new CTU_HTQLWebDriver();
                 HTQL_CourseCatalog HTQL_CourseCatalog = new HTQL_CourseCatalog();
-                desktop.Exit += Desktop_Exit;
+
                 //desktop.MainWindow = new NotificationPopup();
 
                 desktop.MainWindow = new MainWindow
@@ -36,7 +37,7 @@ namespace CTUschedule
                     DataContext = new MainWindowViewModel(),
                 };
 
-                
+                desktop.Exit += Desktop_Exit;
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -46,6 +47,7 @@ namespace CTUschedule
         {
             CTU_HTQLWebDriver.Instance.CloseWeb();
             HTQL_CourseCatalog.Instance.Dispose();
+           ((sender as IClassicDesktopStyleApplicationLifetime)?.MainWindow!.DataContext as IDisposable)?.Dispose();
         }
     }
 }

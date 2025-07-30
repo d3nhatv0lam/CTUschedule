@@ -17,7 +17,7 @@ using System.Net.NetworkInformation;
 namespace CTUschedule.Utilities
 {
     // Class auto detect Internet status
-    public class CheckerInternetHelper : INetworkListManagerEvents
+    public class CheckerInternetHelper : INetworkListManagerEvents, IDisposable
     {
         private INetworkListManager networkListManager;
         private IConnectionPoint connectionPoint;
@@ -123,6 +123,29 @@ namespace CTUschedule.Utilities
                 {
                     Marshal.ReleaseComObject(networkListManager);
                 }
+            }
+        }
+
+        public void Dispose()
+        {
+            // Unadvise from connection point
+            if (connectionPoint != null && cookie != 0)
+            {
+                connectionPoint.Unadvise(cookie);
+                cookie = 0;
+            }
+
+            // Release COM objects
+            if (connectionPoint != null)
+            {
+                Marshal.ReleaseComObject(connectionPoint);
+                connectionPoint = null;
+            }
+
+            if (networkListManager != null)
+            {
+                Marshal.ReleaseComObject(networkListManager);
+                networkListManager = null;
             }
         }
     }
