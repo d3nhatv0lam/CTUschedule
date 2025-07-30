@@ -53,7 +53,8 @@ namespace Utilities
 
         public CTU_HTQLWebDriver()
         {
-            Instance = this;
+            if (Instance == null)
+                Instance = this;
             AssignWebDriver();
         }
 
@@ -61,7 +62,7 @@ namespace Utilities
         private void AssignWebDriver()
         {
             options = new ChromeOptions();
-            options.AddArgument("--headless=new");
+            //options.AddArgument("--headless=new");
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--start-maximized");
             options.AddArgument("--disable-infobars");
@@ -98,11 +99,6 @@ namespace Utilities
         private WebDriverWait wait
         {
             get => HTQLWebDriver.wait;
-        }
-
-        public HTQL_Signin()
-        {
-            
         }
 
         public void NavigateToSignin()
@@ -201,6 +197,8 @@ namespace Utilities
 
         public HTQL_CourseCatalog()
         {
+            if (Instance == null)
+                Instance = this;
             this.HTQLWebDriver = CTU_HTQLWebDriver.Instance;
             actions = new Actions(driver);
 

@@ -27,6 +27,7 @@ namespace CTUschedule
                 BindingPlugins.DataValidators.RemoveAt(0);
 
                 CTU_HTQLWebDriver HTQLWebDriver = new CTU_HTQLWebDriver();
+                HTQL_CourseCatalog HTQL_CourseCatalog = new HTQL_CourseCatalog();
                 desktop.Exit += Desktop_Exit;
                 //desktop.MainWindow = new NotificationPopup();
 

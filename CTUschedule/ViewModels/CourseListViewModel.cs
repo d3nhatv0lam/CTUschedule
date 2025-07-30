@@ -38,7 +38,6 @@ namespace CTUschedule.ViewModels
                     return;
                 }
                 QuickSearchDelayAndRunOnLastUpdate();
-               
             }
         }
 
@@ -46,6 +45,9 @@ namespace CTUschedule.ViewModels
         private string _tenHocPhan = "";
         [ObservableProperty]
         private string _maHocPhan = "";
+        [ObservableProperty]
+        private bool _isAutoSearch = false;
+        private List<string>? _autoSearchNhomHocPhan = null;
 
         private bool _isHideOutOfSlot = false;
 
@@ -89,6 +91,7 @@ namespace CTUschedule.ViewModels
                 _courseList= value;
                 ReloadFilterDatagid();
                 GetTenHocPhanVaMaHocPhanAfterSearch();
+                OnAutoUpdateCourseIfNeeded();
             }
         }
 
@@ -122,7 +125,7 @@ namespace CTUschedule.ViewModels
         public CourseListViewModel() 
         {
             Instance = this;
-            courseCatalog = new HTQL_CourseCatalog();
+            courseCatalog = HTQL_CourseCatalog.Instance;
             courseCatalog.network.LoadingFinished += Network_LoadingFinished;
         }
 
@@ -295,24 +298,34 @@ namespace CTUschedule.ViewModels
             courseCatalog.Search(CourseName);
         }
 
-        public void SearchCourseData(string courseName,List<string> nhomHocphan)
+        private void OnAutoUpdateCourseIfNeeded()
         {
-            if (!IsHasInternet()) return;
-            if (!courseCatalog.IsDriveUrlCatalogPage())
-            {
-                courseCatalog.NavigateToCourseCatalog();
-            }
-
-
-            courseCatalog.Search(courseName);
-
-            FilterCourseList = new ObservableCollection<CourseInformation>(CourseList.Where((course)=> nhomHocphan.Contains(course.dkmh_nhom_hoc_phan_ma)));
+            if (!IsAutoSearch || _autoSearchNhomHocPhan == null || CourseList.Count == 0) return;
+            FilterCourseList = new ObservableCollection<CourseInformation>(CourseList.Where((course) => _autoSearchNhomHocPhan.Contains(course.dkmh_nhom_hoc_phan_ma)));
             // chọn tất cả
             foreach (var course in FilterCourseList)
             {
                 course.IsSelected = true;
             }
             SaveCourseNode();
+
+            IsAutoSearch = false;
+            _autoSearchNhomHocPhan = null;
+        }
+
+        public async Task SearchCourseData(string courseName,List<string> nhomHocphan)
+        {
+            if (!IsHasInternet()) return;
+            if (!courseCatalog.IsDriveUrlCatalogPage())
+            {
+                courseCatalog.NavigateToCourseCatalog();
+            }
+            IsAutoSearch = true;
+            _autoSearchNhomHocPhan = nhomHocphan;
+            courseCatalog.Search(courseName);
+
+            while (IsAutoSearch)
+                await Task.Delay(100);
         }
 
 

@@ -72,7 +72,7 @@ namespace CTUschedule.ViewModels
 
             _mainHomeViewModel = MainHomeViewModel.Instance;
             _courseListViewModel = CourseListViewModel.Instance;
-            _courseListViewModel.CourseNodesUpdate += _courseListViewModel_CourseListUpdate;
+            _courseListViewModel.CourseNodesUpdate += _courseListViewModel_CourseNodesUpdate;
 
 
             //CourseNodes = new ObservableCollection<CourseNode>
@@ -204,7 +204,7 @@ namespace CTUschedule.ViewModels
             if (!CheckerInternetHelper._isHasInternet) return;
 
             _mainHomeViewModel.IsChangingView = true;
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 ObservableCollection<CourseNode> data = new ObservableCollection<CourseNode>(CourseNodes);
                 foreach (var node in data)
@@ -219,7 +219,7 @@ namespace CTUschedule.ViewModels
                             nhomHocPhan.Add(groupItem.representativeNode.dkmh_nhom_hoc_phan_ma);
                     }
                     // search
-                    _courseListViewModel.SearchCourseData(MaHocPhan, nhomHocPhan);
+                    await _courseListViewModel.SearchCourseData(MaHocPhan, nhomHocPhan);
                 }
             });
             _mainHomeViewModel.IsChangingView = false;
@@ -287,7 +287,7 @@ namespace CTUschedule.ViewModels
                 // lưu lại CourseNode cho trang trước
                 _courseListViewModel.CourseNodes = new ObservableCollection<CourseNode>(Loadednodes);
                 // lưu cho trang này
-                CourseNodes = _courseListViewModel.CourseNodes;
+                _courseListViewModel.OnCourseNodesUpdate();
                 INotificationPopup LoadedPopup = new NotificationPopupController(NotificationPopupController.Type.Succes, "Load thành công!", "Dữ liệu đã được load!");
                 LoadedPopup.ShowNotification();
             }
@@ -317,7 +317,7 @@ namespace CTUschedule.ViewModels
             }
         }
 
-        private void _courseListViewModel_CourseListUpdate(object? sender, EventArgs e)
+        private void _courseListViewModel_CourseNodesUpdate(object? sender, EventArgs e)
         {
             CourseNodes = _courseListViewModel.CourseNodes;
         }
