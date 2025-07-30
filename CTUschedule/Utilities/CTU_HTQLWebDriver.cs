@@ -62,7 +62,7 @@ namespace Utilities
         private void AssignWebDriver()
         {
             options = new ChromeOptions();
-            //options.AddArgument("--headless=new");
+            options.AddArgument("--headless=new");
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--start-maximized");
             options.AddArgument("--disable-infobars");
