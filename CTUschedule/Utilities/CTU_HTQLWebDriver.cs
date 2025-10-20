@@ -23,6 +23,7 @@ namespace Utilities
     {
         public static CTU_HTQLWebDriver Instance;
 
+        public string CapchaPath = System.IO.Path.GetTempPath() + "capcha.png";
         public string MainPage = "https://dkmh.ctu.edu.vn/htql/sinhvien/hindex.php";
         public string CourseCatalogPage = "https://dkmhfe.ctu.edu.vn/dangkyhocphan/sinhvien/danhmuchocphan";
         public string SignInPage = "https://htql.ctu.edu.vn/htql/login.php";
@@ -62,7 +63,7 @@ namespace Utilities
         private void AssignWebDriver()
         {
             options = new ChromeOptions();
-            options.AddArgument("--headless=new");
+            //options.AddArgument("--headless=new");
             options.AddArgument("--window-size=1920,1080");
             options.AddArgument("--start-maximized");
             options.AddArgument("--disable-infobars");
@@ -77,6 +78,29 @@ namespace Utilities
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
         }
 
+        public void GetAndShowCapchaImage(string selector)
+        {
+            try
+            {
+                Thread.Sleep(300);
+                var capchaImg = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("verify_code")));
+                //var capchaImg = driver.FindElement(By.Id("verify_code"));
+                Screenshot screenShot = ((ITakesScreenshot)capchaImg).GetScreenshot();
+                screenShot.SaveAsFile(CapchaPath);
+                //ImageViewer(CapchaPath);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        public void ImageViewer(string Path)
+        {
+            if (!System.IO.File.Exists(Path)) return;
+            Process.Start("explorer.exe", Path);
+        }
+
         public void CloseWeb()
         {
             driver.Quit();
@@ -88,8 +112,6 @@ namespace Utilities
     public class HTQL_Signin
     {
         private CTU_HTQLWebDriver HTQLWebDriver = CTU_HTQLWebDriver.Instance;
-
-        public string CapchaPath = System.IO.Path.GetTempPath() + "capcha.png";
 
         private IWebDriver driver
         {
@@ -148,29 +170,7 @@ namespace Utilities
             return false;
         }
 
-        public void ImageViewer(string Path)
-        {
-            if (!System.IO.File.Exists(Path)) return;
-            Process.Start("explorer.exe", Path);
-        }
 
-        public void GetAndShowCapchaImage()
-        {
-            try
-            {
-                Thread.Sleep(300);
-                var capchaImg = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("verify_code")));
-                //var capchaImg = driver.FindElement(By.Id("verify_code"));
-                Screenshot screenShot = ((ITakesScreenshot)capchaImg).GetScreenshot();
-                screenShot.SaveAsFile(CapchaPath);
-                //ImageViewer(CapchaPath);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-           
-        }
     }
 
     public class HTQL_CourseCatalog : IDisposable
@@ -213,30 +213,6 @@ namespace Utilities
         {
             var enableNetworkTask = network.Enable(new EnableCommandSettings());
             await enableNetworkTask;
-
-            //network.ResponseReceived += async (sender, e) =>
-            //{
-            //    // Kiểm tra nếu nội dung phản hồi là JSON
-            //    if (e.Response.MimeType == "application/json")
-            //    {
-            //        try
-            //        {
-            //            var responseBody = await network.GetResponseBody(new GetResponseBodyCommandSettings { RequestId = e.RequestId });
-            //            //Console.WriteLine($"Response URL: {e.Response.Url}");
-            //            //Console.WriteLine($"Response Status: {e.Response.Status}");
-            //            //Console.WriteLine($"Response Headers: {string.Join(", ", e.Response.Headers)}");
-            //            //Console.WriteLine($"Response Body: {responseBody.Body}");
-            //            //File.WriteAllText($@"E:\hello.json", responseBody.Body);
-            //            ResponseData = responseBody.Body;
-
-            //            //Debug.WriteLine(ResponseData);
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            //Debug.WriteLine(ex.Message);
-            //        }
-            //    }
-            //};
         }
 
         private void ForceNavigateToCourseCatalog()
@@ -249,6 +225,10 @@ namespace Utilities
                 dkmh.Click();
                 // chờ 3s để load trang
                 Thread.Sleep(3000);
+
+                /*  HOT UPDATE 0.5.5.1: User validation required to continue.. */
+                
+
                 // nảy tới trang catalog
                 driver.Navigate().GoToUrl(HTQLWebDriver.CourseCatalogPage);
             } catch
